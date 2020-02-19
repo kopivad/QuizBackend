@@ -32,14 +32,4 @@ public class Question {
     @JoinColumn(name = "quiz_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Quiz quiz;
-
-//    @OneToMany(cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            mappedBy = "question")
-//    private List<QuizResult> quizResults;
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "question")
-    private List<UserResponse> userQuestionResponse;
 }

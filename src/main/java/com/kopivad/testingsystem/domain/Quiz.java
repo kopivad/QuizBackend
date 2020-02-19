@@ -41,9 +41,4 @@ public class Quiz {
             fetch = FetchType.LAZY,
             mappedBy = "quiz")
     private List<Question> questions;
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "quiz")
-    private List<QuizSession> quizSessions;
 }
