@@ -15,7 +15,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
@@ -25,18 +25,18 @@ public class UserController {
     }
 
     @PostMapping()
-    public User addUser(@RequestBody User user) {
+    public User add(@RequestBody User user) {
         return userRepository.save(user);
     }
 
     @PutMapping("{id}")
-    public User updateUser(@PathVariable("id") User userFromDB, @RequestBody User user) {
+    public User update(@PathVariable("id") User userFromDB, @RequestBody User user) {
         BeanUtils.copyProperties(user, userFromDB, "id");
         return userRepository.save(userFromDB);
     }
 
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable User user) {
+    public void delete(@PathVariable User user) {
         userRepository.delete(user);
     }
 }
