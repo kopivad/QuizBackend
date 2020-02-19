@@ -29,11 +29,4 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Question question;
-
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "answer")
-    private List<UserResponse> userResponses;
-
 }
