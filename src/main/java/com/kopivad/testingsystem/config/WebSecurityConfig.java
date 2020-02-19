@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .email((String) map.get("email"))
                         .locale((String) map.get("locale"))
                         .picture((String) map.get("picture"))
+                        .creationDate(LocalDateTime.now())
                         .name((String) map.get("name"))
                         .roles(Collections.singleton(Role.USER))
                         .build();
