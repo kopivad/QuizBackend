@@ -1,9 +1,12 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="Vadym (generated)" id="1582113920645-1">
+    <changeSet author="Vadym (generated)" id="1582117652274-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1582117652274-2">
         <createTable tableName="answers">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" primaryKeyName="answers_pkey"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="is_right" type="BOOLEAN">
                 <constraints nullable="false"/>
@@ -14,10 +17,10 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-2">
+    <changeSet author="Vadym (generated)" id="1582117652274-3">
         <createTable tableName="questions">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" primaryKeyName="questions_pkey"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="title" type="VARCHAR(255)"/>
             <column name="quiz_id" type="BIGINT">
@@ -25,15 +28,15 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-3">
+    <changeSet author="Vadym (generated)" id="1582117652274-4">
         <createTable tableName="quizzes">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" primaryKeyName="quizzes_pkey"/>
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="active" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="created" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
             <column name="description" type="VARCHAR(255)"/>
             <column name="title" type="VARCHAR(255)"/>
             <column name="user_id" type="VARCHAR(255)">
@@ -41,7 +44,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-4">
+    <changeSet author="Vadym (generated)" id="1582117652274-5">
         <createTable tableName="user_roles">
             <column name="user_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -49,11 +52,12 @@
             <column name="roles" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-5">
+    <changeSet author="Vadym (generated)" id="1582117652274-6">
         <createTable tableName="usr">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
             <column name="email" type="VARCHAR(255)"/>
             <column name="last_visit" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
             <column name="locale" type="VARCHAR(255)"/>
@@ -61,19 +65,29 @@
             <column name="picture" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-6">
+    <changeSet author="Vadym (generated)" id="1582117652274-7">
+        <addPrimaryKey columnNames="id" constraintName="answers_pkey" tableName="answers"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1582117652274-8">
+        <addPrimaryKey columnNames="id" constraintName="questions_pkey" tableName="questions"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1582117652274-9">
+        <addPrimaryKey columnNames="id" constraintName="quizzes_pkey" tableName="quizzes"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1582117652274-10">
         <addPrimaryKey columnNames="id" constraintName="usr_pkey" tableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-7">
+    <changeSet author="Vadym (generated)" id="1582117652274-11">
         <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="answers" constraintName="fk3erw1a3t0r78st8ty27x6v3g1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="questions"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-8">
+    <changeSet author="Vadym (generated)" id="1582117652274-12">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="quizzes" constraintName="fkbmfupeir6nuxoh0ohof73vccx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-9">
+    <changeSet author="Vadym (generated)" id="1582117652274-13">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_roles" constraintName="fkg6agnwreityp2vf23bm2jgjm3" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1582113920645-10">
+    <changeSet author="Vadym (generated)" id="1582117652274-14">
         <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="questions" constraintName="fkn3gvco4b0kewxc0bywf1igfms" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="quizzes"/>
     </changeSet>
 </databaseChangeLog>
+
