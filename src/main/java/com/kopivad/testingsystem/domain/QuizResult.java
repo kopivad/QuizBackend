@@ -7,12 +7,14 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "quiz_results")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table
+@ToString()
+@EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class QuizResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

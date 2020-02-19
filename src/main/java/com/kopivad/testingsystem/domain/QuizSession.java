@@ -10,12 +10,14 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "quiz_sessions")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table
+@ToString()
+@EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class QuizSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

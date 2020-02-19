@@ -1,63 +1,49 @@
 package com.kopivad.testingsystem.config;
 
-import com.kopivad.testingsystem.service.UserService;
-import lombok.AllArgsConstructor;
+import com.kopivad.testingsystem.domain.Role;
+import com.kopivad.testingsystem.domain.User;
+import com.kopivad.testingsystem.repository.data.UserRepository;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@AllArgsConstructor(onConstructor = @__({@Lazy}))
+@EnableOAuth2Sso
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(8);
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/forgot", "/webjars/**", "/signup").permitAll()
                 .anyRequest().authenticated()
-
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-
-                .and()
-                .logout()
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login?logout=true")
-                .permitAll();
-//
-//                .and()
-//                .rememberMe()
-//                .key("simpleToken")
-//                .rememberMeParameter("remember-me")
-//                .tokenValiditySeconds(86400); // 2 weeks
+                .csrf().disable();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
-                .passwordEncoder(passwordEncoder);
+    @Bean
+    public PrincipalExtractor principalExtractor(UserRepository userRepository) {
+        return map -> {
+            String id = (String) map.get("sub");
+            User user = userRepository.findById(id).orElseGet(() -> {
+                return User
+                        .builder()
+                        .id((String) map.get("sub"))
+                        .email((String) map.get("email"))
+                        .locale((String) map.get("locale"))
+                        .picture((String) map.get("picture"))
+                        .name((String) map.get("name"))
+                        .roles(Collections.singleton(Role.USER))
+                        .build();
+            });
+            user.setLastVisit(LocalDateTime.now());
+            return userRepository.save(user);
+        };
     }
-
-
 }

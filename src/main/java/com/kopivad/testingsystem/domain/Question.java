@@ -8,12 +8,14 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table
+@ToString()
+@EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

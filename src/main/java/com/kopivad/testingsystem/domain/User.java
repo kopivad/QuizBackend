@@ -1,31 +1,29 @@
 package com.kopivad.testingsystem.domain;
 
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "usr")
+@ToString()
+@EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
 @Builder
-public class User implements UserDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
+    private String name;
+    private String picture;
     private String email;
-
-    private String nickname;
-
-    private String password;
+    private String locale;
+    private LocalDateTime lastVisit;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
@@ -46,34 +44,4 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
