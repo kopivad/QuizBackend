@@ -24,6 +24,8 @@ public class User {
     private String picture;
     private String email;
     private String locale;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastVisit;
 
     @Column(updatable = false)
