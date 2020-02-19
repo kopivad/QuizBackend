@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "quizzes")
 @ToString()
 @EqualsAndHashCode(of = {"id"})
 @Getter
@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Quiz {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String title;

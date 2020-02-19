@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "answers")
 @ToString()
 @EqualsAndHashCode(of = {"id"})
 @Getter
@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String text;
