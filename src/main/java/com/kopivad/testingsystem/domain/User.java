@@ -1,6 +1,7 @@
 package com.kopivad.testingsystem.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "usr")
-@ToString()
+@ToString(exclude = {"quizzes"})
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
@@ -35,6 +36,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "author")
+    @JsonIgnore
     private List<Quiz> quizzes;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
