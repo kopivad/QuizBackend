@@ -9,7 +9,7 @@
             <column name="id" value="1"/>
             <column name="description" value="Тести на переклад (Grammar)"/>
             <column name="title" value="Grammar"/>
-            <column name="user_id" value="103487375034789341437"/>
+            <column name="author_id" value="103487375034789341437"/>
             <column name="active" value="true"/>
             <column name="creation_date" value="now()"/>
         </insert>

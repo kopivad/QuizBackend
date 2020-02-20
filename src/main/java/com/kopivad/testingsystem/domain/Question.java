@@ -1,11 +1,12 @@
 package com.kopivad.testingsystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "questions")
@@ -23,13 +24,15 @@ public class Question {
 
     private String title;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            mappedBy = "question",
-            fetch = FetchType.LAZY)
-    private List<Answer> answers;
+    @OneToMany(mappedBy = "question", orphanRemoval = true)
+    private Set<Answer> answers;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @MapsId("quiz_id")
+    @ManyToOne
+    @JsonIdentityReference
+    @JsonIdentityInfo(
+            property = "id",
+            generator = ObjectIdGenerators.PropertyGenerator.class
+    )
     private Quiz quiz;
 }
