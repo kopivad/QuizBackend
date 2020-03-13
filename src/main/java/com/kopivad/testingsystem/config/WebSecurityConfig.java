@@ -14,22 +14,25 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableWebSecurity
 @AllArgsConstructor
+@EnableSwagger2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/auth").permitAll().
-                anyRequest().authenticated().and().
-                exceptionHandling().and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
+//        /*httpSecurity.csrf().disable()
+//                .authorizeRequests().antMatchers("/auth", "/webjars/**", "/swagger-ui.html", "/v2/api-docs").permitAll().
+//                anyRequest().authenticated().and().
+//                exceptionHandling().and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        httpSecurity.addFilterBefore(jwtRequestFilter, Us*/ernamePasswordAuthenticationFilter.class);
+httpSecurity.csrf().disable()
+        .authorizeRequests().anyRequest().permitAll();
     }
 
     @Override
