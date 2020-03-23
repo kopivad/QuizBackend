@@ -5,13 +5,14 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
-@EqualsAndHashCode(of = {"id"})
+@Builder
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -24,4 +25,7 @@ public class User {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp creationDate;
+
+    @OneToMany
+    private List<Quiz> quizzes;
 }

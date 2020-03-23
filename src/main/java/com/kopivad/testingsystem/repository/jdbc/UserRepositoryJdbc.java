@@ -14,12 +14,12 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryJdbc implements UserRepository {
-    private final String SELECT_ALL_SQL = "SELECT * FROM Users;";
-    private final String SELECT_USER_BY_ID_SQL = "SELECT * FROM Users WHERE id = ?;";
-    private final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE email = ?;";
-    private final String INSERT_USER_SQL = "INSERT INTO Users(name, email, password, creationDate, role) VALUES (?, ?, ?, now(), ?);";
-    private final String UPDATE_USER_SQL = "UPDATE Users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?;";
-    private final String DELETE_USER_SQL = "DELETE FROM Users WHERE id = ?;";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM Users;";
+    private static final String SELECT_USER_BY_ID_SQL = "SELECT * FROM Users WHERE id = ?;";
+    private static final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE email = ?;";
+    private static final String INSERT_USER_SQL = "INSERT INTO Users(name, email, password, creationDate, role) VALUES (?, ?, ?, now(), ?);";
+    private static final String UPDATE_USER_SQL = "UPDATE Users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?;";
+    private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE id = ?;";
 
     private final DataSource dataSource;
 
@@ -63,8 +63,8 @@ public class UserRepositoryJdbc implements UserRepository {
     public User update(Long id, User user) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement updateStatement = prepareUpdateStatement(id, user, connection);
-            executeUpdate(updateStatement, "Account was not updated");
-            return user;
+            executeUpdate(updateStatement, "User was not updated");
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(String.format("Cannot update User with id = %d", user.getId()), e);
         }
@@ -74,7 +74,7 @@ public class UserRepositoryJdbc implements UserRepository {
     public void delete(Long id) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
-            executeUpdate(deleteStatement, "Account was not deleted");
+            executeUpdate(deleteStatement, "User was not deleted");
         } catch (SQLException e) {
             throw new DaoOperationException(String.format("Cannot delete User with id = %d", id), e);
         }
@@ -118,7 +118,7 @@ public class UserRepositoryJdbc implements UserRepository {
             updateStatement.setLong(5, id);
             return updateStatement;
         } catch (SQLException e) {
-            throw new DaoOperationException(String.format("Cannot prepare update statement for account id = %d", user.getId()), e);
+            throw new DaoOperationException(String.format("Cannot prepare update statement for user id = %d", id), e);
         }
     }
 
@@ -140,7 +140,7 @@ public class UserRepositoryJdbc implements UserRepository {
         if (generatedKeys.next()) {
             return generatedKeys.getLong(1);
         } else {
-            throw new DaoOperationException("Can not obtain an account ID");
+            throw new DaoOperationException("Can not obtain an user ID");
         }
     }
 
@@ -164,13 +164,13 @@ public class UserRepositoryJdbc implements UserRepository {
 
     private User parseRow(ResultSet rs) throws SQLException {
         return User.builder()
-                .id(rs.getLong(1))
-                .name(rs.getString(2))
-                .email(rs.getString(3))
-                .password(rs.getString(4))
-                .creationDate(rs.getTimestamp(5))
-                .role(rs.getString(6))
-                .build();
+            .id(rs.getLong(1))
+            .name(rs.getString(2))
+            .email(rs.getString(3))
+            .password(rs.getString(4))
+            .creationDate(rs.getTimestamp(5))
+            .role(rs.getString(6))
+            .build();
     }
 
 }
