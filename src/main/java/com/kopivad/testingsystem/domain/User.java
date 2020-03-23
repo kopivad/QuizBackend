@@ -3,14 +3,11 @@ package com.kopivad.testingsystem.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "usr")
-@ToString(exclude = {"quizzes"})
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
@@ -19,24 +16,12 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     @Id
-    private String id;
+    private Long id;
     private String name;
-    private String picture;
     private String email;
-    private String locale;
+    private String password;
+    private String role;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lastVisit;
-
-    @Column(updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime creationDate;
-
-    @OneToMany(mappedBy = "author", orphanRemoval = true)
-    private Set<Quiz> quizzes = new HashSet<>();
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Timestamp creationDate;
 }
