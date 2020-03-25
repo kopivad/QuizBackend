@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.kopivad</groupId>
-	<artifactId>testing-system</artifactId>
+	<artifactId>quizzes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Testing System</name>
+	<name>Quizzes Application</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -73,6 +73,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>42.2.9</version>
+		</dependency>
+		<dependency>
+			<groupId>io.codearte.jfairy</groupId>
+			<artifactId>jfairy</artifactId>
+			<version>0.5.7</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

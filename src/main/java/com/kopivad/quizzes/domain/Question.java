@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
 @Builder

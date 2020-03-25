@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
+@EqualsAndHashCode(of = {"id"})
 @Builder
 @Getter
 @Setter

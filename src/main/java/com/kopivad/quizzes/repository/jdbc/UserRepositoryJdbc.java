@@ -17,7 +17,7 @@ public class UserRepositoryJdbc implements UserRepository {
     private static final String SELECT_ALL_SQL = "SELECT * FROM Users;";
     private static final String SELECT_USER_BY_ID_SQL = "SELECT * FROM Users WHERE id = ?;";
     private static final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE email = ?;";
-    private static final String INSERT_USER_SQL = "INSERT INTO Users(name, email, password, creationDate, role) VALUES (?, ?, ?, now(), ?);";
+    private static final String INSERT_USER_SQL = "INSERT INTO Users(name, email, password, creation_date, role) VALUES (?, ?, ?, now(), ?);";
     private static final String UPDATE_USER_SQL = "UPDATE Users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?;";
     private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE id = ?;";
 
