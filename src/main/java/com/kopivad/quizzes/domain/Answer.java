@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static org.springframework.data.jpa.repository.EntityGraph.*;
+
 @Entity
 @EqualsAndHashCode(of = {"id"})
 @Getter
