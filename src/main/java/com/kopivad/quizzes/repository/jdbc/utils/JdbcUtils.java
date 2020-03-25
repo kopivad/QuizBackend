@@ -59,6 +59,22 @@ public class JdbcUtils {
             "\t\t\t\ton delete cascade\n" +
             ");";
 
+    private static final String CREATE_ANSWERS_TABLE_IF_NOT_EXISTS = "create table if not exists answers\n" +
+            "(\n" +
+            "\tid bigserial not null\n" +
+            "\t\tconstraint answers_pk\n" +
+            "\t\t\tprimary key,\n" +
+            "\ttext text not null,\n" +
+            "\tis_right boolean not null,\n" +
+            "\tquestion_id bigserial not null\n" +
+            "\t\tconstraint answers_questions_id_fk\n" +
+            "\t\t\treferences questions\n" +
+            "\t\t\t\ton delete cascade\n" +
+            ");\n" +
+            "\n" +
+            "alter table answers owner to vad;\n" +
+            "\n";
+
     public static DataSource createTestDefaultPgDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DRIVER_CLASS_NAME);
@@ -90,6 +106,15 @@ public class JdbcUtils {
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             statement.executeQuery(CREATE_QUESTIONS_TABLE_IF_NOT_EXISTS);
+        } catch (SQLException e) {
+            throw new DaoOperationException(e.getMessage(), e);
+        }
+    }
+
+    public static void createAnswersTableIfNotExists(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeQuery(CREATE_ANSWERS_TABLE_IF_NOT_EXISTS);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }

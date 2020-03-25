@@ -6,6 +6,8 @@ import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+@RunWith(JUnit4.class)
 public class QuestionRepositoryImplTest {
     private static QuestionRepository questionRepository;
 
