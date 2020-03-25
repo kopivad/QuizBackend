@@ -3,6 +3,7 @@ package com.kopivad.testingsystem.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,8 +18,8 @@ public class Question {
 
     private String title;
 
-//    @OneToMany()
-//    private Set<Answer> answers;
+    @OneToMany()
+    private List<Answer> answers;
 
 
     @ManyToOne

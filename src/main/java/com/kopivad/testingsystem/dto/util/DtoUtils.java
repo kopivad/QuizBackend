@@ -1,8 +1,10 @@
 package com.kopivad.testingsystem.dto.util;
 
+import com.kopivad.testingsystem.domain.Answer;
 import com.kopivad.testingsystem.domain.Question;
 import com.kopivad.testingsystem.domain.Quiz;
 import com.kopivad.testingsystem.domain.User;
+import com.kopivad.testingsystem.dto.AnswerDto;
 import com.kopivad.testingsystem.dto.QuestionDto;
 import com.kopivad.testingsystem.dto.QuizDto;
 import com.kopivad.testingsystem.dto.UserDto;
@@ -30,6 +32,14 @@ public class DtoUtils {
         return Question.builder()
                 .title(questionDto.getTitle())
                 .quiz(Quiz.builder().id(questionDto.getQuizId()).build())
+                .build();
+    }
+
+    public static Answer getAnswerFromDto(AnswerDto answerDto) {
+        return Answer.builder()
+                .text(answerDto.getText())
+                .isRight(answerDto.isRight())
+                .question(Question.builder().id(answerDto.getQuestionId()).build())
                 .build();
     }
 }
