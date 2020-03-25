@@ -32,6 +32,8 @@ build/
 ### Maven template
 target/
 pom.xml.tag
+mvnw
+mvnw.cmd
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next

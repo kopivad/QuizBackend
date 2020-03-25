@@ -1,10 +1,10 @@
 package com.kopivad.testingsystem.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
-public class AuthenticationResponse implements Serializable {
-    private final  String jwt;
+@AllArgsConstructor
+public class AuthenticationResponse {
+    private String jwt;
 }

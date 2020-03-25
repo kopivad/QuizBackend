@@ -1,9 +1,10 @@
 package com.kopivad.testingsystem.controller;
 
 import com.kopivad.testingsystem.domain.Quiz;
-import com.kopivad.testingsystem.repository.data.QuizRepository;
+import com.kopivad.testingsystem.dto.QuizDto;
+import com.kopivad.testingsystem.dto.util.DtoUtils;
+import com.kopivad.testingsystem.service.QuizService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,31 +13,30 @@ import java.util.List;
 @RequestMapping("/api/quiz")
 @AllArgsConstructor
 public class QuizController {
-    private final QuizRepository quizRepository;
+    private final QuizService quizService;
 
     @GetMapping("/all")
     public List<Quiz> getAll() {
-        return quizRepository.findAll();
+        return quizService.getAll();
     }
 
     @GetMapping("{id}")
-    public Quiz getById(@PathVariable(name = "id") Quiz quiz) {
-        return quiz;
+    public Quiz getById(@PathVariable(name = "id") Long id) {
+        return quizService.getById(id);
     }
 
     @PostMapping()
-    public Quiz add(@RequestBody Quiz quiz) {
-        return quizRepository.save(quiz);
+    public Quiz add(@RequestBody QuizDto quizDto) {
+        return quizService.save(DtoUtils.getQuizFromDto(quizDto));
     }
 
     @PutMapping("{id}")
-    public Quiz update(@PathVariable("id") Quiz quizFromDB, @RequestBody Quiz quiz) {
-        BeanUtils.copyProperties(quiz, quizFromDB, "id");
-        return quizRepository.save(quizFromDB);
+    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizDto quizDto) {
+        return quizService.update(id, DtoUtils.getQuizFromDto(quizDto));
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Quiz quiz) {
-        quizRepository.delete(quiz);
+    public void delete(@PathVariable Long id) {
+        quizService.delete(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.kopivad.testingsystem.config;
 
 import com.kopivad.testingsystem.filter.JwtRequestFilter;
+import com.kopivad.testingsystem.service.ApiClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,29 +11,28 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableWebSecurity
+
+//(onConstructor = @__({@Lazy}))
 @AllArgsConstructor
 @EnableSwagger2
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsService userDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
+    private final ApiClientService clientService;
+    private final JwtRequestFilter requestFilter;
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-//        /*httpSecurity.csrf().disable()
-//                .authorizeRequests().antMatchers("/auth", "/webjars/**", "/swagger-ui.html", "/v2/api-docs").permitAll().
-//                anyRequest().authenticated().and().
-//                exceptionHandling().and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        httpSecurity.addFilterBefore(jwtRequestFilter, Us*/ernamePasswordAuthenticationFilter.class);
-httpSecurity.csrf().disable()
-        .authorizeRequests().anyRequest().permitAll();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(8);
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(clientService);
     }
 
     @Override
@@ -41,44 +41,19 @@ httpSecurity.csrf().disable()
         return super.authenticationManagerBean();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf().disable()
+                .authorizeRequests().antMatchers("/auth", "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**").permitAll().
+                anyRequest().authenticated().and().
+                exceptionHandling().and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
     }
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .mvcMatchers("/").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .csrf().disable();
-//    }
-//
-//    @Bean
-//    public PrincipalExtractor principalExtractor(UserRepository userRepository) {
-//        return map -> {
-//            String id = (String) map.get("sub");
-//            User user = userRepository.findById(id).orElseGet(() -> {
-//                return User
-//                        .builder()
-//                        .id((String) map.get("sub"))
-//                        .email((String) map.get("email"))
-//                        .locale((String) map.get("locale"))
-//                        .picture((String) map.get("picture"))
-//                        .creationDate(LocalDateTime.now())
-//                        .name((String) map.get("name"))
-//                        .roles(Collections.singleton(Role.USER))
-//                        .build();
-//            });
-//            user.setLastVisit(LocalDateTime.now());
-//            return userRepository.save(user);
-//        };
-//    }
 }
