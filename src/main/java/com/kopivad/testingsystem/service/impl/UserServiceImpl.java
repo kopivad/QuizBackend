@@ -1,5 +1,4 @@
 package com.kopivad.testingsystem.service.impl;
-
 import com.kopivad.testingsystem.domain.User;
 import com.kopivad.testingsystem.repository.UserRepository;
 import com.kopivad.testingsystem.service.UserService;

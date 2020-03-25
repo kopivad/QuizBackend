@@ -6,7 +6,9 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Builder
@@ -27,6 +29,6 @@ public class Quiz {
     @ManyToOne
     private User author;
 
-//    @OneToMany(mappedBy = "quiz", orphanRemoval = true)
-//    private Set<Question> questions;
+    @OneToMany
+    private List<Question> questions;
 }

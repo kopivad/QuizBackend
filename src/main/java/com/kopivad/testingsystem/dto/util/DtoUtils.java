@@ -1,7 +1,9 @@
 package com.kopivad.testingsystem.dto.util;
 
+import com.kopivad.testingsystem.domain.Question;
 import com.kopivad.testingsystem.domain.Quiz;
 import com.kopivad.testingsystem.domain.User;
+import com.kopivad.testingsystem.dto.QuestionDto;
 import com.kopivad.testingsystem.dto.QuizDto;
 import com.kopivad.testingsystem.dto.UserDto;
 
@@ -21,6 +23,13 @@ public class DtoUtils {
                 .active(dto.isActive())
                 .description(dto.getDescription())
                 .author(User.builder().id(dto.getUserId()).build())
+                .build();
+    }
+
+    public static Question getQuestionFromDto(QuestionDto questionDto) {
+        return Question.builder()
+                .title(questionDto.getTitle())
+                .quiz(Quiz.builder().id(questionDto.getQuizId()).build())
                 .build();
     }
 }
