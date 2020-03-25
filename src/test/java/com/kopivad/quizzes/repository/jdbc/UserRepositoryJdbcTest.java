@@ -58,11 +58,13 @@ public class UserRepositoryJdbcTest {
 
     @Test
     public void updateTest() {
+        String dataForUpdate = "some@email.com";
         User generatedUser = UserUtils.generateUser();
-        User modifiedUser = UserUtils.generateUser();
         User savedUser = userRepository.save(generatedUser);
-        User updatedUser = userRepository.update(savedUser.getId(), modifiedUser);
+        generatedUser.setEmail(dataForUpdate);
+        User updatedUser = userRepository.update(savedUser.getId(), generatedUser);
         assertEquals(savedUser.getId(), updatedUser.getId());
+        assertNotEquals(savedUser.getEmail(), updatedUser.getEmail());
     }
 
     @Test
