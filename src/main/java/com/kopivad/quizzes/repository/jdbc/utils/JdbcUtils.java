@@ -16,15 +16,35 @@ public class JdbcUtils {
 
     private static final String CREATE_USERS_TABLE_IF_NOT_EXISTS = "create table if not exists users\n" +
             "(\n" +
-            "id serial not null\n" +
-            "constraint users_pkey\n" +
-            "primary key,\n" +
-            "name text not null,\n" +
-            "email text not null,\n" +
-            "password text not null,\n" +
-            "creation_date timestamp default now() not null,\n" +
-            "role text default USER\n" +
+            "\tid serial not null\n" +
+            "\t\tconstraint users_pkey\n" +
+            "\t\t\tprimary key,\n" +
+            "\tname text not null,\n" +
+            "\temail text not null,\n" +
+            "\tpassword text not null,\n" +
+            "\tcreation_date timestamp default now() not null,\n" +
+            "\trole text default USER\n" +
             ");\n" +
+            "\n" +
+            "alter table users owner to vad;\n" +
+            "\n";
+
+    private static final String CREATE_QUIZZES_TABLE_IF_NOT_EXISTS = "create table if not exists quizzes\n" +
+            "(\n" +
+            "\tid bigserial not null\n" +
+            "\t\tconstraint table_name_pk\n" +
+            "\t\t\tprimary key,\n" +
+            "\ttitle text not null,\n" +
+            "\tdescription text not null,\n" +
+            "\tactive boolean default true not null,\n" +
+            "\tcreation_date timestamp default now() not null,\n" +
+            "\tauthor_id bigserial not null\n" +
+            "\t\tconstraint quizzes_users_fk\n" +
+            "\t\t\treferences users\n" +
+            "\t\t\t\ton delete cascade\n" +
+            ");\n" +
+            "\n" +
+            "alter table quizzes owner to vad;\n" +
             "\n";
 
     public static DataSource createTestDefaultPgDataSource() {
@@ -37,10 +57,18 @@ public class JdbcUtils {
     }
 
     public static void createUsersTableIfNotExists(DataSource dataSource) {
-        try {
-            Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             statement.executeQuery(CREATE_USERS_TABLE_IF_NOT_EXISTS);
+        } catch (SQLException e) {
+            throw new DaoOperationException(e.getMessage(), e);
+        }
+    }
+
+    public static void createQuizzesTableIfNotExists(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeQuery(CREATE_QUIZZES_TABLE_IF_NOT_EXISTS);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
