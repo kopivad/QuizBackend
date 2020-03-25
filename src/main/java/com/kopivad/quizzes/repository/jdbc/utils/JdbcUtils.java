@@ -47,6 +47,18 @@ public class JdbcUtils {
             "alter table quizzes owner to vad;\n" +
             "\n";
 
+    private static final String CREATE_QUESTIONS_TABLE_IF_NOT_EXISTS = "create table if not exists questions\n" +
+            "(\n" +
+            "\tid bigserial not null\n" +
+            "\t\tconstraint questions_pk\n" +
+            "\t\t\tprimary key,\n" +
+            "\ttitle text not null,\n" +
+            "\tquiz_id bigserial not null\n" +
+            "\t\tconstraint questions_quizzes_id_fk\n" +
+            "\t\t\treferences quizzes\n" +
+            "\t\t\t\ton delete cascade\n" +
+            ");";
+
     public static DataSource createTestDefaultPgDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DRIVER_CLASS_NAME);
@@ -69,6 +81,15 @@ public class JdbcUtils {
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             statement.executeQuery(CREATE_QUIZZES_TABLE_IF_NOT_EXISTS);
+        } catch (SQLException e) {
+            throw new DaoOperationException(e.getMessage(), e);
+        }
+    }
+
+    public static void createQuestionsTableIfNotExists(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeQuery(CREATE_QUESTIONS_TABLE_IF_NOT_EXISTS);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }

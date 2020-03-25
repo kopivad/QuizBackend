@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
-
 public class QuizRepositoryImplTest {
     private static QuizRepository quizRepository;
 
