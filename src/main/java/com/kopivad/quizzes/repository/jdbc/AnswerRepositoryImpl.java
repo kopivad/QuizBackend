@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
+
 @Repository
 @AllArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
@@ -46,20 +48,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         }
     }
 
-    private void commitTransaction(Connection connection) throws SQLException {
-        connection.commit();
-        connection.setAutoCommit(true);
-    }
 
-    private void rollbackTransaction(Connection connection) throws SQLException {
-        connection.rollback();
-        connection.setAutoCommit(true);
-    }
-
-    private void startTransaction(Connection connection, boolean readOnly) throws SQLException {
-        connection.setAutoCommit(false);
-        connection.setReadOnly(readOnly);
-    }
 
     private List<Answer> collectToList(ResultSet rs) throws SQLException {
         List<Answer> answers = new ArrayList<>();
