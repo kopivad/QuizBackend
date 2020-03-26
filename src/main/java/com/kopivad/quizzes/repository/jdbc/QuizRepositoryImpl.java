@@ -4,6 +4,7 @@ import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.exeption.DaoOperationException;
 import com.kopivad.quizzes.repository.QuizRepository;
+import com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,8 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
 
 @AllArgsConstructor
 @Repository
@@ -25,50 +28,82 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public List<Quiz> findAll() {
+        return findAllQuizzes();
+    }
+
+    private List<Quiz> findAllQuizzes() {
         try (Connection connection = dataSource.getConnection()) {
-            Statement selectAllStatement = connection.createStatement();
-            ResultSet rs = selectAllStatement.executeQuery(SELECT_ALL_SQL);
-            List<Quiz> quizzes = new ArrayList<>();
-            while (rs.next()) {
-                quizzes.add(parseRow(rs));
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                Statement selectAllStatement = connection.createStatement();
+                rs = selectAllStatement.executeQuery(SELECT_ALL_SQL);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find all quizzes!");
             }
-            return quizzes;
+            commitTransaction(connection);
+            return collectToList(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
+    }
+
+    private List<Quiz> collectToList(ResultSet rs) throws SQLException {
+        List<Quiz> quizzes = new ArrayList<>();
+        while (rs.next()) {
+            quizzes.add(parseRow(rs));
+        }
+        return quizzes;
     }
 
     @Override
     public Quiz findById(Long id) {
+        return findQuizById(id);
+    }
+
+    private Quiz findQuizById(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            return findQuizById(id, connection);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                PreparedStatement selectByIdStatement = connection.prepareStatement(SELECT_QUIZ_BY_ID_SQL);
+                selectByIdStatement.setLong(1, id);
+                rs = selectByIdStatement.executeQuery();
+                rs.next();
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find quiz by id!");
+            }
+            commitTransaction(connection);
+            return parseRow(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Quiz findQuizById(Long id, Connection connection) throws SQLException {
-        PreparedStatement selectByIdStatement = connection.prepareStatement(SELECT_QUIZ_BY_ID_SQL);
-        selectByIdStatement.setLong(1, id);
-        ResultSet rs = selectByIdStatement.executeQuery();
-        rs.next();
-        return parseRow(rs);
     }
 
     @Override
     public Quiz save(Quiz quiz) {
+        return saveQuiz(quiz);
+    }
+
+    private Quiz saveQuiz(Quiz quiz) {
         try (Connection connection = dataSource.getConnection()) {
-            return saveQuiz(quiz, connection);
+            Long id;
+            startTransaction(connection, false);
+            try {
+                PreparedStatement insertStatement =  prepareInsertStatement(quiz, connection);
+                executeUpdate(insertStatement, "Quiz was not created");
+                id = fetchGeneratedId(insertStatement);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not save quiz!");
+            }
+            commitTransaction(connection);
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Quiz saveQuiz(Quiz quiz, Connection connection) throws SQLException {
-        PreparedStatement insertStatement =  prepareInsertStatement(quiz, connection);
-        executeUpdate(insertStatement, "Quiz was not created");
-        Long id = fetchGeneratedId(insertStatement);
-        return this.findById(id);
     }
 
     private Long fetchGeneratedId(PreparedStatement insertStatement) throws SQLException {
@@ -102,17 +137,24 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public Quiz update(Long id, Quiz quiz) {
+        return updateQuiz(id, quiz);
+    }
+
+    private Quiz updateQuiz(Long id, Quiz quiz) {
         try (Connection connection = dataSource.getConnection()) {
-            return updateQuiz(id, quiz, connection);
+            startTransaction(connection, false);
+            try {
+                PreparedStatement preparedStatement = prepareUpdateStatement(id, quiz, connection);
+                executeUpdate(preparedStatement, "Quiz was not updated");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not update quiz!");
+            }
+            commitTransaction(connection);
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Quiz updateQuiz(Long id, Quiz quiz, Connection connection) throws SQLException {
-        PreparedStatement preparedStatement = prepareUpdateStatement(id, quiz, connection);
-        executeUpdate(preparedStatement, "Quiz was not updated");
-        return this.findById(id);
     }
 
     private PreparedStatement prepareUpdateStatement(Long id, Quiz quiz, Connection connection) {
@@ -128,16 +170,23 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public void delete(Long id) {
+        deleteQuiz(id);
+    }
+
+    private void deleteQuiz(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            deleteQuiz(id, connection);
+            startTransaction(connection, false);
+            try {
+                PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
+                executeUpdate(deleteStatement, "Quiz was not deleted");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not delete quiz!");
+            }
+            commitTransaction(connection);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private void deleteQuiz(Long id, Connection connection) throws SQLException {
-        PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
-        executeUpdate(deleteStatement, "Quiz was not deleted");
     }
 
     private PreparedStatement prepareDeleteStatement(Long id, Connection connection) throws SQLException {
