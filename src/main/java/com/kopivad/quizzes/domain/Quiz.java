@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -31,5 +32,6 @@ public class Quiz {
     private User author;
 
     @OneToMany
+    @JsonIgnore
     private List<Question> questions;
 }

@@ -1,5 +1,7 @@
 package com.kopivad.quizzes.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,10 +21,12 @@ public class Question {
 
     private String title;
 
-    @OneToMany()
+    @OneToMany
+    @JsonIgnoreProperties(value = {"question"})
     private List<Answer> answers;
 
 
     @ManyToOne
+    @JsonIgnoreProperties(value = {"author", "questions"})
     private Quiz quiz;
 }

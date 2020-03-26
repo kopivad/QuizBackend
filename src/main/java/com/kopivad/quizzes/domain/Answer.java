@@ -1,10 +1,12 @@
 package com.kopivad.quizzes.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
-import javax.persistence.*;
-
-import static org.springframework.data.jpa.repository.EntityGraph.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @EqualsAndHashCode(of = {"id"})
@@ -22,5 +24,6 @@ public class Answer {
     private boolean isRight;
 
     @ManyToOne
+    @JsonIgnoreProperties(value = {"quiz", "answers"})
     private Question question;
 }

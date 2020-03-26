@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class JdbcConfig {
-    private static final String URL = "jdbc:postgresql://localhost:5432/quizzes";
+    private static final String URL = "jdbc:postgresql://localhost:5432/quizzes_test";
     private static final String USERNAME = "vad";
     private static final String PASSWORD = "1234";
     private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
