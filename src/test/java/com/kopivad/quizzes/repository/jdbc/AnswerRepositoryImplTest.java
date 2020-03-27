@@ -3,7 +3,7 @@ package com.kopivad.quizzes.repository.jdbc;
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.utils.AnswerUtils;
 import com.kopivad.quizzes.repository.AnswerRepository;
-import com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils;
+import com.kopivad.quizzes.repository.utils.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +21,8 @@ public class AnswerRepositoryImplTest {
 
     @BeforeClass
     public static void init() {
-        DataSource pgDataSource = JdbcUtils.createTestDefaultPgDataSource();
-//        JdbcUtils.createAnswersTableIfNotExists(pgDataSource);
+        DataSource pgDataSource = TestUtils.createTestDefaultPgDataSource();
+//        TestUtils.createAnswersTableIfNotExists(pgDataSource);
         answerRepository = new AnswerRepositoryImpl(pgDataSource);
     }
 
