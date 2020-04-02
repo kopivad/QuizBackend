@@ -4,6 +4,7 @@ import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
+    @Qualifier("questionHibernateRepository")
     private final QuestionRepository questionRepository;
 
     @Override

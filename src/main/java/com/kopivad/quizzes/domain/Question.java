@@ -26,7 +26,6 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
-
     @ManyToOne
     private Quiz quiz;
 }

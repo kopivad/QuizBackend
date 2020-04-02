@@ -201,7 +201,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .title(rs.getString(2))
                 .description(rs.getString(3))
                 .active(rs.getBoolean(4))
-                .creationDate(rs.getTimestamp(5))
+                .creationDate(rs.getTimestamp(5).toLocalDateTime())
                 .author(User.builder().id(rs.getLong(6)).build())
                 .build();
     }

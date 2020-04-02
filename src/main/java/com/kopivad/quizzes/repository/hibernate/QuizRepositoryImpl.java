@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
+@Repository("quizHibernateRepository")
 @AllArgsConstructor
 public class QuizRepositoryImpl implements QuizRepository {
     @PersistenceContext
