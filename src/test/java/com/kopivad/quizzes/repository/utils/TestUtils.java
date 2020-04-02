@@ -3,6 +3,8 @@ package com.kopivad.quizzes.repository.utils;
 import com.kopivad.quizzes.exeption.DaoOperationException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -74,6 +76,11 @@ public class TestUtils {
             "\n" +
             "alter table answers owner to vad;\n" +
             "\n";
+
+    public static EntityManagerFactory createEntityManagerFactory(String unitName) {
+        return Persistence.createEntityManagerFactory(unitName);
+
+    }
 
     public static DataSource createTestDefaultPgDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

@@ -20,7 +20,7 @@ public class ApiClientRepositoryImpl implements ApiClientRepository {
     private static final String SELECT_BY_USERNAME = "SELECT * FROM api_clients WHERE username = ?;";
 
     @Override
-    public ApiClient findByName(String name) {
+    public ApiClient findByUsername(String name) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement selectStatement = connection.prepareStatement(SELECT_BY_USERNAME);
             selectStatement.setString(1, name);

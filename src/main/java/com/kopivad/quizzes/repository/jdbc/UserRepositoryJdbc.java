@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,7 +230,7 @@ public class UserRepositoryJdbc implements UserRepository {
             .name(rs.getString(2))
             .email(rs.getString(3))
             .password(rs.getString(4))
-            .creationDate(rs.getTimestamp(5))
+            .creationDate(rs.getTimestamp(5).toLocalDateTime())
             .role(rs.getString(6))
             .build();
     }
