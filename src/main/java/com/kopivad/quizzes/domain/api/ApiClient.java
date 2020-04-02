@@ -1,19 +1,29 @@
 package com.kopivad.quizzes.domain.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@AllArgsConstructor
-@Data
+@Entity
+@Table(name = "api_clients")
+@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApiClient implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "username", nullable = false)
     private String username;
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Override

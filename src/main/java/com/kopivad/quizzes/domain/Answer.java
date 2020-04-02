@@ -1,14 +1,12 @@
 package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "answers")
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
@@ -17,13 +15,16 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class Answer {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "is_right", nullable = false)
     private boolean isRight;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = {"quiz", "answers"})
+    @ManyToOne()
     private Question question;
 }

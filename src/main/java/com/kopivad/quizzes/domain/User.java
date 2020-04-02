@@ -1,17 +1,15 @@
 package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "usr")
 @EqualsAndHashCode(of = {"id"})
 @Builder
 @Getter
@@ -20,15 +18,22 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "role", nullable = false)
     private String role;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp creationDate;
+    @Column(name = "creation_date", updatable = false, nullable = false)
+    private LocalDateTime creationDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
     private List<Quiz> quizzes;
 }
