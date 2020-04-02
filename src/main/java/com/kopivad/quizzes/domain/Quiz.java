@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,8 @@ public class Quiz {
     private boolean active;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "creation_date", nullable = false)
-    private Timestamp creationDate;
+    @Column(name = "creation_date", updatable = false, nullable = false)
+    private LocalDateTime creationDate;
 
     @ManyToOne
     private User author;
