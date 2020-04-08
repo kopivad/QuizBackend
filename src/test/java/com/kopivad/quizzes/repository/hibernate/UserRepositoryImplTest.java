@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.repository.hibernate;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.domain.utils.UserUtils;
+import com.kopivad.quizzes.repository.utils.UserUtils;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.repository.utils.TestUtils;
 import org.junit.BeforeClass;

@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.domain.utils;
+package com.kopivad.quizzes.repository.utils;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;

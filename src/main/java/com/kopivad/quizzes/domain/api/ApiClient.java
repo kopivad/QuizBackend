@@ -14,7 +14,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class ApiClient implements UserDetails {
     @Id

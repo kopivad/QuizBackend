@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
+import static com.kopivad.quizzes.utils.JdbcUtils.*;
 
 @Repository
 @RequiredArgsConstructor

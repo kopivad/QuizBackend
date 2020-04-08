@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class Answer {
     @Id

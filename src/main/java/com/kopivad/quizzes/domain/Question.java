@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class Question {
     @Id

@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.repository.jdbc;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.utils.QuizUtils;
+import com.kopivad.quizzes.repository.utils.QuizUtils;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.repository.utils.TestUtils;
 import org.junit.BeforeClass;
