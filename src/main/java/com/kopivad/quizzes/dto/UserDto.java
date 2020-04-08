@@ -1,13 +1,11 @@
 package com.kopivad.quizzes.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@Builder
+@Value
 public class UserDto {
-    private String name;
-    private String email;
-    private String password;
-    private String role;
+    String name;
+    String email;
+    String password;
+    String role;
 }

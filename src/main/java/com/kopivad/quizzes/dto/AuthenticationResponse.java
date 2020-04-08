@@ -1,10 +1,8 @@
 package com.kopivad.quizzes.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
+@Value
 public class AuthenticationResponse {
     private String jwt;
 }
