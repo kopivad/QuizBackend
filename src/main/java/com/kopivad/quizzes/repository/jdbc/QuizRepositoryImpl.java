@@ -6,6 +6,7 @@ import com.kopivad.quizzes.exeption.DaoOperationException;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -15,8 +16,8 @@ import java.util.List;
 
 import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
 
-@AllArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class QuizRepositoryImpl implements QuizRepository {
     private final DataSource dataSource;
 

@@ -2,7 +2,7 @@ package com.kopivad.quizzes.config;
 
 import com.kopivad.quizzes.filter.JwtRequestFilter;
 import com.kopivad.quizzes.service.ApiClientService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 //(onConstructor = @__({@Lazy}))
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableSwagger2
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

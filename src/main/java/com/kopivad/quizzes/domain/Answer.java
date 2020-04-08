@@ -1,6 +1,5 @@
 package com.kopivad.quizzes.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class Answer {
     @Id

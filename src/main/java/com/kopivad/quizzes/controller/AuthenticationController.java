@@ -4,7 +4,7 @@ import com.kopivad.quizzes.dto.AuthenticationRequest;
 import com.kopivad.quizzes.dto.AuthenticationResponse;
 import com.kopivad.quizzes.service.ApiClientService;
 import com.kopivad.quizzes.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;

@@ -2,14 +2,14 @@ package com.kopivad.quizzes.repository.hibernate;
 
 import com.kopivad.quizzes.domain.api.ApiClient;
 import com.kopivad.quizzes.repository.ApiClientRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository("hibernateApiClientRepository")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ApiClientRepositoryImpl implements ApiClientRepository {
     @PersistenceContext
     private final EntityManager entityManager;

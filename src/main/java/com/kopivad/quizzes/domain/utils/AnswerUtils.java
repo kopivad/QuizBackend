@@ -2,7 +2,6 @@ package com.kopivad.quizzes.domain.utils;
 
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.domain.Quiz;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 

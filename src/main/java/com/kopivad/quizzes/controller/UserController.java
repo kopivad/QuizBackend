@@ -4,14 +4,14 @@ import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.dto.util.DtoUtils;
 import com.kopivad.quizzes.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController()
 @RequestMapping(path = "/api/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 

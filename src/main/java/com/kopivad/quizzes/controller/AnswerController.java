@@ -4,14 +4,14 @@ import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.dto.util.DtoUtils;
 import com.kopivad.quizzes.service.AnswerService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/answer")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnswerController {
     private final AnswerService answerService;
 
