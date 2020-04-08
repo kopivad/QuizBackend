@@ -1,8 +1,8 @@
 package com.kopivad.quizzes.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -14,21 +14,9 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class JpaConfig {
-    private static final String URL = "jdbc:postgresql://localhost:5432/quizzes";
-    private static final String USERNAME = "vad";
-    private static final String PASSWORD = "1234";
-    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(DRIVER_CLASS_NAME);
-        dataSource.setUrl(URL);
-        dataSource.setUsername(USERNAME);
-        dataSource.setPassword(PASSWORD);
-        return dataSource;
-    }
+    private final DataSource dataSource;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -39,7 +27,7 @@ public class JpaConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.kopivad.quizzes.domain");
-        factory.setDataSource(dataSource());
+        factory.setDataSource(dataSource);
 
         return factory;
     }
