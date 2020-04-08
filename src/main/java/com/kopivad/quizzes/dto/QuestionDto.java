@@ -1,9 +1,9 @@
 package com.kopivad.quizzes.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class QuestionDto {
-    private String title;
-private Long quizId;
+    String title;
+    Long quizId;
 }

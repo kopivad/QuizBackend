@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.dto.util;
+package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;

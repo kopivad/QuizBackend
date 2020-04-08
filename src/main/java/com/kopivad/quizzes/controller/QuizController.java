@@ -2,16 +2,16 @@ package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.dto.QuizDto;
-import com.kopivad.quizzes.dto.util.DtoUtils;
+import com.kopivad.quizzes.utils.DtoUtils;
 import com.kopivad.quizzes.service.QuizService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/quiz")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
 

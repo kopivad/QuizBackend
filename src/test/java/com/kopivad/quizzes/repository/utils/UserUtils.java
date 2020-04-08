@@ -1,12 +1,12 @@
-package com.kopivad.quizzes.domain.utils;
+package com.kopivad.quizzes.repository.utils;
 
 import com.kopivad.quizzes.domain.User;
+import io.codearte.jfairy.Fairy;
+import io.codearte.jfairy.producer.person.Person;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import io.codearte.jfairy.Fairy;
-import io.codearte.jfairy.producer.person.Person;
 
 public class UserUtils {
     public static List<User> generateUsers(int size) {

@@ -2,7 +2,7 @@ package com.kopivad.quizzes.repository.hibernate;
 
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository("hibernateRepository")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     @PersistenceContext
     private final EntityManager entityManager;

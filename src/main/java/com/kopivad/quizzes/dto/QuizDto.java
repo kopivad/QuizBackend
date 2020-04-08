@@ -1,11 +1,11 @@
 package com.kopivad.quizzes.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class QuizDto {
-    private String title;
-    private boolean active;
-    private String description;
-    private Long userId;
+    String title;
+    boolean active;
+    String description;
+    Long userId;
 }

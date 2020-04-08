@@ -4,13 +4,14 @@ import com.kopivad.quizzes.domain.api.ApiClient;
 import com.kopivad.quizzes.repository.ApiClientRepository;
 import com.kopivad.quizzes.service.ApiClientService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ApiClientServiceImpl implements ApiClientService {
     @Qualifier("hibernateApiClientRepository")
     private final ApiClientRepository clientRepository;

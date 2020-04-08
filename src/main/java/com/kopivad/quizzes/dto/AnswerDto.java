@@ -1,12 +1,12 @@
 package com.kopivad.quizzes.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class AnswerDto {
-    private String text;
+    String text;
 
-    private boolean isRight;
+    boolean isRight;
 
-    private Long questionId;
+    Long questionId;
 }

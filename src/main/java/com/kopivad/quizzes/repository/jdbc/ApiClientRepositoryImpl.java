@@ -3,7 +3,7 @@ package com.kopivad.quizzes.repository.jdbc;
 import com.kopivad.quizzes.domain.api.ApiClient;
 import com.kopivad.quizzes.exeption.DaoOperationException;
 import com.kopivad.quizzes.repository.ApiClientRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ApiClientRepositoryImpl implements ApiClientRepository {
     private final DataSource dataSource;
 

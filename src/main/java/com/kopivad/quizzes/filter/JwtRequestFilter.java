@@ -2,7 +2,7 @@ package com.kopivad.quizzes.filter;
 
 import com.kopivad.quizzes.service.ApiClientService;
 import com.kopivad.quizzes.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final ApiClientService clientService;
     private final JwtService jwtService;

@@ -2,7 +2,7 @@ package com.kopivad.quizzes.repository.hibernate;
 
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.repository.AnswerRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository("answerHibernateRepository")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
     @PersistenceContext
     private final EntityManager entityManager;

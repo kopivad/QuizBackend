@@ -4,13 +4,14 @@ import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     @Qualifier("answerHibernateRepository")
     private final AnswerRepository answerRepository;

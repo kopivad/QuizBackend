@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.repository.jdbc.utils;
+package com.kopivad.quizzes.utils;
 
 import java.sql.Connection;
 import java.sql.SQLException;

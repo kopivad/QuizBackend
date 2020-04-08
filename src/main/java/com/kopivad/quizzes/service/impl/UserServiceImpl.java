@@ -3,7 +3,7 @@ package com.kopivad.quizzes.service.impl;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     @Qualifier("hibernateRepository")
     private final UserRepository userRepository;

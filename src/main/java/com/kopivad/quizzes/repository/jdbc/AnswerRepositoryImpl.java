@@ -4,7 +4,7 @@ import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.exeption.DaoOperationException;
 import com.kopivad.quizzes.repository.AnswerRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -12,10 +12,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
+import static com.kopivad.quizzes.utils.JdbcUtils.*;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
     private final DataSource dataSource;
 

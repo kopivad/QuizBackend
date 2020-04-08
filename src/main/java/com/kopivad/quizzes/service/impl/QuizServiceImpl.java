@@ -3,15 +3,15 @@ package com.kopivad.quizzes.service.impl;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.service.QuizService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
     @Qualifier("quizHibernateRepository")
     private final QuizRepository quizRepository;
@@ -42,3 +42,5 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.delete(id);
     }
 }
+
+
