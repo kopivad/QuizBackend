@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
+
 @Repository
 @AllArgsConstructor
 public class QuestionRepositoryImpl implements QuestionRepository {
@@ -26,17 +28,25 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public List<Question> findAll() {
+        return findAllQuestions();
+    }
+
+    private List<Question> findAllQuestions() {
         try (Connection connection = dataSource.getConnection()) {
-            return findAllQuestions(connection);
+            ResultSet resultSet;
+            startTransaction(connection, true);
+            try {
+                Statement statement = connection.createStatement();
+                resultSet = statement.executeQuery(SELECT_ALL_SQL);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find all question!");
+            }
+            commitTransaction(connection);
+            return collectToList(resultSet);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private List<Question> findAllQuestions(Connection connection) throws SQLException {
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(SELECT_ALL_SQL);
-        return collectToList(resultSet);
     }
 
     private List<Question> collectToList(ResultSet resultSet) throws SQLException {
@@ -57,18 +67,26 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public Question findById(Long id) {
+        return findQuestionById(id);
+    }
+
+    private Question findQuestionById(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            return findQuestionById(id, connection);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                PreparedStatement selectStatement = prepareSelectStatement(id, connection);
+                rs = selectStatement.executeQuery();
+                rs.next();
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find question by id!");
+            }
+            commitTransaction(connection);
+            return parseRow(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Question findQuestionById(Long id, Connection connection) throws SQLException {
-        PreparedStatement selectStatement = prepareSelectStatement(id, connection);
-        ResultSet resultSet = selectStatement.executeQuery();
-        resultSet.next();
-        return parseRow(resultSet);
     }
 
     private PreparedStatement prepareSelectStatement(Long id, Connection connection) {
@@ -83,18 +101,26 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public Question save(Question question) {
+            return saveQuestion(question);
+    }
+
+    private Question saveQuestion(Question question) {
         try (Connection connection = dataSource.getConnection()) {
-            return saveQuestion(question, connection);
+            Long id;
+            startTransaction(connection, false);
+            try {
+                PreparedStatement insertStatement = prepareInsertStatement(connection, question);
+                executeUpdate(insertStatement, "Question was not created!");
+                id = fetchGeneratedId(insertStatement);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not save question!");
+            }
+            commitTransaction(connection);
+            return findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Question saveQuestion(Question question, Connection connection) throws SQLException {
-        PreparedStatement insertStatement = prepareInsertStatement(connection, question);
-        executeUpdate(insertStatement, "Question was not created!");
-        Long id = fetchGeneratedId(insertStatement);
-        return findById(id);
 
     }
 
@@ -130,9 +156,20 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public Question update(Long id, Question question) {
+        return updateQuestion(id, question);
+    }
+
+    private Question updateQuestion(Long id, Question question) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement updateStatement = prepareUpdateStatement(id, question, connection);
-            executeUpdate(updateStatement, "Question was not created!");
+            startTransaction(connection, false);
+            try {
+                PreparedStatement updateStatement = prepareUpdateStatement(id, question, connection);
+                executeUpdate(updateStatement, "Question was not created!");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not update question");
+            }
+            commitTransaction(connection);
             return findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
@@ -152,13 +189,25 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public void delete(Long id) {
+        deleteQuestion(id);
+    }
+
+    private void deleteQuestion(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
-            executeUpdate(deleteStatement, "Question was not deleted!");
+            startTransaction(connection, false);
+            try {
+                PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
+                executeUpdate(deleteStatement, "Question was not deleted!");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not delete question");
+            }
+            commitTransaction(connection);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
     }
+
 
     private PreparedStatement prepareDeleteStatement(Long id, Connection connection) {
         try {

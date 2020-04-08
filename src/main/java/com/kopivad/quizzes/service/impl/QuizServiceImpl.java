@@ -4,13 +4,16 @@ import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.service.QuizService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @Service
 public class QuizServiceImpl implements QuizService {
+    @Qualifier("quizHibernateRepository")
     private final QuizRepository quizRepository;
 
     @Override
@@ -25,6 +28,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Quiz save(Quiz quiz) {
+        quiz.setCreationDate(LocalDateTime.now());
         return quizRepository.save(quiz);
     }
 

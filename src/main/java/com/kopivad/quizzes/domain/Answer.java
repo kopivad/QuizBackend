@@ -1,12 +1,12 @@
 package com.kopivad.quizzes.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
 
-import static org.springframework.data.jpa.repository.EntityGraph.*;
-
 @Entity
+@Table(name = "answers")
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
@@ -15,12 +15,16 @@ import static org.springframework.data.jpa.repository.EntityGraph.*;
 @NoArgsConstructor
 public class Answer {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "is_right", nullable = false)
     private boolean isRight;
 
-    @ManyToOne
+    @ManyToOne()
     private Question question;
 }

@@ -3,13 +3,17 @@ package com.kopivad.quizzes.repository.jdbc;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.exeption.DaoOperationException;
 import com.kopivad.quizzes.repository.UserRepository;
+import com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,9 +29,21 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public List<User> findAll() {
+        return findAllUsers();
+    }
+
+    private List<User> findAllUsers() {
         try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(SELECT_ALL_SQL);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                Statement statement = connection.createStatement();
+                rs = statement.executeQuery(SELECT_ALL_SQL);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find all users");
+            }
+            commitTransaction(connection);
             return collectToList(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
@@ -36,8 +52,24 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public User findById(Long id) {
+        return findUserById(id);
+    }
+
+    private User findUserById(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            return findUserById(id, connection);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                PreparedStatement selectByIdStatement = connection.prepareStatement(SELECT_USER_BY_ID_SQL);
+                selectByIdStatement.setLong(1, id);
+                rs = selectByIdStatement.executeQuery();
+                rs.next();
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find user by id!");
+            }
+            commitTransaction(connection);
+            return parseRow(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
@@ -45,25 +77,44 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public User save(User user) {
+        return saveUser(user);
+    }
+
+    private User saveUser(User user) {
         try (Connection connection = dataSource.getConnection()) {
-            return saveUser(user, connection);
+            Long id;
+            startTransaction(connection, false);
+            try {
+                PreparedStatement insertUserStatement = prepareInsertStatement(user, connection);
+                executeUpdate(insertUserStatement, "User was not created");
+                id = fetchGeneratedId(insertUserStatement);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not save user!");
+            }
+            commitTransaction(connection);
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
     }
 
-    private User saveUser(User user, Connection connection) throws SQLException {
-        PreparedStatement insertUserStatement = prepareInsertStatement(user, connection);
-        executeUpdate(insertUserStatement, "User was not created");
-        Long id = fetchGeneratedId(insertUserStatement);
-        return this.findById(id);
-    }
-
     @Override
     public User update(Long id, User user) {
+        return updateUser(id, user);
+    }
+
+    private User updateUser(Long id, User user) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement updateStatement = prepareUpdateStatement(id, user, connection);
-            executeUpdate(updateStatement, "User was not updated");
+            startTransaction(connection, false);
+            try {
+                PreparedStatement updateStatement = prepareUpdateStatement(id, user, connection);
+                executeUpdate(updateStatement, "User was not updated");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not update user!");
+            }
+            commitTransaction(connection);
             return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(String.format("Cannot update User with id = %d", user.getId()), e);
@@ -72,37 +123,48 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public void delete(Long id) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
-            executeUpdate(deleteStatement, "User was not deleted");
-        } catch (SQLException e) {
-            throw new DaoOperationException(String.format("Cannot delete User with id = %d", id), e);
-        }
+        deleteUser(id);
     }
 
-    @Override
-    public User findByEmail(String email) {
+    private void deleteUser(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            return findUserByEmail(email, connection);
+            startTransaction(connection, false);
+            try {
+                PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
+                executeUpdate(deleteStatement, "User was not deleted");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not delete user");
+            }
+            commitTransaction(connection);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
     }
 
-    private User findUserByEmail(String email, Connection connection) throws SQLException {
-        PreparedStatement selectByEmailStatement = connection.prepareStatement(SELECT_USER_BY_EMAIL_SQL);
-        selectByEmailStatement.setString(1, email);
-        ResultSet resultSet = selectByEmailStatement.executeQuery();
-        resultSet.next();
-        return parseRow(resultSet);
+    @Override
+    public User findByEmail(String email) {
+        return findUserByEmail(email);
     }
 
-    private User findUserById(Long id, Connection connection) throws SQLException {
-        PreparedStatement selectByIdStatement = connection.prepareStatement(SELECT_USER_BY_ID_SQL);
-        selectByIdStatement.setLong(1, id);
-        ResultSet rs = selectByIdStatement.executeQuery();
-        rs.next();
-        return parseRow(rs);
+    private User findUserByEmail(String email) {
+        try (Connection connection = dataSource.getConnection()) {
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                PreparedStatement selectByEmailStatement = connection.prepareStatement(SELECT_USER_BY_EMAIL_SQL);
+                selectByEmailStatement.setString(1, email);
+                rs = selectByEmailStatement.executeQuery();
+                rs.next();
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find user by email!");
+            }
+            commitTransaction(connection);
+            return parseRow(rs);
+        } catch (SQLException e) {
+            throw new DaoOperationException(e.getMessage(), e);
+        }
     }
 
     private PreparedStatement prepareDeleteStatement(Long id, Connection connection) throws SQLException {
@@ -168,7 +230,7 @@ public class UserRepositoryJdbc implements UserRepository {
             .name(rs.getString(2))
             .email(rs.getString(3))
             .password(rs.getString(4))
-            .creationDate(rs.getTimestamp(5))
+            .creationDate(rs.getTimestamp(5).toLocalDateTime())
             .role(rs.getString(6))
             .build();
     }

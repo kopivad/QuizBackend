@@ -12,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kopivad.quizzes.repository.jdbc.utils.JdbcUtils.*;
+
 @Repository
 @AllArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
@@ -25,18 +27,28 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public List<Answer> findAll() {
+        return this.findAllAnswers();
+    }
+
+    private List<Answer> findAllAnswers() {
         try (Connection connection = dataSource.getConnection()) {
-            return findAllAnswers(connection);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                Statement selectStatement = connection.createStatement();
+                rs = selectStatement.executeQuery(SELECT_ALL_SQL);
+            } catch (SQLException ex) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find all answers!");
+            }
+            commitTransaction(connection);
+            return collectToList(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
     }
 
-    private List<Answer> findAllAnswers(Connection connection) throws SQLException {
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(SELECT_ALL_SQL);
-        return collectToList(rs);
-    }
+
 
     private List<Answer> collectToList(ResultSet rs) throws SQLException {
         List<Answer> answers = new ArrayList<>();
@@ -56,18 +68,26 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public Answer findById(Long id) {
+        return this.findAnswerById(id);
+    }
+
+    private Answer findAnswerById(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            return findAnswerById(id, connection);
+            ResultSet rs;
+            startTransaction(connection, true);
+            try {
+                PreparedStatement selectStatement = prepareSelectStatement(id, connection);
+                rs = selectStatement.executeQuery();
+                rs.next();
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not find answer by id!");
+            }
+            commitTransaction(connection);
+            return parseRow(rs);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Answer findAnswerById(Long id, Connection connection) throws SQLException {
-        PreparedStatement selectStatement = prepareSelectStatement(id, connection);
-        ResultSet rs = selectStatement.executeQuery();
-        rs.next();
-        return parseRow(rs);
     }
 
     private PreparedStatement prepareSelectStatement(Long id, Connection connection) {
@@ -82,18 +102,26 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public Answer save(Answer answer) {
+        return saveAnswer(answer);
+    }
+
+    private Answer saveAnswer(Answer answer) {
         try (Connection connection = dataSource.getConnection()) {
-            return saveAnswer(answer, connection);
+            Long id;
+            startTransaction(connection, false);
+            try {
+                PreparedStatement insertStatement = prepareInsertStatement(answer, connection);
+                executeUpdate(insertStatement, "Answer was not created!");
+                id = fetchGeneratedId(insertStatement);
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not save answer!");
+            }
+            commitTransaction(connection);
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Answer saveAnswer(Answer answer, Connection connection) throws SQLException {
-        PreparedStatement insertStatement = prepareInsertStatement(answer, connection);
-        executeUpdate(insertStatement, "Answer was not created!");
-        Long id = fetchGeneratedId(insertStatement);
-        return findById(id);
     }
 
     private PreparedStatement prepareInsertStatement(Answer answer, Connection connection) {
@@ -122,17 +150,24 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public Answer update(Long id, Answer answer) {
+        return updateAnswer(id, answer);
+    }
+
+    private Answer updateAnswer(Long id, Answer answer) {
         try (Connection connection = dataSource.getConnection()) {
-            return updateAnswer(id, answer, connection);
+            startTransaction(connection, false);
+            try {
+                PreparedStatement updateStatement = prepareUpdateStatement(id, answer, connection);
+                executeUpdate(updateStatement, "Answer was not updated!");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Can not update answer");
+            }
+            commitTransaction(connection);
+            return this.findById(id);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private Answer updateAnswer(Long id, Answer answer, Connection connection) throws SQLException {
-        PreparedStatement updateStatement = prepareUpdateStatement(id, answer, connection);
-        executeUpdate(updateStatement, "Answer was not updated!");
-        return findById(id);
     }
 
     private void executeUpdate(PreparedStatement updateStatement, String error) throws SQLException {
@@ -154,16 +189,23 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public void delete(Long id) {
+        deleteAnswer(id);
+    }
+
+    private void deleteAnswer(Long id) {
         try (Connection connection = dataSource.getConnection()) {
-            deleteAnswer(id, connection);
+            startTransaction(connection, false);
+            try {
+                PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
+                executeUpdate(deleteStatement, "Answer was not deleted!");
+            } catch (SQLException e) {
+                rollbackTransaction(connection);
+                throw new DaoOperationException("Answer was not deleted");
+            }
+            commitTransaction(connection);
         } catch (SQLException e) {
             throw new DaoOperationException(e.getMessage(), e);
         }
-    }
-
-    private void deleteAnswer(Long id, Connection connection) throws SQLException {
-        PreparedStatement deleteStatement = prepareDeleteStatement(id, connection);
-        executeUpdate(deleteStatement, "Answer was not deleted!");
     }
 
     private PreparedStatement prepareDeleteStatement(Long id, Connection connection) {

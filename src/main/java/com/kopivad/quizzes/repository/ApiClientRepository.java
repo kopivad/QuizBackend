@@ -3,5 +3,5 @@ package com.kopivad.quizzes.repository;
 import com.kopivad.quizzes.domain.api.ApiClient;
 
 public interface ApiClientRepository {
-    ApiClient findByName(String name);
+    ApiClient findByUsername(String name);
 }
