@@ -21,7 +21,7 @@ public class AnswerUtils {
         TextProducer textProducer = fairy.textProducer();
         return Answer
                 .builder()
-                .text(textProducer.latinSentence(6))
+                .text(textProducer.randomString(200))
                 .isRight(true)
                 .question(Question.builder().id(6L).build())
                 .build();

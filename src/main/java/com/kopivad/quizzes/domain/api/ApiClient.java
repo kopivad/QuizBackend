@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// $2a$08$JEuQgbBcAqLqAZz4si5JnOCbsWMaRgUDpcHACXG4sC7PYcOyci4c2
+
 @Entity
 @Table(name = "api_clients")
 @EqualsAndHashCode(of = {"id"})

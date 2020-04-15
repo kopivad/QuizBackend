@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
-    @Qualifier("quizHibernateRepository")
+    @Qualifier("jooqQuizRepository")
     private final QuizRepository quizRepository;
 
     @Override

@@ -4,6 +4,7 @@ import com.kopivad.quizzes.domain.User;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,6 +24,7 @@ public class UserUtils {
                 .email(person.getEmail())
                 .name(person.getFirstName())
                 .password(person.getPassword())
+                .creationDate(LocalDateTime.now())
                 .role("USER")
                 .build();
     }

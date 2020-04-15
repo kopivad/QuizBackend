@@ -21,22 +21,15 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final ApiClientService clientService;
 
-    @PostMapping(value = "/auth")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    @PostMapping(value = "/api/auth")
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-            );
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-
-
-        final UserDetails userDetails = clientService
-                .loadUserByUsername(authenticationRequest.getUsername());
-
-        final String jwt = jwtService.generateToken(userDetails);
-
+        UserDetails userDetails = clientService.loadUserByUsername(authenticationRequest.getUsername());
+        String jwt = jwtService.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }
