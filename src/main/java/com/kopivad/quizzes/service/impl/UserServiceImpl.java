@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Qualifier("hibernateRepository")
+    @Qualifier("jooqUserRepository")
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(Long id, User user) {
+        String userPassword = user.getPassword();
+        user.setPassword(passwordEncoder.encode(userPassword));
         return userRepository.update(id, user);
     }
 

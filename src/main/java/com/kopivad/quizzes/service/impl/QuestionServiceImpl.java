@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    @Qualifier("questionHibernateRepository")
+    @Qualifier("jooqQuestionRepository")
     private final QuestionRepository questionRepository;
 
     @Override

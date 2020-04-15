@@ -2,24 +2,23 @@ package com.kopivad.quizzes.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
 @EqualsAndHashCode(of = {"id"})
+@Builder
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Question {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "title", nullable = false)
     private String title;
 
     @OneToMany(mappedBy = "question")

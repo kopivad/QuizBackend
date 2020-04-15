@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,5 +35,6 @@ public class User {
     private LocalDateTime creationDate;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnoreProperties({"author", "questions"})
     private List<Quiz> quizzes;
 }

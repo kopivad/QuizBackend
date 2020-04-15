@@ -21,14 +21,12 @@ public class JpaConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setShowSql(true);
-
+        vendorAdapter.setGenerateDdl(false);
+        vendorAdapter.setShowSql(false);
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.kopivad.quizzes.domain");
         factory.setDataSource(dataSource);
-
         return factory;
     }
 
