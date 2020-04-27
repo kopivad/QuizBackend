@@ -13,7 +13,11 @@ import java.util.stream.IntStream;
 public class QuizUtils {
     public static List<Quiz> generateQuizzes(int size) {
         return IntStream.range(0, size)
-                .mapToObj(i -> generateQuiz())
+                .mapToObj(i -> {
+                    Quiz quiz = generateQuiz();
+                    quiz.setId((long) i + 1);
+                    return quiz;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -22,11 +26,12 @@ public class QuizUtils {
         TextProducer textProducer = fairy.textProducer();
         return Quiz
                 .builder()
+                .id(1L)
                 .title(textProducer.randomString(200))
                 .description(textProducer.randomString(200))
                 .active(true)
                 .creationDate(LocalDateTime.now())
-                .author(User.builder().id(50L).build())
+                .author(User.builder().id(1L).build())
                 .build();
     }
 }

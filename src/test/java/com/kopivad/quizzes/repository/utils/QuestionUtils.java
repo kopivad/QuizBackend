@@ -22,7 +22,7 @@ public class QuestionUtils {
         return Question
                 .builder()
                 .title(textProducer.randomString(200))
-                .quiz(Quiz.builder().id(6L).build())
+                .quiz(Quiz.builder().id(1L).build())
                 .build();
     }
 }

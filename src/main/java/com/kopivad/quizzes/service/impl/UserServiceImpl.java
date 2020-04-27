@@ -1,7 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
+import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
+import com.kopivad.quizzes.service.QuizService;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,12 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     @Qualifier("jooqUserRepository")
     private final UserRepository userRepository;
+    private final QuizService quizService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -25,7 +29,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long id) {
-        return userRepository.findById(id);
+        User userFromDB = userRepository.findById(id);
+        List<Quiz> userQuizzes = quizService.getAll()
+                .stream()
+                .filter(q -> q.getAuthor().getId().equals(id))
+                .collect(Collectors.toList());
+        userFromDB.setQuizzes(userQuizzes);
+        return userFromDB;
     }
 
     @Override
