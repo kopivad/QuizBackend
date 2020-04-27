@@ -12,7 +12,11 @@ import java.util.stream.IntStream;
 public class AnswerUtils {
     public static List<Answer> generateAnswers(int size) {
         return IntStream.range(0, size)
-                .mapToObj(i -> generateAnswer())
+                .mapToObj(i -> {
+                    Answer answer = generateAnswer();
+                    answer.setId((long)i + 1);
+                    return answer;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -21,9 +25,10 @@ public class AnswerUtils {
         TextProducer textProducer = fairy.textProducer();
         return Answer
                 .builder()
+                .id(1L)
                 .text(textProducer.randomString(200))
                 .isRight(true)
-                .question(Question.builder().id(6L).build())
+                .question(Question.builder().id(1L).build())
                 .build();
     }
 }

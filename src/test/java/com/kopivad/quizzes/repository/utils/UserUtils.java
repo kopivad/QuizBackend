@@ -12,7 +12,11 @@ import java.util.stream.IntStream;
 public class UserUtils {
     public static List<User> generateUsers(int size) {
         return IntStream.range(0, size)
-                .mapToObj(i -> generateUser())
+                .mapToObj(i -> {
+                    User user = generateUser();
+                    user.setId((long)i + 1);
+                    return user;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -21,6 +25,7 @@ public class UserUtils {
         Person person = fairy.person();
         return User
                 .builder()
+                .id(1L)
                 .email(person.getEmail())
                 .name(person.getFirstName())
                 .password(person.getPassword())
