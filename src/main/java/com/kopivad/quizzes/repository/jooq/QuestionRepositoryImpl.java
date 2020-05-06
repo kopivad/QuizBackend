@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.domain.QuestionType;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -37,9 +38,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     @Override
     public Question save(Question question) {
         return dslContext
-                .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
-                .values(question.getTitle(), question.getQuiz().getId())
-                .returning(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
+                .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
+                .values(question.getTitle(), question.getType().name(), question.getQuiz().getId())
+                .returning(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
@@ -49,9 +50,10 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         return dslContext
                 .update(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
+                .set(QUESTIONS.TYPE, question.getType().name())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
                 .where(QUESTIONS.ID.eq(id))
-                .returningResult(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
+                .returningResult(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
@@ -68,6 +70,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         return record -> Question
                 .builder()
                 .id(record.getValue(QUESTIONS.ID))
+                .type(QuestionType.valueOf(record.getValue(QUESTIONS.TYPE)))
                 .title(record.getValue(QUESTIONS.TITLE))
                 .build();
     }

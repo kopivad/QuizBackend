@@ -13,6 +13,7 @@ import java.util.List;
 public class Question {
     private Long id;
     private String title;
+    private QuestionType type;
     private List<Answer> answers;
     private Quiz quiz;
 }

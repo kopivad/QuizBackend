@@ -4,14 +4,23 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.*;
-import com.kopivad.quizzes.domain.db.tables.records.*;
+import com.kopivad.quizzes.domain.db.tables.Answers;
+import com.kopivad.quizzes.domain.db.tables.ApiClients;
+import com.kopivad.quizzes.domain.db.tables.Questions;
+import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
+import com.kopivad.quizzes.domain.db.tables.records.ApiClientsRecord;
+import com.kopivad.quizzes.domain.db.tables.records.QuestionsRecord;
+import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
+import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
+
+import javax.annotation.processing.Generated;
+
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
-
-import javax.annotation.processing.Generated;
 
 
 /**

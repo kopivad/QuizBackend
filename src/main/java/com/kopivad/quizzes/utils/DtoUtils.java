@@ -32,6 +32,7 @@ public class DtoUtils {
         return Question.builder()
                 .title(questionDto.getTitle())
                 .quiz(Quiz.builder().id(questionDto.getQuizId()).build())
+                .type(questionDto.getType())
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class DtoUtils {
         return Answer.builder()
                 .text(answerDto.getText())
                 .isRight(answerDto.isRight())
+                .type(answerDto.getType())
                 .question(Question.builder().id(answerDto.getQuestionId()).build())
                 .build();
     }

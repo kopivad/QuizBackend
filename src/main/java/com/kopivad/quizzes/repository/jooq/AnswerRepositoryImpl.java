@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.domain.AnswerType;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -37,9 +38,9 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Override
     public Answer save(Answer answer) {
         return dslContext
-                .insertInto(ANSWERS, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
-                .values(answer.getText(), answer.isRight(), answer.getQuestion().getId())
-                .returning(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .insertInto(ANSWERS, ANSWERS.TEXT, ANSWERS.TYPE, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .values(answer.getText(), answer.getType().name(), answer.isRight(), answer.getQuestion().getId())
+                .returning(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.TYPE, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }
@@ -49,10 +50,11 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         return dslContext
                 .update(ANSWERS)
                 .set(ANSWERS.TEXT, answer.getText())
+                .set(ANSWERS.TYPE, answer.getType().name())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
                 .where(ANSWERS.ID.eq(id))
-                .returningResult(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .returningResult(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.TYPE, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }
@@ -70,6 +72,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .builder()
                 .id(record.getValue(ANSWERS.ID))
                 .text(record.getValue(ANSWERS.TEXT))
+                .type(AnswerType.valueOf(record.getValue(ANSWERS.TYPE)))
                 .isRight(record.getValue(ANSWERS.IS_RIGHT))
                 .build();
     }

@@ -4,16 +4,22 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.*;
+import com.kopivad.quizzes.domain.db.tables.Answers;
+import com.kopivad.quizzes.domain.db.tables.ApiClients;
+import com.kopivad.quizzes.domain.db.tables.Questions;
+import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.Usr;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.processing.Generated;
+
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
-
-import javax.annotation.processing.Generated;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**

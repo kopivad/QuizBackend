@@ -4,12 +4,17 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.*;
+import com.kopivad.quizzes.domain.db.tables.Answers;
+import com.kopivad.quizzes.domain.db.tables.ApiClients;
+import com.kopivad.quizzes.domain.db.tables.Questions;
+import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.Usr;
+
+import javax.annotation.processing.Generated;
+
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
-
-import javax.annotation.processing.Generated;
 
 
 /**
