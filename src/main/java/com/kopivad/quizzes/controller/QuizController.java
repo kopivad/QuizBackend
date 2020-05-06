@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.dto.FullQuizDto;
 import com.kopivad.quizzes.dto.QuizDto;
 import com.kopivad.quizzes.utils.DtoUtils;
 import com.kopivad.quizzes.service.QuizService;
@@ -38,5 +39,10 @@ public class QuizController {
     @DeleteMapping("{id}")
     public void delete(@PathVariable Long id) {
         quizService.delete(id);
+    }
+
+    @PostMapping("/full")
+    public Quiz addFull(@RequestBody FullQuizDto fullQuizDto) {
+        return quizService.saveFull(DtoUtils.getQuizFromFullDto(fullQuizDto));
     }
 }

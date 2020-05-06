@@ -4,10 +4,10 @@ import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.AnswerDto;
-import com.kopivad.quizzes.dto.QuestionDto;
-import com.kopivad.quizzes.dto.QuizDto;
-import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.dto.*;
+
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DtoUtils {
     public static User getUserFromDto(UserDto dto) {
@@ -42,6 +42,43 @@ public class DtoUtils {
                 .isRight(answerDto.isRight())
                 .type(answerDto.getType())
                 .question(Question.builder().id(answerDto.getQuestionId()).build())
+                .build();
+    }
+
+    public static Quiz getQuizFromFullDto(FullQuizDto dto) {
+        return Quiz.builder()
+                .title(dto.getTitle())
+                .active(dto.isActive())
+                .description(dto.getDescription())
+                .author(User.builder().id(dto.getAuthor_id()).build())
+                .questions(
+                        dto.getQuestions()
+                                .stream()
+                                .map(getFullQuestionDtoQuestionFunction())
+                                .collect(Collectors.toList())
+                )
+                .build();
+    }
+
+    private static Function<FullQuestionDto, Question> getFullQuestionDtoQuestionFunction() {
+        return q -> Question
+                .builder()
+                .type(q.getType())
+                .title(q.getTitle())
+                .answers(
+                        q.getAnswers()
+                                .stream()
+                                .map(getFullAnswerDtoAnswerFunction())
+                                .collect(Collectors.toList()))
+                .build();
+    }
+
+    private static Function<FullAnswerDto, Answer> getFullAnswerDtoAnswerFunction() {
+        return a -> Answer
+                .builder()
+                .text(a.getText())
+                .type(a.getType())
+                .isRight(a.isRight())
                 .build();
     }
 }
