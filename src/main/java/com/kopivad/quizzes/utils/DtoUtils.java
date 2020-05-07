@@ -1,9 +1,6 @@
 package com.kopivad.quizzes.utils;
 
-import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.domain.*;
 import com.kopivad.quizzes.dto.*;
 
 import java.util.function.Function;
@@ -15,7 +12,7 @@ public class DtoUtils {
                 .name(dto.getName())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
-                .role(dto.getRole())
+                .role(Role.valueOf(dto.getRole()))
                 .build();
     }
 
@@ -40,7 +37,6 @@ public class DtoUtils {
         return Answer.builder()
                 .text(answerDto.getText())
                 .isRight(answerDto.isRight())
-                .type(answerDto.getType())
                 .question(Question.builder().id(answerDto.getQuestionId()).build())
                 .build();
     }
@@ -77,7 +73,6 @@ public class DtoUtils {
         return a -> Answer
                 .builder()
                 .text(a.getText())
-                .type(a.getType())
                 .isRight(a.isRight())
                 .build();
     }

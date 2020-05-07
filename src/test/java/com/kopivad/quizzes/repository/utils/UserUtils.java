@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.repository.utils;
 
+import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
@@ -30,7 +31,7 @@ public class UserUtils {
                 .name(person.getFirstName())
                 .password(person.getPassword())
                 .creationDate(LocalDateTime.now())
-                .role("USER")
+                .role(Role.USER)
                 .build();
     }
 }

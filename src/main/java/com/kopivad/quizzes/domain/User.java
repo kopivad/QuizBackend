@@ -18,7 +18,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role;
+    private Role role;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;
     @JsonIgnoreProperties({"author", "questions"})

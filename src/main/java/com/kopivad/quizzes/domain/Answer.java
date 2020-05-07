@@ -11,7 +11,6 @@ import lombok.*;
 public class Answer {
     private Long id;
     private String text;
-    private AnswerType type;
     private boolean isRight;
     private Question question;
 }
