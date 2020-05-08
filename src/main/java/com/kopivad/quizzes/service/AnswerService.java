@@ -14,4 +14,6 @@ public interface AnswerService {
     Answer update(Long id, Answer answer);
 
     void delete(Long id);
+
+    List<Answer> getByQuestionId(Long id);
 }

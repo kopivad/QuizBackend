@@ -52,23 +52,42 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Quiz saveFull(Quiz quiz) {
         Quiz savedQuiz = save(quiz);
-        List<Question> questions = quiz.getQuestions()
-                .stream()
-                .map(question -> {
-                    question.setQuiz(savedQuiz);
-                    Question savedQuestion = questionService.save(question);
-                    List<Answer> answers = question.getAnswers()
-                            .stream()
-                            .map(answer -> {
-                                answer.setQuestion(savedQuestion);
-                                return answerService.save(answer);
-                            })
-                            .collect(Collectors.toList());
-                    savedQuestion.setAnswers(answers);
-                    return savedQuestion;
-                }).collect(Collectors.toList());
-        savedQuiz.setQuestions(questions);
+        if (quiz.getQuestions() != null) {
+            List<Question> questions = quiz.getQuestions()
+                    .stream()
+                    .map(question -> {
+                        question.setQuiz(savedQuiz);
+                        Question savedQuestion = questionService.save(question);
+                        if (question.getAnswers() != null) {
+                            List<Answer> answers = question.getAnswers()
+                                    .stream()
+                                    .map(answer -> {
+                                        answer.setQuestion(savedQuestion);
+                                        return answerService.save(answer);
+                                    })
+                                    .collect(Collectors.toList());
+                            savedQuestion.setAnswers(answers);
+                        }
+                        return savedQuestion;
+                    }).collect(Collectors.toList());
+            savedQuiz.setQuestions(questions);
+        }
+
         return savedQuiz;
+    }
+
+    @Override
+    public Quiz getFullById(Long id) {
+        Quiz quiz = getById(id);
+        List<Question> questions = questionService.getByQuizId(id)
+                .stream()
+                .peek(question -> {
+                    List<Answer> answers = answerService.getByQuestionId(question.getId());
+                    question.setAnswers(answers);
+                })
+                .collect(Collectors.toList());
+        quiz.setQuestions(questions);
+        return quiz;
     }
 }
 

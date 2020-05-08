@@ -2,6 +2,7 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
+import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -66,12 +67,22 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .execute();
     }
 
+    @Override
+    public List<Question> findByQuizId(Long id) {
+        return dslContext
+                .selectFrom(QUESTIONS)
+                .where(QUESTIONS.QUIZ_ID.eq(id))
+                .fetch()
+                .map(getQuestionFromRecordMapper());
+    }
+
     private RecordMapper<Record, Question> getQuestionFromRecordMapper() {
         return record -> Question
                 .builder()
                 .id(record.getValue(QUESTIONS.ID))
                 .type(QuestionType.valueOf(record.getValue(QUESTIONS.TYPE)))
                 .title(record.getValue(QUESTIONS.TITLE))
+                .quiz(Quiz.builder().id(record.getValue(QUESTIONS.QUIZ_ID)).build())
                 .build();
     }
 }

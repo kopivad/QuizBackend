@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -65,11 +66,21 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .execute();
     }
 
+    @Override
+    public List<Answer> findByQuestionId(Long id) {
+        return dslContext
+                .selectFrom(ANSWERS)
+                .where(ANSWERS.QUESTION_ID.eq(id))
+                .fetch()
+                .map(getAnswerFromRecordMapper());
+    }
+
     private RecordMapper<Record, Answer> getAnswerFromRecordMapper() {
         return record -> Answer
                 .builder()
                 .id(record.getValue(ANSWERS.ID))
                 .text(record.getValue(ANSWERS.TEXT))
+                .question(Question.builder().id(record.getValue(ANSWERS.QUESTION_ID)).build())
                 .isRight(record.getValue(ANSWERS.IS_RIGHT))
                 .build();
     }

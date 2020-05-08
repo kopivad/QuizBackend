@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -73,6 +74,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .id(record.getValue(QUIZZES.ID))
                 .title(record.getValue(QUIZZES.TITLE))
                 .description(record.getValue(QUIZZES.DESCRIPTION))
+                .author(User.builder().id(record.getValue(QUIZZES.AUTHOR_ID)).build())
                 .active(record.getValue(QUIZZES.ACTIVE))
                 .creationDate(record.getValue(QUIZZES.CREATION_DATE).toLocalDateTime())
                 .build();

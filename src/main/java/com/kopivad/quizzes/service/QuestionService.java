@@ -10,4 +10,5 @@ public interface QuestionService {
     Question save(Question question);
     Question update(Long id, Question question);
     void delete(Long id);
+    List<Question> getByQuizId(Long id);
 }

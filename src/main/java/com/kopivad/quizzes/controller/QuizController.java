@@ -45,4 +45,9 @@ public class QuizController {
     public Quiz addFull(@RequestBody FullQuizDto fullQuizDto) {
         return quizService.saveFull(DtoUtils.getQuizFromFullDto(fullQuizDto));
     }
+
+    @GetMapping("/full/{id}")
+    public Quiz getFullById(@PathVariable(name = "id") Long id) {
+        return quizService.getFullById(id);
+    }
 }

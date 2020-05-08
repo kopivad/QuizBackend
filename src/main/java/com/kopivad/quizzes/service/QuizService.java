@@ -16,4 +16,6 @@ public interface QuizService {
     void delete(Long id);
 
     Quiz saveFull(Quiz quiz);
+
+    Quiz getFullById(Long id);
 }
