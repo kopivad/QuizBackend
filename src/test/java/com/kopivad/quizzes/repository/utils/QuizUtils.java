@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.repository.utils;
 
+import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import io.codearte.jfairy.Fairy;
@@ -33,5 +34,19 @@ public class QuizUtils {
                 .creationDate(LocalDateTime.now())
                 .author(User.builder().id(1L).build())
                 .build();
+    }
+
+    public static Quiz generateFullQuiz() {
+        Quiz quiz = generateQuiz();
+        List<Question> questions = QuestionUtils.generateQuestions(10)
+                .stream()
+                .map(question -> {
+                    question.setAnswers(AnswerUtils.generateAnswers(4));
+                    return question;
+                })
+                .collect(Collectors.toList());
+
+        quiz.setQuestions(questions);
+        return quiz;
     }
 }

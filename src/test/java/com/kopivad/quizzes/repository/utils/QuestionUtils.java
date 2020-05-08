@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.utils;
 
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.domain.QuestionType;
 import com.kopivad.quizzes.domain.Quiz;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
@@ -21,6 +22,7 @@ public class QuestionUtils {
         TextProducer textProducer = fairy.textProducer();
         return Question
                 .builder()
+                .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(200))
                 .quiz(Quiz.builder().id(1L).build())
                 .build();
