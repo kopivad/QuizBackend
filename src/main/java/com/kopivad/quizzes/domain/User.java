@@ -7,20 +7,17 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
-@Builder
+@Value
+@Builder(toBuilder = true)
+@EqualsAndHashCode(of = "id")
 public class User {
-    private Long id;
-    private String name;
-    private String email;
-    private String password;
-    private Role role;
+    Long id;
+    String name;
+    String email;
+    String password;
+    Role role;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime creationDate;
+    LocalDateTime creationDate;
     @JsonIgnoreProperties({"author", "questions"})
-    private List<Quiz> quizzes;
+    List<Quiz> quizzes;
 }

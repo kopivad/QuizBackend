@@ -6,19 +6,16 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Value
 @EqualsAndHashCode(of = {"id"})
-@Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(toBuilder = true)
 public class Quiz {
-    private Long id;
-    private String title;
-    private String description;
-    private boolean active;
+    Long id;
+    String title;
+    String description;
+    boolean active;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime creationDate;
-    private User author;
-    private List<Question> questions;
+    LocalDateTime creationDate;
+    User author;
+    List<Question> questions;
 }
