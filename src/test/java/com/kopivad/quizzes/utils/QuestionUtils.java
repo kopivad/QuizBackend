@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.repository.utils;
+package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
@@ -14,7 +14,7 @@ public class QuestionUtils {
     public static List<Question> generateQuestions(int size) {
         return IntStream.range(0, size)
                 .mapToObj(i -> generateQuestion())
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public static Question generateQuestion() {
@@ -24,7 +24,7 @@ public class QuestionUtils {
                 .builder()
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(200))
-                .quiz(Quiz.builder().id(1L).build())
+                .quiz(Quiz.builder().id(75L).build())
                 .build();
     }
 }

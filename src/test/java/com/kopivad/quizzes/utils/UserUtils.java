@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.repository.utils;
+package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
@@ -14,11 +14,13 @@ public class UserUtils {
     public static List<User> generateUsers(int size) {
         return IntStream.range(0, size)
                 .mapToObj(i -> {
-                    User user = generateUser();
-                    user.setId((long)i + 1);
+                    User user = generateUser()
+                            .toBuilder()
+                            .id((long)i + 1)
+                            .build();
                     return user;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public static User generateUser() {

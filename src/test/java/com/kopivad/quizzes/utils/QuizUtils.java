@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.repository.utils;
+package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
@@ -15,11 +15,14 @@ public class QuizUtils {
     public static List<Quiz> generateQuizzes(int size) {
         return IntStream.range(0, size)
                 .mapToObj(i -> {
-                    Quiz quiz = generateQuiz();
-                    quiz.setId((long) i + 1);
+                    Quiz quiz = generateQuiz()
+                            .toBuilder()
+                            .id((long) + i)
+                            .build();
+
                     return quiz;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public static Quiz generateQuiz() {
@@ -41,12 +44,15 @@ public class QuizUtils {
         List<Question> questions = QuestionUtils.generateQuestions(10)
                 .stream()
                 .map(question -> {
-                    question.setAnswers(AnswerUtils.generateAnswers(4));
-                    return question;
-                })
-                .collect(Collectors.toList());
+                    Question questionWithAnswers = question
+                            .toBuilder()
+                            .answers(AnswerUtils.generateAnswers(4))
+                            .build();
 
-        quiz.setQuestions(questions);
-        return quiz;
+                    return questionWithAnswers;
+                })
+                .collect(Collectors.toUnmodifiableList());
+        Quiz quizWithQuestions = quiz.toBuilder().questions(questions).build();
+        return quizWithQuestions;
     }
 }

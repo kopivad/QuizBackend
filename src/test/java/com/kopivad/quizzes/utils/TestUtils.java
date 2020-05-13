@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.repository.utils;
+package com.kopivad.quizzes.utils;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
