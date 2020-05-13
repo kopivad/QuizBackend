@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/answer")
+@RequestMapping("api/answer")
 @RequiredArgsConstructor
 public class AnswerController {
     private final AnswerService answerService;
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public List<Answer> getAll() {
         return answerService.getAll();
     }

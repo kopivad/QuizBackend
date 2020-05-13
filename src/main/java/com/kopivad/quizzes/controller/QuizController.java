@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quiz")
+@RequestMapping("api/quiz")
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public List<Quiz> getAll() {
         return quizService.getAll();
     }
@@ -41,7 +41,7 @@ public class QuizController {
         quizService.delete(id);
     }
 
-    @PostMapping("/full")
+    @PostMapping("full")
     public Quiz addFull(@RequestBody FullQuizDto fullQuizDto) {
         return quizService.saveFull(DtoUtils.getQuizFromFullDto(fullQuizDto));
     }

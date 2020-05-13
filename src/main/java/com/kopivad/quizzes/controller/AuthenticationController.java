@@ -21,7 +21,7 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final ApiClientService clientService;
 
-    @PostMapping(value = "/api/auth")
+    @PostMapping(value = "api/auth")
     public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
