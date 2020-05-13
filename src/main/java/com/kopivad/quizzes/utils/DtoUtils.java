@@ -36,7 +36,7 @@ public class DtoUtils {
 
     public static Answer getAnswerFromDto(AnswerDto answerDto) {
         return Answer.builder()
-                .text(answerDto.getText())
+                .body(answerDto.getText())
                 .isRight(answerDto.isRight())
                 .question(Question.builder().id(answerDto.getQuestionId()).build())
                 .build();
@@ -78,7 +78,7 @@ public class DtoUtils {
     private static Function<FullAnswerDto, Answer> getFullAnswerDtoAnswerFunction() {
         return a -> Answer
                 .builder()
-                .text(a.getText())
+                .body(a.getText())
                 .isRight(a.isRight())
                 .build();
     }

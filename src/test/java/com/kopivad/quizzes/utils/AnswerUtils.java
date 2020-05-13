@@ -29,9 +29,9 @@ public class AnswerUtils {
         return Answer
                 .builder()
                 .id(1L)
-                .text(textProducer.randomString(200))
+                .body(textProducer.randomString(200))
                 .isRight(true)
-                .question(Question.builder().id(111L).build())
+                .question(Question.builder().id(1L).build())
                 .build();
     }
 }

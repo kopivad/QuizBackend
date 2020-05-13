@@ -34,7 +34,7 @@ public class UserRepositoryImplTest {
         List<User> savedUsers = generatedAccounts
                 .stream()
                 .map(user -> userRepository.save(user))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<User> allUsers = userRepository.findAll();
 
         assertThat(savedUsers, notNullValue());

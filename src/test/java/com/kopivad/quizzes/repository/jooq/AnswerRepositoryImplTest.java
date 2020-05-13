@@ -33,7 +33,7 @@ public class AnswerRepositoryImplTest {
         List<Answer> savedAnswers = generatedAnswers
                 .stream()
                 .map(answer -> answerRepository.save(answer))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<Answer> allAnswers = answerRepository.findAll();
 
         assertThat(savedAnswers, notNullValue());
@@ -69,14 +69,14 @@ public class AnswerRepositoryImplTest {
         String dataForUpdate = "Some text";
         Answer generatedAnswer = AnswerUtils.generateAnswer();
         Answer savedAnswer = answerRepository.save(generatedAnswer);
-        Answer answerWithText = generatedAnswer.toBuilder().text(dataForUpdate).build();
+        Answer answerWithText = generatedAnswer.toBuilder().body(dataForUpdate).build();
         Answer updatedUser = answerRepository.update(savedAnswer.getId(), answerWithText);
 
 
         assertThat(savedAnswer, notNullValue());
         assertThat(updatedUser, notNullValue());
         assertThat(updatedUser.getId(), equalTo(updatedUser.getId()));
-        assertThat(savedAnswer.getText(), not(equalTo(updatedUser.getText())));
+        assertThat(savedAnswer.getBody(), not(equalTo(updatedUser.getBody())));
     }
 
     @Test

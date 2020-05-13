@@ -20,30 +20,30 @@ class QuizServiceImplUnitTest {
     private QuizService quizService;
 
     @Test
-    void saveFullWithCorrectData() {
-        Quiz quizForSave = QuizUtils.generateFullQuiz();
-        Quiz savedQuiz = quizService.saveFull(quizForSave);
-        assertThat(quizForSave.getId(), not(equalTo(savedQuiz.getId())));
-        assertThat(quizForSave.getQuestions().size(), equalTo(savedQuiz.getQuestions().size()));
-        assertThat(quizForSave.getAuthor(), equalTo(savedQuiz.getAuthor()));
+    void testSaveFullQuizWithCorrectData() {
+        Quiz actualResult = QuizUtils.generateFullQuiz();
+        Quiz expectedResult = quizService.saveFull(actualResult);
+        assertThat(actualResult, not(expectedResult));
+        assertThat(actualResult.getQuestions().size(), equalTo(expectedResult.getQuestions().size()));
+        assertThat(actualResult.getAuthor(), equalTo(expectedResult.getAuthor()));
     }
 
     @Test
-    void saveFullWithNullQuestionsAndAnswers() {
-        Quiz quizForSave = QuizUtils.generateQuiz();
-        Quiz savedQuiz = quizService.saveFull(quizForSave);
-        assertThat(quizForSave.getId(), not(equalTo(savedQuiz.getId())));
-        assertThat(quizForSave.getTitle(), equalTo(savedQuiz.getTitle()));
-        assertThat(quizForSave.getDescription(), equalTo(savedQuiz.getDescription()));
+    void testSaveFullQuizWithNullQuestionsAndAnswers() {
+        Quiz actualResult = QuizUtils.generateQuiz();
+        Quiz expectedResult = quizService.saveFull(actualResult);
+        assertThat(actualResult, not(expectedResult));
+        assertThat(actualResult.getTitle(), equalTo(expectedResult.getTitle()));
+        assertThat(actualResult.getDescription(), equalTo(expectedResult.getDescription()));
     }
 
     @Test
-    void getFull() {
+    void testGetFullQuiz() {
         Quiz quizForSave = QuizUtils.generateFullQuiz();
-        Quiz savedQuiz = quizService.saveFull(quizForSave);
-        Quiz quizFromBD = quizService.getFullById(savedQuiz.getId());
-        assertThat(quizFromBD, notNullValue());
-        assertThat(quizFromBD.getId(), equalTo(savedQuiz.getId()));
-        assertEquals(quizFromBD.getQuestions(), savedQuiz.getQuestions());
+        Quiz expectedResult = quizService.saveFull(quizForSave);
+        Quiz actualResult = quizService.getFullById(expectedResult.getId());
+        assertThat(actualResult, notNullValue());
+        assertThat(actualResult, is(expectedResult));
+        assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
     }
 }

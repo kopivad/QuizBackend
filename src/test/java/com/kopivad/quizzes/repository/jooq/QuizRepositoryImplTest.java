@@ -33,7 +33,7 @@ public class QuizRepositoryImplTest {
         List<Quiz> savedQuizzes = generatedQuizzes
                 .stream()
                 .map(quiz -> quizRepository.save(quiz))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<Quiz> quizzes = quizRepository.findAll();
 
         assertThat(savedQuizzes, notNullValue());

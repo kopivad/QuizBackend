@@ -34,7 +34,7 @@ public class QuestionRepositoryImplTest {
         List<Question> savedQuestions = generateQuestions
                 .stream()
                 .map(question -> questionRepository.save(question))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<Question> allQuestions = questionRepository.findAll();
 
         assertThat(savedQuestions, notNullValue());

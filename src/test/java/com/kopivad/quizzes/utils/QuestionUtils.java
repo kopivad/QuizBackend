@@ -24,7 +24,7 @@ public class QuestionUtils {
                 .builder()
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(200))
-                .quiz(Quiz.builder().id(75L).build())
+                .quiz(Quiz.builder().id(1L).build())
                 .build();
     }
 }
