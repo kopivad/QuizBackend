@@ -2,8 +2,8 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.repository.utils.TestUtils;
-import com.kopivad.quizzes.repository.utils.UserUtils;
+import com.kopivad.quizzes.utils.TestUtils;
+import com.kopivad.quizzes.utils.UserUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -70,13 +70,13 @@ public class UserRepositoryImplTest {
         String dataForUpdate = "some@email.com";
         User generatedUser = UserUtils.generateUser();
         User savedUser = userRepository.save(generatedUser);
-        generatedUser.setEmail(dataForUpdate);
-        User updatedUser = userRepository.update(savedUser.getId(), generatedUser);
+        User userForUpdate = generatedUser.toBuilder().email(dataForUpdate).build();
+        User updatedUser = userRepository.update(savedUser.getId(), userForUpdate);
 
 
         assertThat(savedUser, notNullValue());
         assertThat(updatedUser, notNullValue());
-        assertThat(savedUser.getId(), equalTo(updatedUser.getId()));
+        assertThat(savedUser.getId(), is(updatedUser.getId()));
         assertThat(savedUser.getEmail(), not(equalTo(updatedUser.getEmail())));
     }
 

@@ -2,8 +2,8 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.QuestionRepository;
-import com.kopivad.quizzes.repository.utils.QuestionUtils;
-import com.kopivad.quizzes.repository.utils.TestUtils;
+import com.kopivad.quizzes.utils.QuestionUtils;
+import com.kopivad.quizzes.utils.TestUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -70,8 +70,8 @@ public class QuestionRepositoryImplTest {
         String dataForUpdate = "Some title";
         Question generatedQuestion = QuestionUtils.generateQuestion();
         Question savedQuestion = questionRepository.save(generatedQuestion);
-        generatedQuestion.setTitle(dataForUpdate);
-        Question updatedQuestion = questionRepository.update(savedQuestion.getId(), generatedQuestion);
+        Question questionWithTitle = generatedQuestion.toBuilder().title(dataForUpdate).build();
+        Question updatedQuestion = questionRepository.update(savedQuestion.getId(), questionWithTitle);
 
 
         assertThat(savedQuestion, notNullValue());
