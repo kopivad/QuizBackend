@@ -3,6 +3,7 @@ package com.kopivad.quizzes.utils;
 import com.kopivad.quizzes.domain.*;
 import com.kopivad.quizzes.dto.*;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ public class DtoUtils {
                 .name(dto.getName())
                 .password(dto.getPassword())
                 .email(dto.getEmail())
-                .role(Role.valueOf(dto.getRole()))
+                .role(dto.getRole())
                 .build();
     }
 
@@ -47,13 +48,15 @@ public class DtoUtils {
                 .active(dto.isActive())
                 .description(dto.getDescription())
                 .author(User.builder().id(dto.getAuthor_id()).build())
-                .questions(
-                        dto.getQuestions()
-                                .stream()
-                                .map(getFullQuestionDtoQuestionFunction())
-                                .collect(Collectors.toList())
-                )
+                .questions(getQuizQuestions(dto))
                 .build();
+    }
+
+    private static List<Question> getQuizQuestions(FullQuizDto dto) {
+        return dto.getQuestions()
+                .stream()
+                .map(getFullQuestionDtoQuestionFunction())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private static Function<FullQuestionDto, Question> getFullQuestionDtoQuestionFunction() {
@@ -61,12 +64,15 @@ public class DtoUtils {
                 .builder()
                 .type(q.getType())
                 .title(q.getTitle())
-                .answers(
-                        q.getAnswers()
-                                .stream()
-                                .map(getFullAnswerDtoAnswerFunction())
-                                .collect(Collectors.toList()))
+                .answers(getQuestionAnswers(q))
                 .build();
+    }
+
+    private static List<Answer> getQuestionAnswers(FullQuestionDto q) {
+        return q.getAnswers()
+                .stream()
+                .map(getFullAnswerDtoAnswerFunction())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private static Function<FullAnswerDto, Answer> getFullAnswerDtoAnswerFunction() {
