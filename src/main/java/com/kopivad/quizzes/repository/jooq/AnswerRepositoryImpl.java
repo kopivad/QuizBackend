@@ -38,9 +38,11 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Override
     public Answer save(Answer answer) {
         return dslContext
-                .insertInto(ANSWERS, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
-                .values(answer.getText(), answer.isRight(), answer.getQuestion().getId())
-                .returning(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .insertInto(ANSWERS)
+                .set(ANSWERS.TEXT, answer.getText())
+                .set(ANSWERS.IS_RIGHT, answer.isRight())
+                .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
+                .returning(ANSWERS.fields())
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }
@@ -53,7 +55,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
                 .where(ANSWERS.ID.eq(id))
-                .returningResult(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .returningResult(ANSWERS.fields())
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }

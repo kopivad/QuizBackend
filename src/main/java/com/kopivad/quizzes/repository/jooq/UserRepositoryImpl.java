@@ -39,9 +39,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         return dslContext
-                .insertInto(USR, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
-                .values(user.getName(), user.getEmail(), user.getPassword(), user.getRole().name(), Timestamp.valueOf(user.getCreationDate()))
-                .returning(USR.ID, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
+                .insertInto(USR)
+                .set(USR.NAME, user.getName())
+                .set(USR.EMAIL, user.getEmail())
+                .set(USR.PASSWORD, user.getPassword())
+                .set(USR.ROLE, user.getRole().name())
+                .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
+                .returning(USR.fields())
                 .fetchOne()
                 .map(getUserFromRecordMapper());
     }
@@ -55,7 +59,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.ROLE, user.getRole().name())
                 .set(USR.PASSWORD, user.getPassword())
                 .where(USR.ID.eq(id))
-                .returningResult(USR.ID, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
+                .returningResult(USR.fields())
                 .fetchOne()
                 .map(getUserFromRecordMapper());
     }

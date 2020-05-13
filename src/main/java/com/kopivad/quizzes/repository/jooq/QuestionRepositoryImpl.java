@@ -39,9 +39,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     @Override
     public Question save(Question question) {
         return dslContext
-                .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
-                .values(question.getTitle(), question.getType().name(), question.getQuiz().getId())
-                .returning(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
+                .insertInto(QUESTIONS)
+                .set(QUESTIONS.TITLE, question.getTitle())
+                .set(QUESTIONS.TYPE, question.getType().name())
+                .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
+                .returning(QUESTIONS.fields())
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
@@ -54,7 +56,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .set(QUESTIONS.TYPE, question.getType().name())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
                 .where(QUESTIONS.ID.eq(id))
-                .returningResult(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.QUIZ_ID)
+                .returningResult(QUESTIONS.fields())
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
