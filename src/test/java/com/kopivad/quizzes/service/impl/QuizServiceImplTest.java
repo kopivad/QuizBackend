@@ -2,7 +2,7 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuizRepository;
-import com.kopivad.quizzes.repository.utils.QuizUtils;
+import com.kopivad.quizzes.utils.QuizUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
