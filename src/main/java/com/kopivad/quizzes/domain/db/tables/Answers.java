@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Answers extends TableImpl<AnswersRecord> {
 
-    private static final long serialVersionUID = -1317304395;
+    private static final long serialVersionUID = -1905162550;
 
     /**
      * The reference instance of <code>public.answers</code>
@@ -68,9 +68,9 @@ public class Answers extends TableImpl<AnswersRecord> {
     public final TableField<AnswersRecord, Boolean> IS_RIGHT = createField(DSL.name("is_right"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
-     * The column <code>public.answers.text</code>.
+     * The column <code>public.answers.body</code>.
      */
-    public final TableField<AnswersRecord, String> TEXT = createField(DSL.name("text"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<AnswersRecord, String> BODY = createField(DSL.name("body"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>public.answers.question_id</code>.

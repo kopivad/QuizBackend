@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements Record4<Long, Boolean, String, Long> {
 
-    private static final long serialVersionUID = -923747551;
+    private static final long serialVersionUID = 570689241;
 
     /**
      * Setter for <code>public.answers.id</code>.
@@ -59,16 +59,16 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
     }
 
     /**
-     * Setter for <code>public.answers.text</code>.
+     * Setter for <code>public.answers.body</code>.
      */
-    public void setText(String value) {
+    public void setBody(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.answers.text</code>.
+     * Getter for <code>public.answers.body</code>.
      */
-    public String getText() {
+    public String getBody() {
         return (String) get(2);
     }
 
@@ -121,7 +121,7 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
 
     @Override
     public Field<String> field3() {
-        return Answers.ANSWERS.TEXT;
+        return Answers.ANSWERS.BODY;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
 
     @Override
     public String component3() {
-        return getText();
+        return getBody();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
 
     @Override
     public String value3() {
-        return getText();
+        return getBody();
     }
 
     @Override
@@ -183,7 +183,7 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
 
     @Override
     public AnswersRecord value3(String value) {
-        setText(value);
+        setBody(value);
         return this;
     }
 
@@ -216,12 +216,12 @@ public class AnswersRecord extends UpdatableRecordImpl<AnswersRecord> implements
     /**
      * Create a detached, initialised AnswersRecord
      */
-    public AnswersRecord(Long id, Boolean isRight, String text, Long questionId) {
+    public AnswersRecord(Long id, Boolean isRight, String body, Long questionId) {
         super(Answers.ANSWERS);
 
         set(0, id);
         set(1, isRight);
-        set(2, text);
+        set(2, body);
         set(3, questionId);
     }
 }

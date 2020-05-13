@@ -7,7 +7,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class Answer {
     Long id;
-    String text;
+    String body;
     boolean isRight;
     Question question;
 }
