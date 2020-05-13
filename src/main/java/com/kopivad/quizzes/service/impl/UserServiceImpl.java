@@ -33,24 +33,32 @@ public class UserServiceImpl implements UserService {
         List<Quiz> userQuizzes = quizService.getAll()
                 .stream()
                 .filter(q -> q.getAuthor().getId().equals(id))
-                .collect(Collectors.toList());
-        userFromDB.setQuizzes(userQuizzes);
-        return userFromDB;
+                .collect(Collectors.toUnmodifiableList());
+
+        User userWithQuizzes = userFromDB
+                .toBuilder()
+                .quizzes(userQuizzes)
+                .build();
+        return userWithQuizzes;
     }
 
     @Override
     public User save(User user) {
-        String userPassword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(userPassword));
-        user.setCreationDate(LocalDateTime.now());
-        return userRepository.save(user);
+        User userWithEncodedPassword = user
+                .toBuilder()
+                .password(passwordEncoder.encode(user.getPassword()))
+                .creationDate(LocalDateTime.now())
+                .build();
+        return userRepository.save(userWithEncodedPassword);
     }
 
     @Override
     public User update(Long id, User user) {
-        String userPassword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(userPassword));
-        return userRepository.update(id, user);
+        User userWithEncodedPassword = user
+                .toBuilder()
+                .password(passwordEncoder.encode(user.getPassword()))
+                .build();
+        return userRepository.update(id, userWithEncodedPassword);
     }
 
     @Override
