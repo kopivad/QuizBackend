@@ -39,7 +39,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public Answer save(Answer answer) {
         return dslContext
                 .insertInto(ANSWERS)
-                .set(ANSWERS.TEXT, answer.getText())
+                .set(ANSWERS.BODY, answer.getBody())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
                 .returning(ANSWERS.fields())
@@ -51,7 +51,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public Answer update(Long id, Answer answer) {
         return dslContext
                 .update(ANSWERS)
-                .set(ANSWERS.TEXT, answer.getText())
+                .set(ANSWERS.BODY, answer.getBody())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
                 .where(ANSWERS.ID.eq(id))
@@ -81,7 +81,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         return record -> Answer
                 .builder()
                 .id(record.getValue(ANSWERS.ID))
-                .text(record.getValue(ANSWERS.TEXT))
+                .body(record.getValue(ANSWERS.BODY))
                 .question(Question.builder().id(record.getValue(ANSWERS.QUESTION_ID)).build())
                 .isRight(record.getValue(ANSWERS.IS_RIGHT))
                 .build();
