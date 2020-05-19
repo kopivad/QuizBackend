@@ -9,7 +9,6 @@ import com.kopivad.quizzes.service.QuestionService;
 import com.kopivad.quizzes.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
-    @Qualifier("jooqQuizRepository")
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final AnswerService answerService;

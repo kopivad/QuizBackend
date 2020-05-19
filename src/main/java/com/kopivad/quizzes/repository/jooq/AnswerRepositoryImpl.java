@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
 
-@Repository("jooqAnswerRepository")
+@Repository
 @RequiredArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
     private final DSLContext dslContext;

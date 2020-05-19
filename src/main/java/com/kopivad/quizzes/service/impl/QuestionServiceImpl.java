@@ -4,7 +4,6 @@ import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-    @Qualifier("jooqQuestionRepository")
     private final QuestionRepository questionRepository;
 
     @Override

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import static com.kopivad.quizzes.domain.db.tables.ApiClients.API_CLIENTS;
 
-@Repository("jooqApiClientRepository")
+@Repository
 @RequiredArgsConstructor
 public class ApiClientRepositoryImpl implements ApiClientRepository {
     private final DSLContext dslContext;

@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Questions.QUESTIONS;
 
-@Repository("jooqQuestionRepository")
+@Repository
 @RequiredArgsConstructor
 public class QuestionRepositoryImpl implements QuestionRepository {
     private final DSLContext dslContext;

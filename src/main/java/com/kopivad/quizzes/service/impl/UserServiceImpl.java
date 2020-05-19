@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Qualifier("jooqUserRepository")
     private final UserRepository userRepository;
     private final QuizService quizService;
     private final PasswordEncoder passwordEncoder;
