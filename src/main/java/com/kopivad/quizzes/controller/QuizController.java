@@ -1,9 +1,8 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.dto.QuizDto;
+import com.kopivad.quizzes.form.QuizForm;
 import com.kopivad.quizzes.service.QuizService;
-import com.kopivad.quizzes.utils.DtoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +25,13 @@ public class QuizController {
     }
 
     @PostMapping()
-    public Quiz save(@RequestBody QuizDto quizDto) {
-        return quizService.save(DtoUtils.getQuizFromDto(quizDto));
+    public Quiz save(@RequestBody QuizForm quiz) {
+        return quizService.save(quiz.toQuiz());
     }
 
     @PutMapping("{id}")
-    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizDto quizDto) {
-        return quizService.update(id, DtoUtils.getQuizFromDto(quizDto));
+    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizForm quiz) {
+        return quizService.update(id, quiz.toQuiz());
     }
 
     @DeleteMapping("{id}")

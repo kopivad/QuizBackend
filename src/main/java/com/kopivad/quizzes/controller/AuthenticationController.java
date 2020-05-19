@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.dto.AuthenticationRequest;
-import com.kopivad.quizzes.dto.AuthenticationResponse;
+import com.kopivad.quizzes.form.AuthenticationRequestForm;
+import com.kopivad.quizzes.form.AuthenticationResponseForm;
 import com.kopivad.quizzes.service.ApiClientService;
 import com.kopivad.quizzes.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class AuthenticationController {
     private final ApiClientService clientService;
 
     @PostMapping(value = "api/auth")
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthenticationResponseForm> createAuthenticationToken(@RequestBody AuthenticationRequestForm authenticationRequestForm) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequestForm.getUsername(), authenticationRequestForm.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-        UserDetails userDetails = clientService.loadUserByUsername(authenticationRequest.getUsername());
+        UserDetails userDetails = clientService.loadUserByUsername(authenticationRequestForm.getUsername());
         String jwt = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponseForm(jwt));
     }
 }

@@ -1,8 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.UserDto;
-import com.kopivad.quizzes.utils.DtoUtils;
+import com.kopivad.quizzes.form.UserForm;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +25,13 @@ public class UserController {
     }
 
     @PostMapping()
-    public User add(@RequestBody UserDto userDto) {
-        return userService.save(DtoUtils.getUserFromDto(userDto));
+    public User add(@RequestBody UserForm userForm) {
+        return userService.save(userForm.toUser());
     }
 
     @PutMapping("{id}")
-    public User update(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
-        return userService.update(id, DtoUtils.getUserFromDto(userDto));
+    public User update(@PathVariable("id") Long id, @RequestBody UserForm userForm) {
+        return userService.update(id, userForm.toUser());
     }
 
     @DeleteMapping("{id}")
