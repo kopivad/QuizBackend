@@ -1,17 +1,22 @@
 package com.kopivad.quizzes.service.impl;
 
+import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.QuestionRepository;
+import com.kopivad.quizzes.service.AnswerService;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
+    private final AnswerService answerService;
 
     @Override
     public List<Question> getAll() {
@@ -20,12 +25,28 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getById(Long id) {
-        return questionRepository.findById(id);
+        Question questionById = questionRepository.findById(id);
+        List<Answer> answers = answerService.getByQuestionId(id);
+        return questionById.toBuilder().answers(answers).build();
     }
 
     @Override
     public Question save(Question question) {
-        return questionRepository.save(question);
+        Question savedQuestion = questionRepository.save(question);
+        if (ObjectUtils.isNotEmpty(question.getAnswers())) {
+            List<Answer> answers = question.getAnswers();
+            List<Answer> answersWithQuestion = setQuestionForAllAnswers(savedQuestion, answers);
+            List<Answer> savedAnswers = answerService.saveAll(answersWithQuestion);
+            return question.toBuilder().answers(savedAnswers).build();
+        }
+        return savedQuestion;
+    }
+
+    private List<Answer> setQuestionForAllAnswers(Question question, List<Answer> answers) {
+        return answers
+                .stream()
+                .map(answer -> answer.toBuilder().question(question).build())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -41,5 +62,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getByQuizId(Long id) {
         return questionRepository.findByQuizId(id);
+    }
+
+    @Override
+    public List<Question> saveAll(List<Question> questions) {
+        return questions
+                .stream()
+                .map(this::save)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

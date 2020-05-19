@@ -1,10 +1,8 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuizRepository;
-import com.kopivad.quizzes.service.AnswerService;
 import com.kopivad.quizzes.service.QuestionService;
 import com.kopivad.quizzes.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +18,6 @@ import java.util.stream.Collectors;
 public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
-    private final AnswerService answerService;
 
     @Override
     public List<Quiz> getAll() {
@@ -30,17 +26,21 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Quiz getById(Long id) {
-        return quizRepository.findById(id);
+        Quiz quizById = quizRepository.findById(id);
+        List<Question> questions = questionService.getByQuizId(id);
+        return quizById.toBuilder().questions(questions).build();
     }
 
     @Override
     public Quiz save(Quiz quiz) {
-        Quiz quizWithCreationDate = quiz
-                .toBuilder()
-                .creationDate(LocalDateTime.now())
-                .build();
-
-        return quizRepository.save(quizWithCreationDate);
+        Quiz quizWithCreationDate = quiz.toBuilder().creationDate(LocalDateTime.now()).build();
+        Quiz savedQuiz = quizRepository.save(quizWithCreationDate);
+        if (ObjectUtils.isNotEmpty(quiz.getQuestions())) {
+            List<Question> questions = setQuizForAllQuestions(savedQuiz, quiz.getQuestions());
+            List<Question> savedQuestions = questionService.saveAll(questions);
+            return savedQuiz.toBuilder().questions(savedQuestions).build();
+        }
+        return savedQuiz;
     }
 
     @Override
@@ -53,64 +53,11 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.delete(id);
     }
 
-    @Override
-    public Quiz saveFull(Quiz quiz) {
-        Quiz savedQuiz = save(quiz);
-        if (ObjectUtils.isNotEmpty(quiz.getQuestions())) {
-            List<Question> questions = quiz.getQuestions()
-                    .stream()
-                    .map(getQuestionWithAnswersFunction(savedQuiz))
-                    .collect(Collectors.toUnmodifiableList());
-
-            Quiz quizWithQuestions = savedQuiz.toBuilder().questions(questions).build();
-            return quizWithQuestions;
-        }
-
-        return savedQuiz;
-    }
-
-    private Function<Question, Question> getQuestionWithAnswersFunction(Quiz quiz) {
-        return question -> {
-            Question questionWithQuiz = question.toBuilder().quiz(quiz).build();
-            Question savedQuestion = questionService.save(questionWithQuiz);
-            if (ObjectUtils.isNotEmpty(question.getAnswers())) {
-                List<Answer> answers = question.getAnswers()
-                        .stream()
-                        .map(getFullAnswerFunction(savedQuestion))
-                        .collect(Collectors.toUnmodifiableList());
-
-                Question questionWithAnswers = savedQuestion.toBuilder().answers(answers).build();
-                return questionWithAnswers;
-            }
-            return savedQuestion;
-        };
-    }
-
-    private Function<Answer, Answer> getFullAnswerFunction(Question question) {
-        return answer -> {
-            Answer answerWithQuestion = answer.toBuilder().question(question).build();
-            return answerService.save(answerWithQuestion);
-        };
-    }
-
-    @Override
-    public Quiz getFullById(Long id) {
-        Quiz quiz = getById(id);
-        List<Question> questions = questionService.getByQuizId(id)
+    private List<Question> setQuizForAllQuestions(Quiz quiz, List<Question> questions) {
+        return questions
                 .stream()
-                .map(getFullQuestionFunction())
+                .map(question ->  question.toBuilder().quiz(quiz).build())
                 .collect(Collectors.toUnmodifiableList());
-
-        Quiz quizWithQuestions = quiz.toBuilder().questions(questions).build();
-        return quizWithQuestions;
-    }
-
-    private Function<Question, Question> getFullQuestionFunction() {
-        return question -> {
-            List<Answer> answers = answerService.getByQuestionId(question.getId());
-            Question questionWithAnswers = question.toBuilder().answers(answers).build();
-            return questionWithAnswers;
-        };
     }
 }
 

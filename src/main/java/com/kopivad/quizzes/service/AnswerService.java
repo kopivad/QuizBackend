@@ -16,4 +16,6 @@ public interface AnswerService {
     void delete(Long id);
 
     List<Answer> getByQuestionId(Long id);
+
+    List<Answer> saveAll(List<Answer> answers);
 }

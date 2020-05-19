@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +42,13 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<Answer> getByQuestionId(Long id) {
         return answerRepository.findByQuestionId(id);
+    }
+
+    @Override
+    public List<Answer> saveAll(List<Answer> answers) {
+        return answers
+                .stream()
+                .map(this::save)
+                .collect(Collectors.toUnmodifiableList());
     }
 }
