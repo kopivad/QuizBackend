@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
+
 public class AnswerUtils {
     public static List<Answer> generateAnswers(int size) {
-        return IntStream.range(0, size)
+        return IntStream.range(INTEGER_ZERO, size)
                 .mapToObj(i -> {
                     Answer answer = generateAnswer()
                             .toBuilder()
-                            .id((long) + 1)
+                            .id(i + LONG_ONE)
                             .build();
 
                     return answer;
@@ -26,12 +29,13 @@ public class AnswerUtils {
     public static Answer generateAnswer() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
+        int charsCount = 200;
         return Answer
                 .builder()
-                .id(1L)
-                .body(textProducer.randomString(200))
+                .id(LONG_ONE)
+                .body(textProducer.randomString(charsCount))
                 .isRight(true)
-                .question(Question.builder().id(1L).build())
+                .question(Question.builder().id(LONG_ONE).build())
                 .build();
     }
 }

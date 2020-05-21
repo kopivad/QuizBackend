@@ -10,13 +10,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
+
 public class UserUtils {
     public static List<User> generateUsers(int size) {
-        return IntStream.range(0, size)
+        return IntStream.range(INTEGER_ZERO, size)
                 .mapToObj(i -> {
                     User user = generateUser()
                             .toBuilder()
-                            .id((long)i + 1)
+                            .id(i + LONG_ONE)
                             .build();
                     return user;
                 })
@@ -28,7 +31,7 @@ public class UserUtils {
         Person person = fairy.person();
         return User
                 .builder()
-                .id(1L)
+                .id(LONG_ONE)
                 .email(person.getEmail())
                 .name(person.getFirstName())
                 .password(person.getPassword())
