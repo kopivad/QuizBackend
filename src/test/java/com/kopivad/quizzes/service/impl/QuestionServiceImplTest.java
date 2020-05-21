@@ -14,11 +14,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 class QuestionServiceImplTest {
@@ -34,44 +35,45 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void getAll() {
-        List<Question> questionsFromDB = QuestionUtils.generateQuestions(10);
+    void testGetAll() {
+        int size = 10;
+        List<Question> questionsFromDB = QuestionUtils.generateQuestions(size);
         when(questionRepository.findAll()).thenReturn(questionsFromDB);
         List<Question> questions = questionService.getAll();
         assertThat(questions, equalTo(questionsFromDB));
     }
 
     @Test
-    void getById() {
+    void testGetById() {
         Question questionFromDB = QuestionUtils.generateQuestion();
-        when(questionRepository.findById(1L)).thenReturn(questionFromDB);
-        Question question = questionService.getById(1L);
+        when(questionRepository.findById(LONG_ONE)).thenReturn(questionFromDB);
+        Question question = questionService.getById(LONG_ONE);
         assertThat(question, equalTo(questionFromDB));
-        verify(questionRepository, times(1)).findById(1L);
+        verify(questionRepository).findById(LONG_ONE);
     }
 
     @Test
-    void save() {
+    void testSave() {
         Question questionForSave = QuestionUtils.generateQuestion();
         when(questionRepository.save(any())).thenReturn(questionForSave);
         Question savedQuestion = questionService.save(questionForSave);
         assertThat(savedQuestion, equalTo(questionForSave));
-        verify(questionRepository, times(1)).save(any());
+        verify(questionRepository).save(any());
     }
 
     @Test
-    void update() {
+    void testUpdate() {
         Question questionForUpdate = QuestionUtils.generateQuestion();
-        when(questionRepository.update(anyLong(), any())).thenReturn(questionForUpdate);
-        Question updatedQuestion = questionService.update(1L, questionForUpdate);
+        when(questionRepository.update(LONG_ONE, any())).thenReturn(questionForUpdate);
+        Question updatedQuestion = questionService.update(LONG_ONE, questionForUpdate);
         assertThat(updatedQuestion.getId(), equalTo(questionForUpdate.getId()));
         assertThat(updatedQuestion, equalTo(questionForUpdate));
-        verify(questionRepository, times(1)).update(anyLong(), any());
+        verify(questionRepository).update(LONG_ONE, any());
     }
 
     @Test
-    void delete() {
-        questionService.delete(1L);
-        verify(questionRepository, times(1)).delete(anyLong());
+    void testDelete() {
+        questionService.delete(LONG_ONE);
+        verify(questionRepository).delete(LONG_ONE);
     }
 }

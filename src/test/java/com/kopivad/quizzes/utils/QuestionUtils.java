@@ -23,10 +23,11 @@ public class QuestionUtils {
     public static Question generateQuestion() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
+        int charsCount = 200;
         return Question
                 .builder()
                 .type(QuestionType.SINGLE)
-                .title(textProducer.randomString(200))
+                .title(textProducer.randomString(charsCount))
                 .quiz(Quiz.builder().id(LONG_ONE).build())
                 .build();
     }

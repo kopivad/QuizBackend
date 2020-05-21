@@ -51,13 +51,13 @@ class QuizServiceImplTest {
         Quiz updatedQuiz = quizService.update(LONG_ONE, quizForUpdate);
         assertThat(updatedQuiz.getId(), equalTo(quizForUpdate.getId()));
         assertThat(updatedQuiz, equalTo(quizForUpdate));
-        verify(quizRepository, times(1)).update(anyLong(), any());
+        verify(quizRepository).update(anyLong(), any());
     }
 
     @Test
     void testDeleteQuiz() {
         quizService.delete(LONG_ONE);
-        verify(quizRepository, times(1)).delete(anyLong());
+        verify(quizRepository).delete(anyLong());
     }
 
     @Test
@@ -69,12 +69,12 @@ class QuizServiceImplTest {
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
         assertThat(actualResult.getAuthor(), equalTo(expectedResult.getAuthor()));
-        verify(quizRepository, times(1)).save(any());
-        verify(questionService, times(1)).saveAll(expectedResult.getQuestions());
+        verify(quizRepository).save(any());
+        verify(questionService).saveAll(expectedResult.getQuestions());
     }
 
     @Test
-    void testSaveQuizWithNullQuestionsAndAnswers() {
+    void testSaveQuizWithNullQuestions() {
         Quiz expectedResult = QuizUtils.generateQuiz();
         when(quizRepository.save(any())).thenReturn(expectedResult);
         when(questionService.saveAll(expectedResult.getQuestions())).thenReturn(expectedResult.getQuestions());
@@ -82,8 +82,8 @@ class QuizServiceImplTest {
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
         assertThat(actualResult.getAuthor(), equalTo(expectedResult.getAuthor()));
-        verify(quizRepository, times(1)).save(any());
-        verify(questionService, times(0)).saveAll(any());
+        verify(quizRepository).save(any());
+        verify(questionService, never()).saveAll(any());
     }
 
     @Test
@@ -101,9 +101,9 @@ class QuizServiceImplTest {
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
 
-        verify(quizRepository, times(1)).save(any());
-        verify(quizRepository, times(1)).findById(LONG_ONE);
-        verify(questionService, times(1)).getByQuizId(LONG_ONE);
-        verify(questionService, times(1)).saveAll(dataForSave.getQuestions());
+        verify(quizRepository).save(any());
+        verify(quizRepository).findById(LONG_ONE);
+        verify(questionService).getByQuizId(LONG_ONE);
+        verify(questionService).saveAll(dataForSave.getQuestions());
     }
 }

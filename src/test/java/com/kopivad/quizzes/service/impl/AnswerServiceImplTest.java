@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,44 +34,45 @@ class AnswerServiceImplTest {
     }
 
     @Test
-    void getAll() {
-        List<Answer> answersFromDB = AnswerUtils.generateAnswers(10);
+    void testGetAll() {
+        int size = 10;
+        List<Answer> answersFromDB = AnswerUtils.generateAnswers(size);
         when(answerRepository.findAll()).thenReturn(answersFromDB);
         List<Answer> answers = answerService.getAll();
         assertThat(answers, equalTo(answersFromDB));
     }
 
     @Test
-    void getById() {
+    void testGetById() {
         Answer answerFromDB = AnswerUtils.generateAnswer();
-        when(answerRepository.findById(1L)).thenReturn(answerFromDB);
-        Answer answer = answerService.getById(1L);
+        when(answerRepository.findById(LONG_ONE)).thenReturn(answerFromDB);
+        Answer answer = answerService.getById(LONG_ONE);
         assertThat(answer, equalTo(answerFromDB));
-        verify(answerRepository, times(1)).findById(1L);
+        verify(answerRepository).findById(LONG_ONE);
     }
 
     @Test
-    void save() {
+    void testSave() {
         Answer answerForSave = AnswerUtils.generateAnswer();
         when(answerRepository.save(any())).thenReturn(answerForSave);
         Answer savedAnswer = answerService.save(answerForSave);
         assertThat(savedAnswer, equalTo(answerForSave));
-        verify(answerRepository, times(1)).save(any());
+        verify(answerRepository).save(any());
     }
 
     @Test
-    void update() {
+    void testUpdate() {
         Answer answerForUpdate = AnswerUtils.generateAnswer();
         when(answerRepository.update(anyLong(), any())).thenReturn(answerForUpdate);
-        Answer updatedAnswer = answerService.update(1L, answerForUpdate);
+        Answer updatedAnswer = answerService.update(LONG_ONE, answerForUpdate);
         assertThat(updatedAnswer.getId(), equalTo(answerForUpdate.getId()));
         assertThat(updatedAnswer, equalTo(answerForUpdate));
-        verify(answerRepository, times(1)).update(anyLong(), any());
+        verify(answerRepository).update(LONG_ONE, any());
     }
 
     @Test
-    void delete() {
-        answerService.delete(1L);
-        verify(answerRepository, times(1)).delete(anyLong());
+    void testDelete() {
+        answerService.delete(LONG_ONE);
+        verify(answerRepository).delete(anyLong());
     }
 }

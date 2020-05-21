@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.UUID;
 
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
@@ -41,24 +42,26 @@ public class UserServiceImplTest {
 
     @Test
     public void getAllTest() {
-        List<User> userFromDB = UserUtils.generateUsers(10);
+        int size = 10;
+        List<User> userFromDB = UserUtils.generateUsers(size);
         when(userRepository.findAll()).thenReturn(userFromDB);
         List<User> users = userService.getAll();
         assertThat(users, equalTo(userFromDB));
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository).findAll();
     }
 
     @Test
     public void getByIdTest() {
+        int size = 10;
         User userFromDB = UserUtils.generateUser();
-        List<Quiz> userQuizzes = QuizUtils.generateQuizzes(10);
-        when(userRepository.findById(1L)).thenReturn(userFromDB);
+        List<Quiz> userQuizzes = QuizUtils.generateQuizzes(size);
+        when(userRepository.findById(LONG_ONE)).thenReturn(userFromDB);
         when(quizService.getAll()).thenReturn(userQuizzes);
-        User user = userService.getById(1L);
+        User user = userService.getById(LONG_ONE);
         assertThat(user, equalTo(userFromDB));
         assertThat(user.getQuizzes(), equalTo(userQuizzes));
-        verify(userRepository, times(1)).findById(1L);
-        verify(quizService, times(1)).getAll();
+        verify(userRepository).findById(LONG_ONE);
+        verify(quizService).getAll();
     }
 
     @Test
@@ -70,8 +73,8 @@ public class UserServiceImplTest {
         User savedUser = userService.save(userForSave);
         assertThat(savedUser.getCreationDate(), notNullValue());
         assertThat(savedUser.getPassword(), not(equalTo(userForSave.getPassword())));
-        verify(passwordEncoder, times(1)).encode(anyString());
-        verify(userRepository, times(1)).save(any());
+        verify(passwordEncoder).encode(anyString());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -80,16 +83,16 @@ public class UserServiceImplTest {
         User userFromDB = UserUtils.generateUser();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
         when(userRepository.update(anyLong(), any())).thenReturn(userFromDB);
-        User updatedUser = userService.update(1L, userForUpdate);
+        User updatedUser = userService.update(LONG_ONE, userForUpdate);
         assertThat(userForUpdate.getId(), equalTo(userFromDB.getId()));
         assertThat(updatedUser, equalTo(userForUpdate));
-        verify(passwordEncoder, times(1)).encode(anyString());
-        verify(userRepository, times(1)).update(anyLong(), any());
+        verify(passwordEncoder).encode(anyString());
+        verify(userRepository).update(LONG_ONE, any());
     }
 
     @Test
     public void delete() {
-        userService.delete(1l);
-        verify(userRepository, times(1)).delete(anyLong());
+        userService.delete(LONG_ONE);
+        verify(userRepository).delete(LONG_ONE);
     }
 }
