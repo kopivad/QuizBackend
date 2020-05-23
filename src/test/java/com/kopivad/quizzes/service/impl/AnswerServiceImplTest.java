@@ -13,8 +13,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -36,43 +39,55 @@ class AnswerServiceImplTest {
     @Test
     void testGetAll() {
         int size = 10;
-        List<Answer> answersFromDB = AnswerUtils.generateAnswers(size);
-        when(answerRepository.findAll()).thenReturn(answersFromDB);
-        List<Answer> answers = answerService.getAll();
-        assertThat(answers, equalTo(answersFromDB));
+        List<Answer> expectedResult = AnswerUtils.generateAnswers(size);
+        when(answerRepository.findAll()).thenReturn(expectedResult);
+        List<Answer> actualResult = answerService.getAll();
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
     void testGetById() {
-        Answer answerFromDB = AnswerUtils.generateAnswer();
-        when(answerRepository.findById(LONG_ONE)).thenReturn(answerFromDB);
-        Answer answer = answerService.getById(LONG_ONE);
-        assertThat(answer, equalTo(answerFromDB));
+        Answer expectedResult = AnswerUtils.generateAnswer();
+        when(answerRepository.findById(LONG_ONE)).thenReturn(expectedResult);
+        Answer actualResult = answerService.getById(LONG_ONE);
+        assertThat(actualResult, is(expectedResult));
         verify(answerRepository).findById(LONG_ONE);
     }
 
     @Test
     void testSave() {
-        Answer answerForSave = AnswerUtils.generateAnswer();
-        when(answerRepository.save(any())).thenReturn(answerForSave);
-        Answer savedAnswer = answerService.save(answerForSave);
-        assertThat(savedAnswer, equalTo(answerForSave));
+        Answer expectedResult = AnswerUtils.generateAnswer();
+        when(answerRepository.save(any())).thenReturn(expectedResult);
+        Answer actualResult = answerService.save(expectedResult);
+        assertThat(actualResult, is(expectedResult));
         verify(answerRepository).save(any());
     }
 
     @Test
     void testUpdate() {
         Answer answerForUpdate = AnswerUtils.generateAnswer();
+        String dataForUpdate = "Body";
+        Answer expectedResult = answerForUpdate.toBuilder().body(dataForUpdate).build();
         when(answerRepository.update(anyLong(), any())).thenReturn(answerForUpdate);
-        Answer updatedAnswer = answerService.update(LONG_ONE, answerForUpdate);
-        assertThat(updatedAnswer.getId(), equalTo(answerForUpdate.getId()));
-        assertThat(updatedAnswer, equalTo(answerForUpdate));
-        verify(answerRepository).update(LONG_ONE, any());
+        Answer actualResult = answerService.update(LONG_ONE, answerForUpdate);
+        assertThat(actualResult, is(expectedResult));
+        assertThat(actualResult.getBody(), equalTo(answerForUpdate.getBody()));
+        verify(answerRepository).update(eq(LONG_ONE), any());
     }
 
     @Test
     void testDelete() {
         answerService.delete(LONG_ONE);
         verify(answerRepository).delete(anyLong());
+    }
+
+    @Test
+    void testSaveAll() {
+        int size = 10;
+        List<Answer> expectedResult = AnswerUtils.generateAnswers(size);
+        when(answerRepository.save(any(Answer.class))).thenReturn(expectedResult.get(INTEGER_ZERO));
+        List<Answer> actualResult = answerService.saveAll(expectedResult);
+        assertThat(actualResult.size(), is(expectedResult.size()));
+        verify(answerRepository, times(size)).save(any(Answer.class));
     }
 }

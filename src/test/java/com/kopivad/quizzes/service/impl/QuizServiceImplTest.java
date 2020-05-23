@@ -38,20 +38,22 @@ class QuizServiceImplTest {
     @Test
     void testGetAll() {
         int size = 10;
-        List<Quiz> quizzesFromDB = QuizUtils.generateQuizzes(size);
-        when(quizRepository.findAll()).thenReturn(quizzesFromDB);
-        List<Quiz> quizzes = quizService.getAll();
-        assertThat(quizzes, equalTo(quizzesFromDB));
+        List<Quiz> expectedResult = QuizUtils.generateQuizzes(size);
+        when(quizRepository.findAll()).thenReturn(expectedResult);
+        List<Quiz> actualResult = quizService.getAll();
+        assertThat(actualResult, equalTo(expectedResult));
     }
 
     @Test
     void testUpdateQuiz() {
         Quiz quizForUpdate = QuizUtils.generateQuiz();
-        when(quizRepository.update(anyLong(), any())).thenReturn(quizForUpdate);
-        Quiz updatedQuiz = quizService.update(LONG_ONE, quizForUpdate);
-        assertThat(updatedQuiz.getId(), equalTo(quizForUpdate.getId()));
-        assertThat(updatedQuiz, equalTo(quizForUpdate));
-        verify(quizRepository).update(anyLong(), any());
+        String dataForUpdate = "Title";
+        Quiz expectedResult = quizForUpdate.toBuilder().title(dataForUpdate).build();
+        when(quizRepository.update(eq(LONG_ONE), any(Quiz.class))).thenReturn(expectedResult);
+        Quiz actualResult = quizService.update(LONG_ONE, expectedResult);
+        assertThat(actualResult, is(expectedResult));
+        assertThat(actualResult.getTitle(), not(quizForUpdate.getTitle()));
+        verify(quizRepository).update(eq(LONG_ONE), any(Quiz.class));
     }
 
     @Test

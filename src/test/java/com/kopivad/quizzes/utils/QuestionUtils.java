@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.utils;
 
+import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
 import com.kopivad.quizzes.domain.Quiz;
@@ -26,9 +27,18 @@ public class QuestionUtils {
         int charsCount = 200;
         return Question
                 .builder()
+                .id(LONG_ONE)
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
                 .quiz(Quiz.builder().id(LONG_ONE).build())
                 .build();
+    }
+
+    public static Question generateFullQuestion() {
+        Question question = generateQuestion();
+        int answerSize = 10;
+        List<Answer> answers = AnswerUtils.generateAnswers(answerSize);
+        Question questionWithAnswers = question.toBuilder().answers(answers).build();
+        return questionWithAnswers;
     }
 }

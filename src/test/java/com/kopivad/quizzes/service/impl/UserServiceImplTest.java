@@ -1,11 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.utils.QuizUtils;
-import com.kopivad.quizzes.utils.UserUtils;
 import com.kopivad.quizzes.service.QuizService;
+import com.kopivad.quizzes.utils.UserUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -41,57 +39,52 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void getAllTest() {
+    public void testGetAll() {
         int size = 10;
-        List<User> userFromDB = UserUtils.generateUsers(size);
-        when(userRepository.findAll()).thenReturn(userFromDB);
-        List<User> users = userService.getAll();
-        assertThat(users, equalTo(userFromDB));
+        List<User> expectedResult = UserUtils.generateUsers(size);
+        when(userRepository.findAll()).thenReturn(expectedResult);
+        List<User> actualResult = userService.getAll();
+        assertThat(actualResult, is(expectedResult));
         verify(userRepository).findAll();
     }
 
     @Test
-    public void getByIdTest() {
-        int size = 10;
-        User userFromDB = UserUtils.generateUser();
-        List<Quiz> userQuizzes = QuizUtils.generateQuizzes(size);
-        when(userRepository.findById(LONG_ONE)).thenReturn(userFromDB);
-        when(quizService.getAll()).thenReturn(userQuizzes);
-        User user = userService.getById(LONG_ONE);
-        assertThat(user, equalTo(userFromDB));
-        assertThat(user.getQuizzes(), equalTo(userQuizzes));
+    public void testGetById() {
+        User expectedResult = UserUtils.generateUser();
+        when(userRepository.findById(eq(LONG_ONE))).thenReturn(expectedResult);
+        User actualResult = userService.getById(LONG_ONE);
+        assertThat(actualResult, is(expectedResult));
         verify(userRepository).findById(LONG_ONE);
-        verify(quizService).getAll();
     }
 
     @Test
-    public void saveTest() {
-        User userForSave = UserUtils.generateUser();
-        User userFromDB = UserUtils.generateUser();
+    public void testSave() {
+        User expectedResult = UserUtils.generateUser();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.save(any())).thenReturn(userFromDB);
-        User savedUser = userService.save(userForSave);
-        assertThat(savedUser.getCreationDate(), notNullValue());
-        assertThat(savedUser.getPassword(), not(equalTo(userForSave.getPassword())));
+        when(userRepository.save(any())).thenReturn(expectedResult);
+        User actualResult = userService.save(expectedResult);
+        assertThat(actualResult.getCreationDate(), notNullValue());
+        assertThat(actualResult.getPassword(), is(expectedResult.getPassword()));
         verify(passwordEncoder).encode(anyString());
         verify(userRepository).save(any(User.class));
     }
 
     @Test
-    public void update() {
+    public void testUpdate() {
         User userForUpdate = UserUtils.generateUser();
-        User userFromDB = UserUtils.generateUser();
+        String dataForUpdate = "Name";
+        User expectedResult = userForUpdate.toBuilder().name(dataForUpdate).build();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.update(anyLong(), any())).thenReturn(userFromDB);
-        User updatedUser = userService.update(LONG_ONE, userForUpdate);
-        assertThat(userForUpdate.getId(), equalTo(userFromDB.getId()));
-        assertThat(updatedUser, equalTo(userForUpdate));
+        when(userRepository.update(anyLong(), any())).thenReturn(expectedResult);
+        User actualResult = userService.update(LONG_ONE, expectedResult);
+        assertThat(actualResult, is(expectedResult));
+        assertThat(actualResult.getName(), is(expectedResult.getName()));
         verify(passwordEncoder).encode(anyString());
-        verify(userRepository).update(LONG_ONE, any());
+        verify(userRepository).update(eq(LONG_ONE), any());
     }
 
     @Test
-    public void delete() {
+    public void testDelete() {
         userService.delete(LONG_ONE);
         verify(userRepository).delete(LONG_ONE);
     }
