@@ -25,13 +25,13 @@ public class QuizController {
     }
 
     @PostMapping()
-    public Quiz save(@RequestBody QuizForm quiz) {
-        return quizService.save(quiz.toQuiz());
+    public Quiz save(@RequestBody QuizForm quizForm) {
+        return quizService.save(quizForm);
     }
 
     @PutMapping("{id}")
-    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizForm quiz) {
-        return quizService.update(id, quiz.toQuiz());
+    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizForm quizForm) {
+        return quizService.update(id, quizForm);
     }
 
     @DeleteMapping("{id}")

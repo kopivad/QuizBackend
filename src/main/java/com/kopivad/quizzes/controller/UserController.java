@@ -26,12 +26,12 @@ public class UserController {
 
     @PostMapping()
     public User save(@RequestBody UserForm userForm) {
-        return userService.save(userForm.toUser());
+        return userService.save(userForm);
     }
 
     @PutMapping("{id}")
     public User update(@PathVariable("id") Long id, @RequestBody UserForm userForm) {
-        return userService.update(id, userForm.toUser());
+        return userService.update(id, userForm);
     }
 
     @DeleteMapping("{id}")

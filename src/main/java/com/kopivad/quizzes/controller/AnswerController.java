@@ -26,12 +26,12 @@ public class AnswerController {
 
     @PostMapping()
     public Answer add(@RequestBody AnswerForm answerForm) {
-        return answerService.save(answerForm.toAnswer());
+        return answerService.save(answerForm);
     }
 
     @PutMapping("{id}")
     public Answer update(@PathVariable("id") Long id, @RequestBody AnswerForm answerForm) {
-        return answerService.update(id, answerForm.toAnswer());
+        return answerService.update(id, answerForm);
     }
 
     @DeleteMapping("{id}")
