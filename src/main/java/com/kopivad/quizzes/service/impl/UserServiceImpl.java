@@ -2,11 +2,12 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.form.UserForm;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.service.QuizService;
 import com.kopivad.quizzes.service.UserService;
+import com.kopivad.quizzes.utils.FormUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
+    public User save(UserForm userForm) {
+        User user = FormUtils.toUser(userForm);
         User userWithEncodedPassword = user
                 .toBuilder()
                 .password(passwordEncoder.encode(user.getPassword()))
@@ -52,10 +54,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(Long id, User user) {
+    public User update(Long id, UserForm userForm) {
+        User user = FormUtils.toUser(userForm);
         User userWithEncodedPassword = user
                 .toBuilder()
-                .password(passwordEncoder.encode(user.getPassword()))
+                .password(passwordEncoder.encode(userForm.getPassword()))
                 .build();
         return userRepository.update(id, userWithEncodedPassword);
     }

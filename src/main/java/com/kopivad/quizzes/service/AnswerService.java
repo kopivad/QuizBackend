@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.form.AnswerForm;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface AnswerService {
 
     Answer getById(Long id);
 
-    Answer save(Answer answer);
+    Answer save(AnswerForm answerForm);
 
-    Answer update(Long id, Answer answer);
+    Answer update(Long id, AnswerForm answerForm);
 
     void delete(Long id);
 
