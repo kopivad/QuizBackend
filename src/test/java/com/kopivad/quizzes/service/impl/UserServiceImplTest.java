@@ -1,8 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.form.UserForm;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.service.QuizService;
+import com.kopivad.quizzes.utils.FormUtils;
 import com.kopivad.quizzes.utils.UserUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,8 +30,6 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private QuizService quizService;
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -59,24 +59,30 @@ public class UserServiceImplTest {
 
     @Test
     public void testSave() {
-        User expectedResult = UserUtils.generateUser();
+        UserForm userForSave = UserUtils.generateUserForm();
+        User expectedResult = FormUtils.toUser(userForSave)
+                .toBuilder()
+                .creationDate(LocalDateTime.now())
+                .password(String.valueOf(UUID.randomUUID()))
+                .id(LONG_ONE)
+                .build();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
         when(userRepository.save(any())).thenReturn(expectedResult);
-        User actualResult = userService.save(expectedResult);
+        User actualResult = userService.save(userForSave);
         assertThat(actualResult.getCreationDate(), notNullValue());
-        assertThat(actualResult.getPassword(), is(expectedResult.getPassword()));
+        assertThat(actualResult, is(expectedResult));
         verify(passwordEncoder).encode(anyString());
         verify(userRepository).save(any(User.class));
     }
 
     @Test
     public void testUpdate() {
-        User userForUpdate = UserUtils.generateUser();
         String dataForUpdate = "Name";
-        User expectedResult = userForUpdate.toBuilder().name(dataForUpdate).build();
+        UserForm userForUpdate = UserUtils.generateUserForm().toBuilder().name(dataForUpdate).build();
+        User expectedResult = FormUtils.toUser(userForUpdate).toBuilder().id(LONG_ONE).build();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
         when(userRepository.update(anyLong(), any())).thenReturn(expectedResult);
-        User actualResult = userService.update(LONG_ONE, expectedResult);
+        User actualResult = userService.update(LONG_ONE, userForUpdate);
         assertThat(actualResult, is(expectedResult));
         assertThat(actualResult.getName(), is(expectedResult.getName()));
         verify(passwordEncoder).encode(anyString());

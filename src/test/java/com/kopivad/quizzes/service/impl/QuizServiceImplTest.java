@@ -1,8 +1,10 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.form.QuizForm;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.service.QuestionService;
+import com.kopivad.quizzes.utils.FormUtils;
 import com.kopivad.quizzes.utils.QuizUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,6 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,14 +47,18 @@ class QuizServiceImplTest {
 
     @Test
     void testUpdateQuiz() {
-        Quiz quizForUpdate = QuizUtils.generateQuiz();
         String dataForUpdate = "Title";
-        Quiz expectedResult = quizForUpdate.toBuilder().title(dataForUpdate).build();
-        when(quizRepository.update(eq(LONG_ONE), any(Quiz.class))).thenReturn(expectedResult);
-        Quiz actualResult = quizService.update(LONG_ONE, expectedResult);
+        QuizForm quizForUpdate = QuizUtils.generateQuizForm();
+        Quiz expectedResult = FormUtils
+                .toQuiz(quizForUpdate)
+                .toBuilder()
+                .title(dataForUpdate)
+                .build();
+        when(quizRepository.update(eq(LONG_ONE), any())).thenReturn(expectedResult);
+        Quiz actualResult = quizService.update(LONG_ONE, quizForUpdate);
         assertThat(actualResult, is(expectedResult));
         assertThat(actualResult.getTitle(), not(quizForUpdate.getTitle()));
-        verify(quizRepository).update(eq(LONG_ONE), any(Quiz.class));
+        verify(quizRepository).update(eq(LONG_ONE), any());
     }
 
     @Test
@@ -64,10 +69,15 @@ class QuizServiceImplTest {
 
     @Test
     void testSaveQuiz() {
-        Quiz expectedResult = QuizUtils.generateFullQuiz();
+        QuizForm quizForSave = QuizUtils.generateQuizFormWithQuestions();
+        Quiz expectedResult = FormUtils
+                .toQuiz(quizForSave)
+                .toBuilder()
+                .id(LONG_ONE)
+                .build();
         when(quizRepository.save(any())).thenReturn(expectedResult);
         when(questionService.saveAll(expectedResult.getQuestions())).thenReturn(expectedResult.getQuestions());
-        Quiz actualResult = quizService.save(expectedResult);
+        Quiz actualResult = quizService.save(quizForSave);
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
         assertThat(actualResult.getAuthor(), equalTo(expectedResult.getAuthor()));
@@ -77,10 +87,15 @@ class QuizServiceImplTest {
 
     @Test
     void testSaveQuizWithNullQuestions() {
-        Quiz expectedResult = QuizUtils.generateQuiz();
+        QuizForm quizForSave = QuizUtils.generateQuizForm();
+        Quiz expectedResult = FormUtils
+                .toQuiz(quizForSave)
+                .toBuilder()
+                .id(LONG_ONE)
+                .build();
         when(quizRepository.save(any())).thenReturn(expectedResult);
         when(questionService.saveAll(expectedResult.getQuestions())).thenReturn(expectedResult.getQuestions());
-        Quiz actualResult = quizService.save(expectedResult);
+        Quiz actualResult = quizService.save(quizForSave);
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getQuestions(), expectedResult.getQuestions());
         assertThat(actualResult.getAuthor(), equalTo(expectedResult.getAuthor()));
@@ -90,13 +105,18 @@ class QuizServiceImplTest {
 
     @Test
     void testGetQuizById() {
-        Quiz dataForSave = QuizUtils.generateFullQuiz();
-        when(quizRepository.save(any())).thenReturn(dataForSave);
-        when(quizRepository.findById(LONG_ONE)).thenReturn(dataForSave);
-        when(questionService.getByQuizId(LONG_ONE)).thenReturn(dataForSave.getQuestions());
-        when(questionService.saveAll(dataForSave.getQuestions())).thenReturn(dataForSave.getQuestions());
+        QuizForm quizForSave = QuizUtils.generateQuizFormWithQuestions();
+        Quiz savedQuiz = FormUtils
+                .toQuiz(quizForSave)
+                .toBuilder()
+                .id(LONG_ONE)
+                .build();
+        when(quizRepository.save(any())).thenReturn(savedQuiz);
+        when(quizRepository.findById(LONG_ONE)).thenReturn(savedQuiz);
+        when(questionService.getByQuizId(LONG_ONE)).thenReturn(savedQuiz.getQuestions());
+        when(questionService.saveAll(savedQuiz.getQuestions())).thenReturn(savedQuiz.getQuestions());
 
-        Quiz expectedResult = quizService.save(dataForSave);
+        Quiz expectedResult = quizService.save(quizForSave);
         Quiz actualResult = quizService.getById(expectedResult.getId());
 
         assertThat(actualResult, notNullValue());
@@ -106,6 +126,6 @@ class QuizServiceImplTest {
         verify(quizRepository).save(any());
         verify(quizRepository).findById(LONG_ONE);
         verify(questionService).getByQuizId(LONG_ONE);
-        verify(questionService).saveAll(dataForSave.getQuestions());
+        verify(questionService).saveAll(expectedResult.getQuestions());
     }
 }
