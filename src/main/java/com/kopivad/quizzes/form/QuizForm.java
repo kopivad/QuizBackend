@@ -9,6 +9,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class QuizForm {
     String title;
+    boolean active;
     String description;
     List<QuestionForm> questions;
     Long authorId;

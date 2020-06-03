@@ -8,23 +8,29 @@ import com.kopivad.quizzes.form.AnswerForm;
 import com.kopivad.quizzes.form.QuestionForm;
 import com.kopivad.quizzes.form.QuizForm;
 import com.kopivad.quizzes.form.UserForm;
+import org.apache.commons.lang3.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FormUtils {
 
     public static List<Question> toQuestionList(List<QuestionForm> questions) {
+        if (ObjectUtils.isEmpty(questions))
+            return new ArrayList<>();
         return questions
                 .stream()
-                .map(questionForm -> toQuestion(questionForm))
+                .map(FormUtils::toQuestion)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     public static List<Answer> toAnswerList(List<AnswerForm> answers) {
+        if (ObjectUtils.isEmpty(answers))
+            return new ArrayList<>();
         return answers
                 .stream()
-                .map(answerForm -> toAnswer(answerForm))
+                .map(FormUtils::toAnswer)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -64,60 +70,6 @@ public class FormUtils {
                 .body(form.getBody())
                 .isRight(form.isRight())
                 .question(Question.builder().id(form.getQuestionId()).build())
-                .build();
-    }
-
-    public static UserForm toUserFrom(User user) {
-        return UserForm
-                .builder()
-                .name(user.getName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .role(user.getRole())
-                .build();
-    }
-
-    public static QuizForm toQuizFrom(Quiz quiz) {
-        QuizForm quizForm = QuizForm
-                .builder()
-                .description(quiz.getDescription())
-                .title(quiz.getTitle())
-                .authorId(quiz.getAuthor().getId())
-                .questions(toQuestionFormList(quiz.getQuestions()))
-                .build();
-        return quizForm;
-    }
-
-    public static QuestionForm toQuestionForm(Question question) {
-        return QuestionForm
-                .builder()
-                .title(question.getTitle())
-                .type(question.getType())
-                .quizId(question.getQuiz().getId())
-                .answers(FormUtils.toAnswerFormList(question.getAnswers()))
-                .build();
-    }
-
-    public static List<QuestionForm> toQuestionFormList(List<Question> questions) {
-        return questions
-                .stream()
-                .map(question -> toQuestionForm(question))
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    public static List<AnswerForm> toAnswerFormList(List<Answer> answers) {
-        return answers
-                .stream()
-                .map(answer -> toAnswerForm(answer))
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    public static AnswerForm toAnswerForm(Answer answer) {
-        return AnswerForm
-                .builder()
-                .body(answer.getBody())
-                .questionId(answer.getQuestion().getId())
-                .right(answer.isRight())
                 .build();
     }
 }
