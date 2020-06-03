@@ -40,7 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
             List<Answer> answers = question.getAnswers();
             List<Answer> answersWithQuestion = setQuestionForAllAnswers(savedQuestion, answers);
             List<Answer> savedAnswers = answerService.saveAll(answersWithQuestion);
-            return question.toBuilder().answers(savedAnswers).build();
+            return savedQuestion.toBuilder().answers(savedAnswers).build();
         }
         return savedQuestion;
     }
