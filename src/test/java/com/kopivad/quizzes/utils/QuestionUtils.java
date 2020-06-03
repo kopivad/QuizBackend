@@ -1,9 +1,9 @@
 package com.kopivad.quizzes.utils;
 
-import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.form.QuestionForm;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -34,11 +34,35 @@ public class QuestionUtils {
                 .build();
     }
 
-    public static Question generateFullQuestion() {
-        Question question = generateQuestion();
-        int answerSize = 10;
-        List<Answer> answers = AnswerUtils.generateAnswers(answerSize);
-        Question questionWithAnswers = question.toBuilder().answers(answers).build();
-        return questionWithAnswers;
+    public static List<QuestionForm> generateQuestionForms(int size) {
+        return IntStream.range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateQuestionForm())
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public static QuestionForm generateQuestionForm() {
+        Fairy fairy = Fairy.create();
+        TextProducer textProducer = fairy.textProducer();
+        int charsCount = 200;
+        return QuestionForm
+                .builder()
+                .type(QuestionType.SINGLE)
+                .title(textProducer.randomString(charsCount))
+                .quizId(LONG_ONE)
+                .build();
+    }
+
+    public static QuestionForm generateQuestionFormWithAnswers() {
+        Fairy fairy = Fairy.create();
+        TextProducer textProducer = fairy.textProducer();
+        int charsCount = 200;
+        QuestionForm questionForm = QuestionForm
+                .builder()
+                .type(QuestionType.SINGLE)
+                .title(textProducer.randomString(charsCount))
+                .quizId(LONG_ONE)
+                .build();
+        int size = 10;
+        return questionForm.toBuilder().answers(AnswerUtils.generateAnswerForms(size)).build();
     }
 }

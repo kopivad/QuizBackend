@@ -2,6 +2,7 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.form.UserForm;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
@@ -36,6 +37,18 @@ public class UserUtils {
                 .name(person.getFirstName())
                 .password(person.getPassword())
                 .creationDate(LocalDateTime.now())
+                .role(Role.USER)
+                .build();
+    }
+
+    public static UserForm generateUserForm() {
+        Fairy fairy = Fairy.create();
+        Person person = fairy.person();
+        return UserForm
+                .builder()
+                .email(person.getEmail())
+                .name(person.getFirstName())
+                .password(person.getPassword())
                 .role(Role.USER)
                 .build();
     }
