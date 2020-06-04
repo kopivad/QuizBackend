@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
 
-@Repository("jooqQuizRepository")
+@Repository
 @RequiredArgsConstructor
 public class QuizRepositoryImpl implements QuizRepository {
     private final DSLContext dslContext;
@@ -38,9 +39,13 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Override
     public Quiz save(Quiz quiz) {
         return dslContext
-                .insertInto(QUIZZES, QUIZZES.TITLE, QUIZZES.ACTIVE, QUIZZES.DESCRIPTION, QUIZZES.AUTHOR_ID, QUIZZES.CREATION_DATE)
-                .values(quiz.getTitle(), quiz.isActive(), quiz.getDescription(), quiz.getAuthor().getId(), Timestamp.valueOf(quiz.getCreationDate()))
-                .returning(QUIZZES.ID, QUIZZES.TITLE, QUIZZES.ACTIVE, QUIZZES.DESCRIPTION, QUIZZES.AUTHOR_ID, QUIZZES.CREATION_DATE)
+                .insertInto(QUIZZES)
+                .set(QUIZZES.TITLE, quiz.getTitle())
+                .set(QUIZZES.ACTIVE, quiz.isActive())
+                .set(QUIZZES.DESCRIPTION, quiz.getDescription())
+                .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
+                .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
+                .returning(QUIZZES.fields())
                 .fetchOne()
                 .map(getQuizFromRecordMapper());
     }
@@ -54,7 +59,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
                 .where(QUIZZES.ID.eq(id))
-                .returningResult(QUIZZES.ID, QUIZZES.TITLE, QUIZZES.ACTIVE, QUIZZES.DESCRIPTION, QUIZZES.AUTHOR_ID, QUIZZES.CREATION_DATE)
+                .returningResult(QUIZZES.fields())
                 .fetchOne()
                 .map(getQuizFromRecordMapper());
     }
@@ -73,6 +78,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .id(record.getValue(QUIZZES.ID))
                 .title(record.getValue(QUIZZES.TITLE))
                 .description(record.getValue(QUIZZES.DESCRIPTION))
+                .author(User.builder().id(record.getValue(QUIZZES.AUTHOR_ID)).build())
                 .active(record.getValue(QUIZZES.ACTIVE))
                 .creationDate(record.getValue(QUIZZES.CREATION_DATE).toLocalDateTime())
                 .build();

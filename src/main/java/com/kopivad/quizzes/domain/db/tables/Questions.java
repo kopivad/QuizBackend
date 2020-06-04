@@ -8,13 +8,25 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.QuestionsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.processing.Generated;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.processing.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row4;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -30,7 +42,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Questions extends TableImpl<QuestionsRecord> {
 
-    private static final long serialVersionUID = -34941823;
+    private static final long serialVersionUID = 1047769491;
 
     /**
      * The reference instance of <code>public.questions</code>
@@ -59,6 +71,11 @@ public class Questions extends TableImpl<QuestionsRecord> {
      * The column <code>public.questions.quiz_id</code>.
      */
     public final TableField<QuestionsRecord, Long> QUIZ_ID = createField(DSL.name("quiz_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.questions.type</code>.
+     */
+    public final TableField<QuestionsRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(25).nullable(false), this, "");
 
     /**
      * Create a <code>public.questions</code> table reference
@@ -154,11 +171,11 @@ public class Questions extends TableImpl<QuestionsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, String, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, String, Long, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

@@ -1,6 +1,8 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.domain.QuestionType;
+import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -12,7 +14,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Questions.QUESTIONS;
 
-@Repository("jooqQuestionRepository")
+@Repository
 @RequiredArgsConstructor
 public class QuestionRepositoryImpl implements QuestionRepository {
     private final DSLContext dslContext;
@@ -37,9 +39,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     @Override
     public Question save(Question question) {
         return dslContext
-                .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
-                .values(question.getTitle(), question.getQuiz().getId())
-                .returning(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
+                .insertInto(QUESTIONS)
+                .set(QUESTIONS.TITLE, question.getTitle())
+                .set(QUESTIONS.TYPE, question.getType().name())
+                .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
+                .returning(QUESTIONS.fields())
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
@@ -49,9 +53,10 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         return dslContext
                 .update(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
+                .set(QUESTIONS.TYPE, question.getType().name())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
                 .where(QUESTIONS.ID.eq(id))
-                .returningResult(QUESTIONS.ID, QUESTIONS.TITLE, QUESTIONS.QUIZ_ID)
+                .returningResult(QUESTIONS.fields())
                 .fetchOne()
                 .map(getQuestionFromRecordMapper());
     }
@@ -64,11 +69,22 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .execute();
     }
 
+    @Override
+    public List<Question> findByQuizId(Long id) {
+        return dslContext
+                .selectFrom(QUESTIONS)
+                .where(QUESTIONS.QUIZ_ID.eq(id))
+                .fetch()
+                .map(getQuestionFromRecordMapper());
+    }
+
     private RecordMapper<Record, Question> getQuestionFromRecordMapper() {
         return record -> Question
                 .builder()
                 .id(record.getValue(QUESTIONS.ID))
+                .type(QuestionType.valueOf(record.getValue(QUESTIONS.TYPE)))
                 .title(record.getValue(QUESTIONS.TITLE))
+                .quiz(Quiz.builder().id(record.getValue(QUESTIONS.QUIZ_ID)).build())
                 .build();
     }
 }

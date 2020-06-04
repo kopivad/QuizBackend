@@ -1,8 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.dto.QuizDto;
-import com.kopivad.quizzes.utils.DtoUtils;
+import com.kopivad.quizzes.form.QuizForm;
 import com.kopivad.quizzes.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quiz")
+@RequestMapping("api/quiz")
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public List<Quiz> getAll() {
         return quizService.getAll();
     }
@@ -26,13 +25,13 @@ public class QuizController {
     }
 
     @PostMapping()
-    public Quiz add(@RequestBody QuizDto quizDto) {
-        return quizService.save(DtoUtils.getQuizFromDto(quizDto));
+    public Quiz save(@RequestBody QuizForm quizForm) {
+        return quizService.save(quizForm);
     }
 
     @PutMapping("{id}")
-    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizDto quizDto) {
-        return quizService.update(id, DtoUtils.getQuizFromDto(quizDto));
+    public Quiz update(@PathVariable("id") Long id, @RequestBody QuizForm quizForm) {
+        return quizService.update(id, quizForm);
     }
 
     @DeleteMapping("{id}")

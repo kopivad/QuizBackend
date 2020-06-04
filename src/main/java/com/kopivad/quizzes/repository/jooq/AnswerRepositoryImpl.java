@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
 
-@Repository("jooqAnswerRepository")
+@Repository
 @RequiredArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
     private final DSLContext dslContext;
@@ -37,9 +38,11 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Override
     public Answer save(Answer answer) {
         return dslContext
-                .insertInto(ANSWERS, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
-                .values(answer.getText(), answer.isRight(), answer.getQuestion().getId())
-                .returning(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .insertInto(ANSWERS)
+                .set(ANSWERS.BODY, answer.getBody())
+                .set(ANSWERS.IS_RIGHT, answer.isRight())
+                .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
+                .returning(ANSWERS.fields())
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }
@@ -48,11 +51,11 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public Answer update(Long id, Answer answer) {
         return dslContext
                 .update(ANSWERS)
-                .set(ANSWERS.TEXT, answer.getText())
+                .set(ANSWERS.BODY, answer.getBody())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
                 .where(ANSWERS.ID.eq(id))
-                .returningResult(ANSWERS.ID, ANSWERS.TEXT, ANSWERS.IS_RIGHT, ANSWERS.QUESTION_ID)
+                .returningResult(ANSWERS.fields())
                 .fetchOne()
                 .map(getAnswerFromRecordMapper());
     }
@@ -65,11 +68,21 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .execute();
     }
 
+    @Override
+    public List<Answer> findByQuestionId(Long id) {
+        return dslContext
+                .selectFrom(ANSWERS)
+                .where(ANSWERS.QUESTION_ID.eq(id))
+                .fetch()
+                .map(getAnswerFromRecordMapper());
+    }
+
     private RecordMapper<Record, Answer> getAnswerFromRecordMapper() {
         return record -> Answer
                 .builder()
                 .id(record.getValue(ANSWERS.ID))
-                .text(record.getValue(ANSWERS.TEXT))
+                .body(record.getValue(ANSWERS.BODY))
+                .question(Question.builder().id(record.getValue(ANSWERS.QUESTION_ID)).build())
                 .isRight(record.getValue(ANSWERS.IS_RIGHT))
                 .build();
     }

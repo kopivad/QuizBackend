@@ -2,8 +2,8 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.repository.QuizRepository;
-import com.kopivad.quizzes.repository.utils.QuizUtils;
-import com.kopivad.quizzes.repository.utils.TestUtils;
+import com.kopivad.quizzes.utils.QuizUtils;
+import com.kopivad.quizzes.utils.TestUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -33,7 +33,7 @@ public class QuizRepositoryImplTest {
         List<Quiz> savedQuizzes = generatedQuizzes
                 .stream()
                 .map(quiz -> quizRepository.save(quiz))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<Quiz> quizzes = quizRepository.findAll();
 
         assertThat(savedQuizzes, notNullValue());
@@ -69,8 +69,8 @@ public class QuizRepositoryImplTest {
         String dataForUpdate = "some text";
         Quiz generatedQuiz = QuizUtils.generateQuiz();
         Quiz savedQuiz = quizRepository.save(generatedQuiz);
-        generatedQuiz.setTitle(dataForUpdate);
-        Quiz updatedQuiz = quizRepository.update(savedQuiz.getId(), generatedQuiz);
+        Quiz quizForUpdate = generatedQuiz.toBuilder().title(dataForUpdate).build();
+        Quiz updatedQuiz = quizRepository.update(savedQuiz.getId(), quizForUpdate);
 
 
         assertThat(savedQuiz, notNullValue());

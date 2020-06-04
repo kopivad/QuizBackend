@@ -1,11 +1,10 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.form.UserForm;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.repository.utils.QuizUtils;
-import com.kopivad.quizzes.repository.utils.UserUtils;
-import com.kopivad.quizzes.service.QuizService;
+import com.kopivad.quizzes.utils.FormUtils;
+import com.kopivad.quizzes.utils.UserUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -15,12 +14,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,8 +31,6 @@ public class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private QuizService quizService;
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -40,56 +39,59 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void getAllTest() {
-        List<User> userFromDB = UserUtils.generateUsers(10);
-        when(userRepository.findAll()).thenReturn(userFromDB);
-        List<User> users = userService.getAll();
-        assertThat(users, equalTo(userFromDB));
-        verify(userRepository, times(1)).findAll();
+    public void testGetAll() {
+        int size = 10;
+        List<User> expectedResult = UserUtils.generateUsers(size);
+        when(userRepository.findAll()).thenReturn(expectedResult);
+        List<User> actualResult = userService.getAll();
+        assertThat(actualResult, is(expectedResult));
+        verify(userRepository).findAll();
     }
 
     @Test
-    public void getByIdTest() {
-        User userFromDB = UserUtils.generateUser();
-        List<Quiz> userQuizzes = QuizUtils.generateQuizzes(10);
-        when(userRepository.findById(1L)).thenReturn(userFromDB);
-        when(quizService.getAll()).thenReturn(userQuizzes);
-        User user = userService.getById(1L);
-        assertThat(user, equalTo(userFromDB));
-        assertThat(user.getQuizzes(), equalTo(userQuizzes));
-        verify(userRepository, times(1)).findById(1L);
-        verify(quizService, times(1)).getAll();
+    public void testGetById() {
+        User expectedResult = UserUtils.generateUser();
+        when(userRepository.findById(eq(LONG_ONE))).thenReturn(expectedResult);
+        User actualResult = userService.getById(LONG_ONE);
+        assertThat(actualResult, is(expectedResult));
+        verify(userRepository).findById(LONG_ONE);
     }
 
     @Test
-    public void saveTest() {
-        User userForSave = UserUtils.generateUser();
-        User userFromDB = UserUtils.generateUser();
+    public void testSave() {
+        UserForm userForSave = UserUtils.generateUserForm();
+        User expectedResult = FormUtils.toUser(userForSave)
+                .toBuilder()
+                .creationDate(LocalDateTime.now())
+                .password(String.valueOf(UUID.randomUUID()))
+                .id(LONG_ONE)
+                .build();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.save(any())).thenReturn(userFromDB);
-        User savedUser = userService.save(userForSave);
-        assertThat(savedUser.getCreationDate(), notNullValue());
-        assertThat(savedUser.getPassword(), not(equalTo(userForSave.getPassword())));
-        verify(passwordEncoder, times(1)).encode(anyString());
-        verify(userRepository, times(1)).save(any());
+        when(userRepository.save(any())).thenReturn(expectedResult);
+        User actualResult = userService.save(userForSave);
+        assertThat(actualResult.getCreationDate(), notNullValue());
+        assertThat(actualResult, is(expectedResult));
+        verify(passwordEncoder).encode(anyString());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    public void update() {
-        User userForUpdate = UserUtils.generateUser();
-        User userFromDB = UserUtils.generateUser();
+    public void testUpdate() {
+        String dataForUpdate = "Name";
+        UserForm userForUpdate = UserUtils.generateUserForm().toBuilder().name(dataForUpdate).build();
+        User expectedResult = FormUtils.toUser(userForUpdate).toBuilder().id(LONG_ONE).build();
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.update(anyLong(), any())).thenReturn(userFromDB);
-        User updatedUser = userService.update(1L, userForUpdate);
-        assertThat(userForUpdate.getId(), equalTo(userFromDB.getId()));
-        assertThat(updatedUser, equalTo(userForUpdate));
-        verify(passwordEncoder, times(1)).encode(anyString());
-        verify(userRepository, times(1)).update(anyLong(), any());
+        when(userRepository.update(anyLong(), any())).thenReturn(expectedResult);
+        User actualResult = userService.update(LONG_ONE, userForUpdate);
+        assertThat(actualResult, is(expectedResult));
+        assertThat(actualResult.getName(), is(expectedResult.getName()));
+        verify(passwordEncoder).encode(anyString());
+        verify(userRepository).update(eq(LONG_ONE), any());
     }
 
     @Test
-    public void delete() {
-        userService.delete(1l);
-        verify(userRepository, times(1)).delete(anyLong());
+    public void testDelete() {
+        userService.delete(LONG_ONE);
+        verify(userRepository).delete(LONG_ONE);
     }
 }

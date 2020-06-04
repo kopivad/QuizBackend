@@ -8,8 +8,12 @@ import java.util.function.Function;
 
 public interface JwtService {
     String generateToken(UserDetails userDetails);
+
     Boolean validateToken(String token, UserDetails userDetails);
+
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
+
     Date extractExpiration(String token);
+
     String extractUsername(String token);
 }

@@ -4,7 +4,6 @@ import com.kopivad.quizzes.domain.api.ApiClient;
 import com.kopivad.quizzes.repository.ApiClientRepository;
 import com.kopivad.quizzes.service.ApiClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ApiClientServiceImpl implements ApiClientService {
-    @Qualifier("jooqApiClientRepository")
     private final ApiClientRepository clientRepository;
 
     @Override

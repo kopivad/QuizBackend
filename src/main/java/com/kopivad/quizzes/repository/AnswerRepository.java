@@ -14,4 +14,6 @@ public interface AnswerRepository {
     Answer update(Long id, Answer answer);
 
     void delete(Long id);
+
+    List<Answer> findByQuestionId(Long id);
 }

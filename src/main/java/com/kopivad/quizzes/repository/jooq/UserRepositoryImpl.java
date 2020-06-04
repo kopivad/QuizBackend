@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.repository.jooq;
 
+import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Usr.USR;
 
-@Repository("jooqUserRepository")
+@Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final DSLContext dslContext;
@@ -38,9 +39,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         return dslContext
-                .insertInto(USR, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
-                .values(user.getName(), user.getEmail(), user.getPassword(), user.getRole(), Timestamp.valueOf(user.getCreationDate()))
-                .returning(USR.ID, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
+                .insertInto(USR)
+                .set(USR.NAME, user.getName())
+                .set(USR.EMAIL, user.getEmail())
+                .set(USR.PASSWORD, user.getPassword())
+                .set(USR.ROLE, user.getRole().name())
+                .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
+                .returning(USR.fields())
                 .fetchOne()
                 .map(getUserFromRecordMapper());
     }
@@ -51,10 +56,10 @@ public class UserRepositoryImpl implements UserRepository {
                 .update(USR)
                 .set(USR.NAME, user.getName())
                 .set(USR.EMAIL, user.getEmail())
-                .set(USR.ROLE, user.getRole())
+                .set(USR.ROLE, user.getRole().name())
                 .set(USR.PASSWORD, user.getPassword())
                 .where(USR.ID.eq(id))
-                .returningResult(USR.ID, USR.NAME, USR.EMAIL, USR.PASSWORD, USR.ROLE, USR.CREATION_DATE)
+                .returningResult(USR.fields())
                 .fetchOne()
                 .map(getUserFromRecordMapper());
     }
@@ -82,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .id(record.getValue(USR.ID))
                 .name(record.getValue(USR.NAME))
                 .email(record.getValue(USR.EMAIL))
-                .role(record.getValue(USR.ROLE))
+                .role(Role.valueOf(record.getValue(USR.ROLE)))
                 .creationDate(record.getValue(USR.CREATION_DATE).toLocalDateTime())
                 .password(record.getValue(USR.PASSWORD))
                 .build();

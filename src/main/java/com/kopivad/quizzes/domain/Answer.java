@@ -2,28 +2,12 @@ package com.kopivad.quizzes.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "answers")
+@Value
 @EqualsAndHashCode(of = {"id"})
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(toBuilder = true)
 public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "text", nullable = false)
-    private String text;
-
-    @Column(name = "is_right", nullable = false)
-    private boolean isRight;
-
-    @ManyToOne()
-    private Question question;
+    Long id;
+    String body;
+    boolean isRight;
+    Question question;
 }

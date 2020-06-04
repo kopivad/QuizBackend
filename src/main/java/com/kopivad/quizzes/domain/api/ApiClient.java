@@ -4,29 +4,16 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-// $2a$08$JEuQgbBcAqLqAZz4si5JnOCbsWMaRgUDpcHACXG4sC7PYcOyci4c2
-
-@Entity
-@Table(name = "api_clients")
+@Value
 @EqualsAndHashCode(of = {"id"})
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder(toBuilder = true)
 public class ApiClient implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "username", nullable = false)
-    private String username;
-    @Column(name = "password", nullable = false)
-    private String password;
+    Long id;
+    String username;
+    String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

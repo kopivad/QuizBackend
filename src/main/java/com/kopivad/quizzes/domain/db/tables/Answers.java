@@ -8,13 +8,25 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.processing.Generated;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.processing.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row4;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -30,7 +42,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Answers extends TableImpl<AnswersRecord> {
 
-    private static final long serialVersionUID = -1317304395;
+    private static final long serialVersionUID = -1905162550;
 
     /**
      * The reference instance of <code>public.answers</code>
@@ -56,9 +68,9 @@ public class Answers extends TableImpl<AnswersRecord> {
     public final TableField<AnswersRecord, Boolean> IS_RIGHT = createField(DSL.name("is_right"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
-     * The column <code>public.answers.text</code>.
+     * The column <code>public.answers.body</code>.
      */
-    public final TableField<AnswersRecord, String> TEXT = createField(DSL.name("text"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<AnswersRecord, String> BODY = createField(DSL.name("body"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>public.answers.question_id</code>.

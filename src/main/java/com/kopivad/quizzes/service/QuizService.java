@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.form.QuizForm;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ public interface QuizService {
 
     Quiz getById(Long id);
 
-    Quiz save(Quiz quiz);
+    Quiz save(QuizForm quizForm);
 
-    Quiz update(Long id, Quiz quiz);
+    Quiz update(Long id, QuizForm quizForm);
 
     void delete(Long id);
 }

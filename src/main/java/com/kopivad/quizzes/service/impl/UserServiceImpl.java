@@ -1,25 +1,21 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.form.UserForm;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.service.QuizService;
 import com.kopivad.quizzes.service.UserService;
+import com.kopivad.quizzes.utils.FormUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Qualifier("jooqUserRepository")
     private final UserRepository userRepository;
-    private final QuizService quizService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -29,28 +25,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long id) {
-        User userFromDB = userRepository.findById(id);
-        List<Quiz> userQuizzes = quizService.getAll()
-                .stream()
-                .filter(q -> q.getAuthor().getId().equals(id))
-                .collect(Collectors.toList());
-        userFromDB.setQuizzes(userQuizzes);
-        return userFromDB;
+        return userRepository.findById(id);
     }
 
     @Override
-    public User save(User user) {
-        String userPassword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(userPassword));
-        user.setCreationDate(LocalDateTime.now());
-        return userRepository.save(user);
+    public User save(UserForm userForm) {
+        User user = FormUtils.toUser(userForm);
+        User userWithEncodedPassword = user
+                .toBuilder()
+                .password(passwordEncoder.encode(user.getPassword()))
+                .creationDate(LocalDateTime.now())
+                .build();
+        return userRepository.save(userWithEncodedPassword);
     }
 
     @Override
-    public User update(Long id, User user) {
-        String userPassword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(userPassword));
-        return userRepository.update(id, user);
+    public User update(Long id, UserForm userForm) {
+        User user = FormUtils.toUser(userForm);
+        User userWithEncodedPassword = user
+                .toBuilder()
+                .password(passwordEncoder.encode(userForm.getPassword()))
+                .build();
+        return userRepository.update(id, userWithEncodedPassword);
     }
 
     @Override

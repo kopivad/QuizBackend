@@ -2,8 +2,8 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.repository.AnswerRepository;
-import com.kopivad.quizzes.repository.utils.AnswerUtils;
-import com.kopivad.quizzes.repository.utils.TestUtils;
+import com.kopivad.quizzes.utils.AnswerUtils;
+import com.kopivad.quizzes.utils.TestUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -33,7 +33,7 @@ public class AnswerRepositoryImplTest {
         List<Answer> savedAnswers = generatedAnswers
                 .stream()
                 .map(answer -> answerRepository.save(answer))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
         List<Answer> allAnswers = answerRepository.findAll();
 
         assertThat(savedAnswers, notNullValue());
@@ -69,14 +69,14 @@ public class AnswerRepositoryImplTest {
         String dataForUpdate = "Some text";
         Answer generatedAnswer = AnswerUtils.generateAnswer();
         Answer savedAnswer = answerRepository.save(generatedAnswer);
-        generatedAnswer.setText(dataForUpdate);
-        Answer updatedUser = answerRepository.update(savedAnswer.getId(), generatedAnswer);
+        Answer answerWithText = generatedAnswer.toBuilder().body(dataForUpdate).build();
+        Answer updatedUser = answerRepository.update(savedAnswer.getId(), answerWithText);
 
 
         assertThat(savedAnswer, notNullValue());
         assertThat(updatedUser, notNullValue());
         assertThat(updatedUser.getId(), equalTo(updatedUser.getId()));
-        assertThat(savedAnswer.getText(), not(equalTo(updatedUser.getText())));
+        assertThat(savedAnswer.getBody(), not(equalTo(updatedUser.getBody())));
     }
 
     @Test
