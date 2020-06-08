@@ -73,29 +73,29 @@ buildNumber.properties
 hs_err_pid*
 
 # misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
+src/main/resources/static/ng-quizzes/.sass-cache
+src/main/resources/static/ng-quizzes/connect.lock
+src/main/resources/static/ng-quizzes/coverage
+src/main/resources/static/ng-quizzes/libpeerconnection.log
+src/main/resources/static/ng-quizzesnpm-debug.log
+src/main/resources/static/ng-quizzesyarn-error.log
+src/main/resources/static/ng-quizzestestem.log
+src/main/resources/static/ng-quizzes/typings
 
 # System Files
 .DS_Store
 Thumbs.db
 
 # compiled output
-/dist
-/tmp
-/out-tsc
+src/main/resources/static/ng-quizzes/dist
+src/main/resources/static/ng-quizzes/tmp
+src/main/resources/static/ng-quizzes/out-tsc
 # Only exists if Bazel was run
-/bazel-out
+src/main/resources/static/ng-quizzes/bazel-out
 
 # dependencies
-/node_modules
+src/main/resources/static/ng-quizzes/node_modules
 
 # profiling files
-chrome-profiler-events*.json
-speed-measure-plugin*.json
+src/main/resources/static/ng-quizzes/chrome-profiler-events*.json
+src/main/resources/static/ng-quizzes/speed-measure-plugin*.json
