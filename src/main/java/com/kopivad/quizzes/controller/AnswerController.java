@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/answer")
+@RequestMapping("api/v1/answer")
 @RequiredArgsConstructor
 public class AnswerController {
     private final AnswerService answerService;

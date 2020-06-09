@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/quiz")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("api/v1/quiz")
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
