@@ -1,0 +1,43 @@
+<div class="quiz-form">
+  <h2>Create quiz</h2>
+  <form>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <input
+            [(ngModel)]="model.title"
+            type="text"
+            class="form-control"
+            placeholder="Title"
+            name="title"
+          >
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <input
+            [(ngModel)]="model.description"
+            type="text"
+            class="form-control"
+            placeholder="Title"
+            name="description"
+          >
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <input
+            [(ngModel)]="model.total"
+            type="text"
+            class="form-control"
+            placeholder="Total"
+            name="total"
+          >
+        </div>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" (click)="addQuiz()">Add quiz</button>
+      </div>
+    </div>
+  </form>
+</div>
