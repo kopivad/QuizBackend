@@ -49,6 +49,7 @@ public class FormUtils {
                 .builder()
                 .title(form.getTitle())
                 .description(form.getDescription())
+                .total(form.getTotal())
                 .author(User.builder().id(form.getAuthorId()).build())
                 .questions(FormUtils.toQuestionList(form.getQuestions()))
                 .build();
@@ -58,6 +59,7 @@ public class FormUtils {
         return Question
                 .builder()
                 .title(from.getTitle())
+                .value(from.getValue())
                 .type(from.getType())
                 .quiz(Quiz.builder().id(from.getQuizId()).build())
                 .answers(FormUtils.toAnswerList(from.getAnswers()))

@@ -11,6 +11,7 @@ public class QuizForm {
     String title;
     boolean active;
     String description;
+    int total;
     List<QuestionForm> questions;
     Long authorId;
 }

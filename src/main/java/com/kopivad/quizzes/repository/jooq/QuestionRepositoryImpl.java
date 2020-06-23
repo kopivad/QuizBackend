@@ -42,6 +42,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .insertInto(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
                 .set(QUESTIONS.TYPE, question.getType().name())
+                .set(QUESTIONS.VALUE, question.getValue())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
                 .returning(QUESTIONS.fields())
                 .fetchOne()
@@ -54,6 +55,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .update(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
                 .set(QUESTIONS.TYPE, question.getType().name())
+                .set(QUESTIONS.VALUE, question.getValue())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
                 .where(QUESTIONS.ID.eq(id))
                 .returningResult(QUESTIONS.fields())
@@ -83,6 +85,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .builder()
                 .id(record.getValue(QUESTIONS.ID))
                 .type(QuestionType.valueOf(record.getValue(QUESTIONS.TYPE)))
+                .value(record.getValue(QUESTIONS.VALUE))
                 .title(record.getValue(QUESTIONS.TITLE))
                 .quiz(Quiz.builder().id(record.getValue(QUESTIONS.QUIZ_ID)).build())
                 .build();
