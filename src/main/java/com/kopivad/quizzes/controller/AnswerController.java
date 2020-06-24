@@ -1,7 +1,6 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.form.AnswerForm;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +24,13 @@ public class AnswerController {
     }
 
     @PostMapping()
-    public Answer add(@RequestBody AnswerForm answerForm) {
-        return answerService.save(answerForm);
+    public Answer add(@RequestBody Answer answer) {
+        return answerService.save(answer);
     }
 
     @PutMapping("{id}")
-    public Answer update(@PathVariable("id") Long id, @RequestBody AnswerForm answerForm) {
-        return answerService.update(id, answerForm);
+    public Answer update(@PathVariable("id") Long id, @RequestBody Answer answer) {
+        return answerService.update(id, answer);
     }
 
     @DeleteMapping("{id}")

@@ -10,9 +10,9 @@ public interface QuestionService {
 
     Question getById(Long id);
 
-    Question save(QuestionForm questionForm);
+    Question save(Question question);
 
-    Question update(Long id, QuestionForm questionForm);
+    Question update(Long id, Question question);
 
     void delete(Long id);
 

@@ -57,24 +57,22 @@ class AnswerServiceImplTest {
 
     @Test
     void testSave() {
-        AnswerForm answerForSave = AnswerUtils.generateAnswerForm();
-        Answer expectedResult = FormUtils.toAnswer(answerForSave);
+        Answer expectedResult = AnswerUtils.generateAnswer();
         when(answerRepository.save(any())).thenReturn(expectedResult);
-        Answer actualResult = answerService.save(answerForSave);
+        Answer actualResult = answerService.save(expectedResult);
         assertThat(actualResult, is(expectedResult));
         verify(answerRepository).save(any());
     }
 
     @Test
     void testUpdate() {
-        AnswerForm answerForUpdate = AnswerUtils.generateAnswerForm();
+        Answer answerForUpdate = AnswerUtils.generateAnswer();
         String dataForUpdate = "Body";
-        AnswerForm answerWithUpdatedData = answerForUpdate.toBuilder().body(dataForUpdate).build();
-        Answer expectedResult = FormUtils.toAnswer(answerWithUpdatedData);
-        when(answerRepository.update(anyLong(), any())).thenReturn(expectedResult);
+        Answer expectedResult = answerForUpdate.toBuilder().body(dataForUpdate).build();
+        when(answerRepository.update(anyLong(), any())).thenReturn(answerForUpdate);
         Answer actualResult = answerService.update(LONG_ONE, answerForUpdate);
         assertThat(actualResult, is(expectedResult));
-        assertThat(actualResult.getBody(), is(expectedResult.getBody()));
+        assertThat(actualResult.getBody(), is(answerForUpdate.getBody()));
         verify(answerRepository).update(eq(LONG_ONE), any());
     }
 

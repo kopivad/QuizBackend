@@ -52,17 +52,17 @@ public class QuestionUtils {
                 .build();
     }
 
-    public static QuestionForm generateQuestionFormWithAnswers() {
+    public static Question generateQuestionWithAnswers() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
-        QuestionForm questionForm = QuestionForm
+        Question question = Question
                 .builder()
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
-                .quizId(LONG_ONE)
+                .quiz(Quiz.builder().id(LONG_ONE).build())
                 .build();
         int size = 10;
-        return questionForm.toBuilder().answers(AnswerUtils.generateAnswerForms(size)).build();
+        return question.toBuilder().answers(AnswerUtils.generateAnswers(size)).build();
     }
 }

@@ -2,11 +2,9 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.form.QuizForm;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.service.QuestionService;
 import com.kopivad.quizzes.service.QuizService;
-import com.kopivad.quizzes.utils.FormUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -34,8 +32,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz save(QuizForm quizForm) {
-        Quiz quiz = FormUtils.toQuiz(quizForm);
+    public Quiz save(Quiz quiz) {
         Quiz quizWithCreationDate = quiz.toBuilder().creationDate(LocalDateTime.now()).build();
         Quiz savedQuiz = quizRepository.save(quizWithCreationDate);
         if (ObjectUtils.isNotEmpty(quiz.getQuestions())) {
@@ -47,8 +44,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz update(Long id, QuizForm quizForm) {
-        Quiz quiz = FormUtils.toQuiz(quizForm);
+    public Quiz update(Long id, Quiz quiz) {
         return quizRepository.update(id, quiz);
     }
 

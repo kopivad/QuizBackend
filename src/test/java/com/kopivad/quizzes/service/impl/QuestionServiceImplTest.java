@@ -2,10 +2,8 @@ package com.kopivad.quizzes.service.impl;
 
 
 import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.form.QuestionForm;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.AnswerService;
-import com.kopivad.quizzes.utils.FormUtils;
 import com.kopivad.quizzes.utils.QuestionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,31 +50,23 @@ class QuestionServiceImplTest {
 
     @Test
     void testSaveQuestion() {
-        QuestionForm questionForSave = QuestionUtils.generateQuestionFormWithAnswers();
-        Question expectedResult = FormUtils.toQuestion(questionForSave)
-                .toBuilder()
-                .id(LONG_ONE)
-                .build();
-        when(questionRepository.save(FormUtils.toQuestion(questionForSave))).thenReturn(expectedResult);
+        Question expectedResult = QuestionUtils.generateQuestionWithAnswers();
+        when(questionRepository.save(any())).thenReturn(expectedResult);
         when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
-        Question actualResult = questionService.save(questionForSave);
+        Question actualResult = questionService.save(expectedResult);
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getAnswers(), expectedResult.getAnswers());
-        assertThat(actualResult.getQuiz(), is(expectedResult.getQuiz()));
+        assertThat(actualResult.getQuiz(), equalTo(expectedResult.getQuiz()));
         verify(questionRepository).save(any());
         verify(answerService).saveAll(expectedResult.getAnswers());
     }
 
     @Test
     void testSaveQuestionWithNullAnswers() {
-        QuestionForm questionForSave = QuestionUtils.generateQuestionForm();
-        Question expectedResult = FormUtils.toQuestion(questionForSave)
-                .toBuilder()
-                .id(LONG_ONE)
-                .build();
+        Question expectedResult = QuestionUtils.generateQuestion();
         when(questionRepository.save(any())).thenReturn(expectedResult);
         when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
-        Question actualResult = questionService.save(questionForSave);
+        Question actualResult = questionService.save(expectedResult);
         assertThat(actualResult, is(expectedResult));
         assertEquals(actualResult.getAnswers(), expectedResult.getAnswers());
         assertThat(actualResult.getQuiz(), equalTo(expectedResult.getQuiz()));
@@ -86,17 +76,13 @@ class QuestionServiceImplTest {
 
     @Test
     void testGetQuizById() {
-        QuestionForm questionForSave = QuestionUtils.generateQuestionFormWithAnswers();
-        Question savedQuestion = FormUtils.toQuestion(questionForSave)
-                .toBuilder()
-                .id(LONG_ONE)
-                .build();
-        when(questionRepository.save(any())).thenReturn(savedQuestion);
-        when(questionRepository.findById(eq(LONG_ONE))).thenReturn(savedQuestion);
-        when(answerService.getByQuestionId(LONG_ONE)).thenReturn(savedQuestion.getAnswers());
-        when(answerService.saveAll(savedQuestion.getAnswers())).thenReturn(savedQuestion.getAnswers());
+        Question dataForSave = QuestionUtils.generateQuestionWithAnswers();
+        when(questionRepository.save(any())).thenReturn(dataForSave);
+        when(questionRepository.findById(eq(LONG_ONE))).thenReturn(dataForSave);
+        when(answerService.getByQuestionId(LONG_ONE)).thenReturn(dataForSave.getAnswers());
+        when(answerService.saveAll(dataForSave.getAnswers())).thenReturn(dataForSave.getAnswers());
 
-        Question expectedResult = questionService.save(questionForSave);
+        Question expectedResult = questionService.save(dataForSave);
         Question actualResult = questionService.getById(expectedResult.getId());
 
         assertThat(actualResult, notNullValue());
@@ -106,17 +92,16 @@ class QuestionServiceImplTest {
         verify(questionRepository).save(any());
         verify(questionRepository).findById(LONG_ONE);
         verify(answerService).getByQuestionId(LONG_ONE);
-        verify(answerService).saveAll(expectedResult.getAnswers());
+        verify(answerService).saveAll(dataForSave.getAnswers());
     }
 
     @Test
     void testUpdate() {
-        QuestionForm questionForUpdate = QuestionUtils.generateQuestionForm();
+        Question questionForUpdate = QuestionUtils.generateQuestion();
         String dataForUpdate = "Title";
-        QuestionForm questionWithUpdatedData = questionForUpdate.toBuilder().title(dataForUpdate).build();
-        Question expectedResult = FormUtils.toQuestion(questionWithUpdatedData.toBuilder().title(dataForUpdate).build());
+        Question expectedResult = questionForUpdate.toBuilder().title(dataForUpdate).build();
         when(questionRepository.update(eq(LONG_ONE), any())).thenReturn(expectedResult);
-        Question actualResult = questionService.update(LONG_ONE, questionWithUpdatedData);
+        Question actualResult = questionService.update(LONG_ONE, expectedResult);
         assertThat(actualResult, is(expectedResult));
         assertThat(actualResult.getTitle(), not(questionForUpdate.getTitle()));
         verify(questionRepository).update(eq(LONG_ONE), any());
