@@ -6,11 +6,13 @@ package com.kopivad.quizzes.domain.db;
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
+import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Questions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
 import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
 import com.kopivad.quizzes.domain.db.tables.records.ApiClientsRecord;
+import com.kopivad.quizzes.domain.db.tables.records.EvaluationStepsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuestionsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
@@ -18,6 +20,7 @@ import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
 import javax.annotation.processing.Generated;
 
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
 
@@ -40,6 +43,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<EvaluationStepsRecord, Long> IDENTITY_EVALUATION_STEPS = Identities0.IDENTITY_EVALUATION_STEPS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -47,6 +51,7 @@ public class Keys {
 
     public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = UniqueKeys0.ANSWERS_PKEY;
     public static final UniqueKey<ApiClientsRecord> API_CLIENTS_PKEY = UniqueKeys0.API_CLIENTS_PKEY;
+    public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = UniqueKeys0.EVALUATION_STEPS_PK;
     public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = UniqueKeys0.QUESTIONS_PKEY;
     public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = UniqueKeys0.QUIZZES_PKEY;
     public static final UniqueKey<UsrRecord> USR_PKEY = UniqueKeys0.USR_PKEY;
@@ -56,6 +61,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_FK = ForeignKeys0.ANSWERS__ANSWERS_QUESTIONS_FK;
+    public static final ForeignKey<EvaluationStepsRecord, QuizzesRecord> EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK = ForeignKeys0.EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK;
     public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_FK = ForeignKeys0.QUESTIONS__QUESTIONS_QUIZZES_FK;
     public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = ForeignKeys0.QUIZZES__QUIZZES_USR_FK;
 
@@ -63,9 +69,14 @@ public class Keys {
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
+    private static class Identities0 {
+        public static Identity<EvaluationStepsRecord, Long> IDENTITY_EVALUATION_STEPS = Internal.createIdentity(EvaluationSteps.EVALUATION_STEPS, EvaluationSteps.EVALUATION_STEPS.ID);
+    }
+
     private static class UniqueKeys0 {
         public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = Internal.createUniqueKey(Answers.ANSWERS, "answers_pkey", Answers.ANSWERS.ID);
         public static final UniqueKey<ApiClientsRecord> API_CLIENTS_PKEY = Internal.createUniqueKey(ApiClients.API_CLIENTS, "api_clients_pkey", ApiClients.API_CLIENTS.ID);
+        public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = Internal.createUniqueKey(EvaluationSteps.EVALUATION_STEPS, "evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS.ID);
         public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = Internal.createUniqueKey(Questions.QUESTIONS, "questions_pkey", Questions.QUESTIONS.ID);
         public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = Internal.createUniqueKey(Quizzes.QUIZZES, "quizzes_pkey", Quizzes.QUIZZES.ID);
         public static final UniqueKey<UsrRecord> USR_PKEY = Internal.createUniqueKey(Usr.USR, "usr_pkey", Usr.USR.ID);
@@ -73,6 +84,7 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUESTIONS_PKEY, Answers.ANSWERS, "answers__answers_questions_fk", Answers.ANSWERS.QUESTION_ID);
+        public static final ForeignKey<EvaluationStepsRecord, QuizzesRecord> EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, EvaluationSteps.EVALUATION_STEPS, "evaluation_steps__evaluation_steps_quizzes_id_fk", EvaluationSteps.EVALUATION_STEPS.QUIZ_ID);
         public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, Questions.QUESTIONS, "questions__questions_quizzes_fk", Questions.QUESTIONS.QUIZ_ID);
         public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, Quizzes.QUIZZES, "quizzes__quizzes_usr_fk", Quizzes.QUIZZES.AUTHOR_ID);
     }

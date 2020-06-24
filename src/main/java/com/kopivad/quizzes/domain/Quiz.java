@@ -19,4 +19,5 @@ public class Quiz {
     LocalDateTime creationDate;
     User author;
     List<Question> questions;
+    List<EvaluationStep> evaluationSteps;
 }

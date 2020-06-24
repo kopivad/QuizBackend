@@ -6,6 +6,7 @@ package com.kopivad.quizzes.domain.db;
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
+import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Questions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
@@ -17,6 +18,7 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -34,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -8304350;
+    private static final long serialVersionUID = -968720855;
 
     /**
      * The reference instance of <code>public</code>
@@ -50,6 +52,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.api_clients</code>.
      */
     public final ApiClients API_CLIENTS = com.kopivad.quizzes.domain.db.tables.ApiClients.API_CLIENTS;
+
+    /**
+     * The table <code>public.evaluation_steps</code>.
+     */
+    public final EvaluationSteps EVALUATION_STEPS = com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
 
     /**
      * The table <code>public.questions</code>.
@@ -80,6 +87,23 @@ public class Public extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        List result = new ArrayList();
+        result.addAll(getSequences0());
+        return result;
+    }
+
+    private final List<Sequence<?>> getSequences0() {
+        return Arrays.<Sequence<?>>asList(
+            Sequences.ANSWERS_ID_SEQ,
+            Sequences.API_CLIENTS_ID_SEQ,
+            Sequences.EVALUATION_STEPS_ID_SEQ,
+            Sequences.QUESTIONS_ID_SEQ,
+            Sequences.QUIZZES_ID_SEQ,
+            Sequences.USR_ID_SEQ);
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         List result = new ArrayList();
         result.addAll(getTables0());
@@ -90,6 +114,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Answers.ANSWERS,
             ApiClients.API_CLIENTS,
+            EvaluationSteps.EVALUATION_STEPS,
             Questions.QUESTIONS,
             Quizzes.QUIZZES,
             Usr.USR);
