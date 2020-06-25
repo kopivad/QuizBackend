@@ -46,6 +46,7 @@ class QuestionServiceImplTest {
         when(questionRepository.findAll()).thenReturn(expectedResult);
         List<Question> actualResult = questionService.getAll();
         assertEquals(expectedResult, actualResult);
+        verify(questionRepository).findAll();
     }
 
     @Test
@@ -55,8 +56,6 @@ class QuestionServiceImplTest {
         when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
         Question actualResult = questionService.save(expectedResult);
         assertThat(actualResult, is(expectedResult));
-        assertEquals(actualResult.getAnswers(), expectedResult.getAnswers());
-        assertThat(actualResult.getQuiz(), equalTo(expectedResult.getQuiz()));
         verify(questionRepository).save(any());
         verify(answerService).saveAll(expectedResult.getAnswers());
     }
@@ -68,8 +67,6 @@ class QuestionServiceImplTest {
         when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
         Question actualResult = questionService.save(expectedResult);
         assertThat(actualResult, is(expectedResult));
-        assertEquals(actualResult.getAnswers(), expectedResult.getAnswers());
-        assertThat(actualResult.getQuiz(), equalTo(expectedResult.getQuiz()));
         verify(questionRepository).save(any());
         verify(answerService, never()).saveAll(any());
     }
@@ -85,9 +82,7 @@ class QuestionServiceImplTest {
         Question expectedResult = questionService.save(dataForSave);
         Question actualResult = questionService.getById(expectedResult.getId());
 
-        assertThat(actualResult, notNullValue());
         assertThat(actualResult, is(expectedResult));
-        assertEquals(actualResult.getAnswers(), expectedResult.getAnswers());
 
         verify(questionRepository).save(any());
         verify(questionRepository).findById(LONG_ONE);
@@ -103,7 +98,6 @@ class QuestionServiceImplTest {
         when(questionRepository.update(eq(LONG_ONE), any())).thenReturn(expectedResult);
         Question actualResult = questionService.update(LONG_ONE, expectedResult);
         assertThat(actualResult, is(expectedResult));
-        assertThat(actualResult.getTitle(), not(questionForUpdate.getTitle()));
         verify(questionRepository).update(eq(LONG_ONE), any());
     }
 

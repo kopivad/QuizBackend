@@ -72,7 +72,6 @@ class AnswerServiceImplTest {
         when(answerRepository.update(anyLong(), any())).thenReturn(answerForUpdate);
         Answer actualResult = answerService.update(LONG_ONE, answerForUpdate);
         assertThat(actualResult, is(expectedResult));
-        assertThat(actualResult.getBody(), is(answerForUpdate.getBody()));
         verify(answerRepository).update(eq(LONG_ONE), any());
     }
 
