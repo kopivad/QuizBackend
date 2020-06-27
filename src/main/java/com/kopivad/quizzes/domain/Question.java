@@ -10,6 +10,7 @@ import java.util.List;
 public class Question {
     Long id;
     String title;
+    int value;
     QuestionType type;
     List<Answer> answers;
     Quiz quiz;

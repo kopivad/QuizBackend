@@ -69,7 +69,6 @@ public class UserServiceImplTest {
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
         when(userRepository.save(any())).thenReturn(expectedResult);
         User actualResult = userService.save(userForSave);
-        assertThat(actualResult.getCreationDate(), notNullValue());
         assertThat(actualResult, is(expectedResult));
         verify(passwordEncoder).encode(anyString());
         verify(userRepository).save(any(User.class));
@@ -83,7 +82,6 @@ public class UserServiceImplTest {
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
         when(userRepository.update(anyLong(), any())).thenReturn(expectedResult);
         User actualResult = userService.update(LONG_ONE, userForUpdate);
-        assertThat(actualResult, is(expectedResult));
         assertThat(actualResult.getName(), is(expectedResult.getName()));
         verify(passwordEncoder).encode(anyString());
         verify(userRepository).update(eq(LONG_ONE), any());

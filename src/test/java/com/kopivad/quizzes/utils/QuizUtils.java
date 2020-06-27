@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.utils;
 
+import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.form.QuestionForm;
@@ -57,20 +58,20 @@ public class QuizUtils {
                 .build();
     }
 
-    public static QuizForm generateQuizFormWithQuestions() {
+    public static Quiz generateQuizWithQuestions() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
-        QuizForm quizForm = QuizForm
+        Quiz quiz = Quiz
                 .builder()
                 .title(textProducer.randomString(charsCount))
                 .description(textProducer.randomString(charsCount))
                 .active(true)
-                .authorId(LONG_ONE)
+                .author(User.builder().id(LONG_ONE).build())
                 .build();
 
         int size = 10;
-        List<QuestionForm> questionForms = QuestionUtils.generateQuestionForms(size);
-        return quizForm.toBuilder().questions(questionForms).build();
+        List<Question> questions = QuestionUtils.generateQuestions(size);
+        return quiz.toBuilder().questions(questions).build();
     }
 }

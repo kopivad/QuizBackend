@@ -1,10 +1,8 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.form.AnswerForm;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import com.kopivad.quizzes.service.AnswerService;
-import com.kopivad.quizzes.utils.FormUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +25,12 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Answer save(AnswerForm answerForm) {
-        Answer answer = FormUtils.toAnswer(answerForm);
+    public Answer save(Answer answer) {
         return answerRepository.save(answer);
     }
 
     @Override
-    public Answer update(Long id, AnswerForm answerForm) {
-        Answer answer = FormUtils.toAnswer(answerForm);
+    public Answer update(Long id, Answer answer) {
         return answerRepository.update(id, answer);
     }
 
@@ -52,7 +48,7 @@ public class AnswerServiceImpl implements AnswerService {
     public List<Answer> saveAll(List<Answer> answers) {
         return answers
                 .stream()
-                .map(answerRepository::save)
+                .map(this::save)
                 .collect(Collectors.toUnmodifiableList());
     }
 }

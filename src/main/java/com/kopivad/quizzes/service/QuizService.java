@@ -10,9 +10,9 @@ public interface QuizService {
 
     Quiz getById(Long id);
 
-    Quiz save(QuizForm quizForm);
+    Quiz save(Quiz quiz);
 
-    Quiz update(Long id, QuizForm quizForm);
+    Quiz update(Long id, Quiz quiz);
 
     void delete(Long id);
 }

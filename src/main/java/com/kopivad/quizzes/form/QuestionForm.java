@@ -11,6 +11,7 @@ import java.util.List;
 public class QuestionForm {
     String title;
     QuestionType type;
+    int value;
     Long quizId;
     List<AnswerForm> answers;
 }

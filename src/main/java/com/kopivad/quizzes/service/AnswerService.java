@@ -10,9 +10,9 @@ public interface AnswerService {
 
     Answer getById(Long id);
 
-    Answer save(AnswerForm answerForm);
+    Answer save(Answer answer);
 
-    Answer update(Long id, AnswerForm answerForm);
+    Answer update(Long id, Answer answer);
 
     void delete(Long id);
 
