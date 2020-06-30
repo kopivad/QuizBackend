@@ -1,4 +1,4 @@
-package com.kopivad.quizzes.form;
+package com.kopivad.quizzes.dto;
 
 import lombok.Value;
 
