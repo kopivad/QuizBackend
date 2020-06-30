@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -36,36 +37,36 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     }
 
     @Override
-    public Answer save(Answer answer) {
+    public long save(Answer answer) {
         return dslContext
                 .insertInto(ANSWERS)
                 .set(ANSWERS.BODY, answer.getBody())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
-                .returning(ANSWERS.fields())
+                .returning(ANSWERS.ID)
                 .fetchOne()
-                .map(getAnswerFromRecordMapper());
+                .getId();
     }
 
     @Override
-    public Answer update(Long id, Answer answer) {
-        return dslContext
+    public boolean update(Answer answer) {
+        int affectedRows = dslContext
                 .update(ANSWERS)
                 .set(ANSWERS.BODY, answer.getBody())
                 .set(ANSWERS.IS_RIGHT, answer.isRight())
                 .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
-                .where(ANSWERS.ID.eq(id))
-                .returningResult(ANSWERS.fields())
-                .fetchOne()
-                .map(getAnswerFromRecordMapper());
+                .where(ANSWERS.ID.eq(answer.getId()))
+                .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public void delete(Long id) {
-        dslContext
+    public boolean delete(Long id) {
+        int affectedRows = dslContext
                 .deleteFrom(ANSWERS)
                 .where(ANSWERS.ID.eq(id))
                 .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -75,6 +76,15 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .where(ANSWERS.QUESTION_ID.eq(id))
                 .fetch()
                 .map(getAnswerFromRecordMapper());
+    }
+
+    @Override
+    public boolean saveAll(List<Answer> answers) {
+        long count = answers
+                .stream()
+                .map(this::save)
+                .count();
+        return count > INTEGER_ZERO;
     }
 
     private RecordMapper<Record, Answer> getAnswerFromRecordMapper() {

@@ -9,11 +9,13 @@ public interface AnswerRepository {
 
     Answer findById(Long id);
 
-    Answer save(Answer answer);
+    long save(Answer answer);
 
-    Answer update(Long id, Answer answer);
+    boolean update(Answer answer);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     List<Answer> findByQuestionId(Long id);
+
+    boolean saveAll(List<Answer> answers);
 }

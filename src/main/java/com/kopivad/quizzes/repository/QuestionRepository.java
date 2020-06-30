@@ -9,11 +9,13 @@ public interface QuestionRepository {
 
     Question findById(Long id);
 
-    Question save(Question question);
+    long save(Question question);
 
-    Question update(Long id, Question question);
+    boolean update(Question question);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     List<Question> findByQuizId(Long id);
+
+    boolean saveAll(List<Question> questions);
 }

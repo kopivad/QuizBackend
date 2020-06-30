@@ -2,6 +2,7 @@ package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.repository.RoleRepository;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -13,11 +14,13 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Usr.USR;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final DSLContext dslContext;
+    private final RoleRepository roleRepository;
 
     @Override
     public List<User> findAll() {
@@ -37,39 +40,43 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        return dslContext
+    public long save(User user) {
+        Long id = dslContext
                 .insertInto(USR)
                 .set(USR.NAME, user.getName())
                 .set(USR.EMAIL, user.getEmail())
                 .set(USR.PASSWORD, user.getPassword())
-                .set(USR.ROLE, user.getRole().name())
                 .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
-                .returning(USR.fields())
+                .returning(USR.ID)
                 .fetchOne()
-                .map(getUserFromRecordMapper());
+                .getId();
+
+        roleRepository.save(id, user.getRole());
+
+        return id;
     }
 
     @Override
-    public User update(Long id, User user) {
-        return dslContext
+    public boolean update(User user) {
+        int affectedRows = dslContext
                 .update(USR)
                 .set(USR.NAME, user.getName())
                 .set(USR.EMAIL, user.getEmail())
-                .set(USR.ROLE, user.getRole().name())
                 .set(USR.PASSWORD, user.getPassword())
-                .where(USR.ID.eq(id))
-                .returningResult(USR.fields())
-                .fetchOne()
-                .map(getUserFromRecordMapper());
+                .where(USR.ID.eq(user.getId()))
+                .execute();
+
+        roleRepository.update(user.getId(), user.getRole());
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public void delete(Long id) {
-        dslContext
+    public boolean delete(Long id) {
+        int affectedRows = dslContext
                 .delete(USR)
                 .where(USR.ID.eq(id))
                 .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -87,7 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .id(record.getValue(USR.ID))
                 .name(record.getValue(USR.NAME))
                 .email(record.getValue(USR.EMAIL))
-                .role(Role.valueOf(record.getValue(USR.ROLE)))
+                .role(roleRepository.findByUserId(record.getValue(USR.ID)))
                 .creationDate(record.getValue(USR.CREATION_DATE).toLocalDateTime())
                 .password(record.getValue(USR.PASSWORD))
                 .build();

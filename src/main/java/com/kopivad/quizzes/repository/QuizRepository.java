@@ -9,9 +9,9 @@ public interface QuizRepository {
 
     Quiz findById(Long id);
 
-    Quiz save(Quiz quiz);
+    long save(Quiz quiz);
 
-    Quiz update(Long id, Quiz quiz);
+    boolean update(Quiz quiz);
 
-    void delete(Long id);
+    boolean delete(Long id);
 }
