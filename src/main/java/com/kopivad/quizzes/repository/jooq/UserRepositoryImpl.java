@@ -1,6 +1,5 @@
 package com.kopivad.quizzes.repository.jooq;
 
-import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.RoleRepository;
 import com.kopivad.quizzes.repository.UserRepository;
@@ -52,7 +51,6 @@ public class UserRepositoryImpl implements UserRepository {
                 .getId();
 
         roleRepository.save(id, user.getRole());
-
         return id;
     }
 

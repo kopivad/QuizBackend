@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizSessions.QUIZ_SESSIONS;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,25 +33,33 @@ public class QuizSessionRepositoryImpl implements QuizSessionRepository {
     }
 
     @Override
-    public QuizSession update(QuizSession quizSession) {
-        return dslContext
+    public boolean update(QuizSession quizSession) {
+        int affectedRows = dslContext
                 .update(QUIZ_SESSIONS)
                 .set(QUIZ_SESSIONS.USER_ID, quizSession.getUser().getId())
                 .set(QUIZ_SESSIONS.QUIZ_ID, quizSession.getQuiz().getId())
                 .set(QUIZ_SESSIONS.DATE, Timestamp.valueOf(quizSession.getDate()))
                 .where(QUIZ_SESSIONS.ID.eq(quizSession.getId()))
-                .returning(QUIZ_SESSIONS.fields())
-                .fetchOne()
-                .map(getQuizSessionRecordMapper());
+                .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
-    private RecordMapper<Record, QuizSession> getQuizSessionRecordMapper() {
+    @Override
+    public QuizSession findById(long sessionId) {
+        return dslContext
+                .selectFrom(QUIZ_SESSIONS)
+                .where(QUIZ_SESSIONS.ID.eq(sessionId))
+                .fetchOne()
+                .map(getRecordQuizSessionRecordMapper());
+    }
+
+    public RecordMapper<Record, QuizSession> getRecordQuizSessionRecordMapper() {
         return r -> QuizSession
-                .builder()
-                .id(r.getValue(QUIZ_SESSIONS.ID))
-                .date(r.getValue(QUIZ_SESSIONS.DATE).toLocalDateTime())
-                .quiz(Quiz.builder().id(r.getValue(QUIZ_SESSIONS.QUIZ_ID)).build())
-                .user(User.builder().id(r.getValue(QUIZ_SESSIONS.USER_ID)).build())
-                .build();
+                    .builder()
+                    .id(r.getValue(QUIZ_SESSIONS.ID))
+                    .date(r.getValue(QUIZ_SESSIONS.DATE).toLocalDateTime())
+                    .user(User.builder().id(r.getValue(QUIZ_SESSIONS.USER_ID)).build())
+                    .quiz(Quiz.builder().id(r.getValue(QUIZ_SESSIONS.QUIZ_ID)).build())
+                    .build();
     }
 }

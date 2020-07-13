@@ -2,6 +2,12 @@ package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.QuizHistory;
 
+import java.util.List;
+
 public interface QuizHistoryRepository {
-    QuizHistory save(QuizHistory quizHistory);
+    long save(QuizHistory quizHistory);
+
+    QuizHistory findById(long id);
+
+    List<QuizHistory> findAll();
 }

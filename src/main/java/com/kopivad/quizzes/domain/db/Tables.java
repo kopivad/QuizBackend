@@ -8,8 +8,12 @@ import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Questions;
+import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
+import com.kopivad.quizzes.domain.db.tables.QuizHistories;
+import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 
 import javax.annotation.processing.Generated;
 
@@ -48,6 +52,21 @@ public class Tables {
     public static final Questions QUESTIONS = Questions.QUESTIONS;
 
     /**
+     * The table <code>public.quiz_answers</code>.
+     */
+    public static final QuizAnswers QUIZ_ANSWERS = QuizAnswers.QUIZ_ANSWERS;
+
+    /**
+     * The table <code>public.quiz_histories</code>.
+     */
+    public static final QuizHistories QUIZ_HISTORIES = QuizHistories.QUIZ_HISTORIES;
+
+    /**
+     * The table <code>public.quiz_sessions</code>.
+     */
+    public static final QuizSessions QUIZ_SESSIONS = QuizSessions.QUIZ_SESSIONS;
+
+    /**
      * The table <code>public.quizzes</code>.
      */
     public static final Quizzes QUIZZES = Quizzes.QUIZZES;
@@ -56,4 +75,9 @@ public class Tables {
      * The table <code>public.usr</code>.
      */
     public static final Usr USR = Usr.USR;
+
+    /**
+     * The table <code>public.usr_roles</code>.
+     */
+    public static final UsrRoles USR_ROLES = UsrRoles.USR_ROLES;
 }

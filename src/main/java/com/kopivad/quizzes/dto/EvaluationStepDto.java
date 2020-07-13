@@ -14,10 +14,11 @@ import lombok.Value;
 public class EvaluationStepDto {
     long id;
     int minTotal;
+    int maxTotal;
     String rating;
     long quizId;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class EvaluationStepDtoBuilder { }
+    public static class EvaluationStepDtoBuilder{ }
 }

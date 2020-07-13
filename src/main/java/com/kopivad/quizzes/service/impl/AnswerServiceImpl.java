@@ -1,6 +1,8 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.dto.AnswerDto;
+import com.kopivad.quizzes.mapper.AnswerMapper;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +15,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
+    private final AnswerMapper answerMapper;
 
     @Override
-    public List<Answer> getAll() {
-        return answerRepository.findAll();
+    public List<AnswerDto> getAll() {
+        List<Answer> answers = answerRepository.findAll();
+        return answers
+                .stream()
+                .map(answerMapper::toDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -25,18 +32,20 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Answer save(Answer answer) {
+    public long save(AnswerDto answerDto) {
+        Answer answer = answerMapper.toEntity(answerDto);
         return answerRepository.save(answer);
     }
 
     @Override
-    public Answer update(Long id, Answer answer) {
-        return answerRepository.update(id, answer);
+    public boolean update(AnswerDto answerDto) {
+        Answer answer = answerMapper.toEntity(answerDto);
+        return answerRepository.update(answer);
     }
 
     @Override
-    public void delete(Long id) {
-        answerRepository.delete(id);
+    public boolean delete(Long id) {
+        return answerRepository.delete(id);
     }
 
     @Override
@@ -45,10 +54,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<Answer> saveAll(List<Answer> answers) {
-        return answers
-                .stream()
-                .map(this::save)
-                .collect(Collectors.toUnmodifiableList());
+    public void saveAll(List<Answer> answers) {
+        answers.forEach(answerRepository::save);
     }
 }

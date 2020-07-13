@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.form.UserForm;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("all")
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userService.getAll();
     }
 
@@ -25,17 +25,17 @@ public class UserController {
     }
 
     @PostMapping()
-    public User save(@RequestBody UserForm userForm) {
-        return userService.save(userForm);
+    public long save(@RequestBody UserDto userDto) {
+        return userService.save(userDto);
     }
 
-    @PutMapping("{id}")
-    public User update(@PathVariable("id") Long id, @RequestBody UserForm userForm) {
-        return userService.update(id, userForm);
+    @PutMapping()
+    public boolean update(@RequestBody UserDto userDto) {
+        return userService.update(userDto);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Long id) {
-        userService.delete(id);
+    public boolean delete(@PathVariable("id") Long id) {
+        return userService.delete(id);
     }
 }

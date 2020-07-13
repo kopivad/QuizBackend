@@ -81,15 +81,6 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .map(getQuestionFromRecordMapper());
     }
 
-    @Override
-    public boolean saveAll(List<Question> questions) {
-        long count = questions
-                .stream()
-                .map(this::save)
-                .count();
-        return count == questions.size();
-    }
-
     private RecordMapper<Record, Question> getQuestionFromRecordMapper() {
         return record -> Question
                 .builder()

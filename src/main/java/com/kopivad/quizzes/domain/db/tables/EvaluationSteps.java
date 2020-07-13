@@ -16,11 +16,10 @@ import javax.annotation.processing.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EvaluationSteps extends TableImpl<EvaluationStepsRecord> {
 
-    private static final long serialVersionUID = 1141360843;
+    private static final long serialVersionUID = -2139845687;
 
     /**
      * The reference instance of <code>public.evaluation_steps</code>
@@ -60,7 +59,7 @@ public class EvaluationSteps extends TableImpl<EvaluationStepsRecord> {
     /**
      * The column <code>public.evaluation_steps.id</code>.
      */
-    public final TableField<EvaluationStepsRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('evaluation_steps_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<EvaluationStepsRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.evaluation_steps.minTotal</code>.
@@ -76,6 +75,11 @@ public class EvaluationSteps extends TableImpl<EvaluationStepsRecord> {
      * The column <code>public.evaluation_steps.quiz_id</code>.
      */
     public final TableField<EvaluationStepsRecord, Long> QUIZ_ID = createField(DSL.name("quiz_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.evaluation_steps.maxTotal</code>.
+     */
+    public final TableField<EvaluationStepsRecord, Integer> MAXTOTAL = createField(DSL.name("maxTotal"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.evaluation_steps</code> table reference
@@ -118,11 +122,6 @@ public class EvaluationSteps extends TableImpl<EvaluationStepsRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.EVALUATION_STEPS_PK);
-    }
-
-    @Override
-    public Identity<EvaluationStepsRecord, Long> getIdentity() {
-        return Keys.IDENTITY_EVALUATION_STEPS;
     }
 
     @Override
@@ -171,11 +170,11 @@ public class EvaluationSteps extends TableImpl<EvaluationStepsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Integer, String, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Integer, String, Long, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

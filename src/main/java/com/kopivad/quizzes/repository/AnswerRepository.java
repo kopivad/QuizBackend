@@ -16,6 +16,4 @@ public interface AnswerRepository {
     boolean delete(Long id);
 
     List<Answer> findByQuestionId(Long id);
-
-    boolean saveAll(List<Answer> answers);
 }

@@ -1,22 +1,22 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.form.QuestionForm;
+import com.kopivad.quizzes.dto.QuestionDto;
 
 import java.util.List;
 
 public interface QuestionService {
-    List<Question> getAll();
+    List<QuestionDto> getAll();
 
     Question getById(Long id);
 
-    Question save(Question question);
+    long save(QuestionDto questionDto);
 
-    Question update(Long id, Question question);
+    boolean update(QuestionDto questionDto);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     List<Question> getByQuizId(Long id);
 
-    List<Question> saveAll(List<Question> questions);
+    void saveAll(List<QuestionDto> dtos);
 }

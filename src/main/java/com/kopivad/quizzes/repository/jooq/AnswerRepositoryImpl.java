@@ -78,15 +78,6 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .map(getAnswerFromRecordMapper());
     }
 
-    @Override
-    public boolean saveAll(List<Answer> answers) {
-        long count = answers
-                .stream()
-                .map(this::save)
-                .count();
-        return count > INTEGER_ZERO;
-    }
-
     private RecordMapper<Record, Answer> getAnswerFromRecordMapper() {
         return record -> Answer
                 .builder()

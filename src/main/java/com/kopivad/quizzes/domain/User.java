@@ -2,7 +2,11 @@ package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.List;
 @Value
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
+@JsonDeserialize(builder = User.UserBuilder.class)
 public class User {
     Long id;
     String name;
@@ -18,6 +23,11 @@ public class User {
     Role role;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime creationDate;
-    @JsonIgnoreProperties({"author", "questions"})
     List<Quiz> quizzes;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class UserBuilder { }
+
 }
+

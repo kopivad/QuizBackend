@@ -16,6 +16,4 @@ public interface QuestionRepository {
     boolean delete(Long id);
 
     List<Question> findByQuizId(Long id);
-
-    boolean saveAll(List<Question> questions);
 }

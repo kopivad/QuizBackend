@@ -2,6 +2,10 @@ package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.EvaluationStep;
 
+import java.util.List;
+
 public interface EvaluationStepRepository {
-    EvaluationStep save(EvaluationStep step);
+    long save(EvaluationStep step);
+
+    List<EvaluationStep> findByQuizId(Long id);
 }
