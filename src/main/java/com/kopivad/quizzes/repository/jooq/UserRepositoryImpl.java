@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
+import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.repository.RoleRepository;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -19,7 +19,6 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     private final DSLContext dslContext;
-    private final RoleRepository roleRepository;
 
     @Override
     public List<User> findAll() {
@@ -40,18 +39,16 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public long save(User user) {
-        Long id = dslContext
+        return dslContext
                 .insertInto(USR)
                 .set(USR.NAME, user.getName())
                 .set(USR.EMAIL, user.getEmail())
                 .set(USR.PASSWORD, user.getPassword())
                 .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
+                .set(USR.ROLE, user.getRole().name())
                 .returning(USR.ID)
                 .fetchOne()
                 .getId();
-
-        roleRepository.save(id, user.getRole());
-        return id;
     }
 
     @Override
@@ -61,10 +58,10 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.NAME, user.getName())
                 .set(USR.EMAIL, user.getEmail())
                 .set(USR.PASSWORD, user.getPassword())
+                .set(USR.ROLE, user.getRole().name())
                 .where(USR.ID.eq(user.getId()))
                 .execute();
 
-        roleRepository.update(user.getId(), user.getRole());
         return affectedRows > INTEGER_ZERO;
     }
 
@@ -77,22 +74,13 @@ public class UserRepositoryImpl implements UserRepository {
         return affectedRows > INTEGER_ZERO;
     }
 
-    @Override
-    public User findByEmail(String email) {
-        return dslContext
-                .selectFrom(USR)
-                .where(USR.EMAIL.eq(email))
-                .fetchOne()
-                .map(getUserFromRecordMapper());
-    }
-
     private RecordMapper<Record, User> getUserFromRecordMapper() {
         return record -> User
                 .builder()
                 .id(record.getValue(USR.ID))
                 .name(record.getValue(USR.NAME))
                 .email(record.getValue(USR.EMAIL))
-                .role(roleRepository.findByUserId(record.getValue(USR.ID)))
+                .role(Role.valueOf(record.getValue(USR.ROLE)))
                 .creationDate(record.getValue(USR.CREATION_DATE).toLocalDateTime())
                 .password(record.getValue(USR.PASSWORD))
                 .build();
