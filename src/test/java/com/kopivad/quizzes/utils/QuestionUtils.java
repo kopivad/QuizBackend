@@ -2,8 +2,6 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.form.QuestionForm;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -17,7 +15,10 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class QuestionUtils {
     public static List<Question> generateQuestions(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateQuestion())
+                .mapToObj(i -> generateQuestion()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -25,30 +26,15 @@ public class QuestionUtils {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
+        int defaultValue = 15;
+
         return Question
                 .builder()
                 .id(LONG_ONE)
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
-                .quiz(Quiz.builder().id(LONG_ONE).build())
-                .build();
-    }
-
-    public static List<QuestionForm> generateQuestionForms(int size) {
-        return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateQuestionForm())
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    public static QuestionForm generateQuestionForm() {
-        Fairy fairy = Fairy.create();
-        TextProducer textProducer = fairy.textProducer();
-        int charsCount = 200;
-        return QuestionForm
-                .builder()
-                .type(QuestionType.SINGLE)
-                .title(textProducer.randomString(charsCount))
-                .quizId(LONG_ONE)
+                .quiz(QuizUtils.generateQuiz())
+                .value(defaultValue)
                 .build();
     }
 
@@ -56,11 +42,14 @@ public class QuestionUtils {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
+        int defaultValue = 15;
+
         Question question = Question
                 .builder()
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
-                .quiz(Quiz.builder().id(LONG_ONE).build())
+                .value(defaultValue)
+                .quiz(QuizUtils.generateQuiz())
                 .build();
         int size = 10;
         return question.toBuilder().answers(AnswerUtils.generateAnswers(size)).build();

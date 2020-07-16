@@ -1,9 +1,8 @@
 package com.kopivad.quizzes.utils;
 
-import com.kopivad.quizzes.domain.Role;
+import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.domain.User;
-import io.codearte.jfairy.Fairy;
-import io.codearte.jfairy.producer.person.Person;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,27 +12,23 @@ import java.util.stream.IntStream;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
-public class UserUtils {
-    public static List<User> generateUsers(int size) {
+public class QuizSessionUtils {
+    public static List<QuizSession> generateQuizSessions(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateUser()
+                .mapToObj(i -> generateQuizSession()
                         .toBuilder()
                         .id(i + LONG_ONE)
                         .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public static User generateUser() {
-        Fairy fairy = Fairy.create();
-        Person person = fairy.person();
-        return User
+    public static QuizSession generateQuizSession() {
+        return QuizSession
                 .builder()
                 .id(LONG_ONE)
-                .email(person.getEmail())
-                .name(person.getUsername())
-                .password(person.getPassword())
-                .creationDate(LocalDateTime.now())
-                .role(Role.USER)
+                .date(LocalDateTime.now())
+                .user(User.builder().id(LONG_ONE).build())
+                .quiz(Quiz.builder().id(LONG_ONE).build())
                 .build();
     }
 }

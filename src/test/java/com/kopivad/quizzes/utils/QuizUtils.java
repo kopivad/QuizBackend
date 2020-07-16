@@ -2,9 +2,6 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.form.QuestionForm;
-import com.kopivad.quizzes.form.QuizForm;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -19,14 +16,10 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class QuizUtils {
     public static List<Quiz> generateQuizzes(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> {
-                    Quiz quiz = generateQuiz()
-                            .toBuilder()
-                            .id(i + LONG_ONE)
-                            .build();
-
-                    return quiz;
-                })
+                .mapToObj(i -> generateQuiz()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -34,27 +27,16 @@ public class QuizUtils {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
+        int defaultTotal = 100;
         return Quiz
                 .builder()
                 .id(LONG_ONE)
                 .title(textProducer.randomString(charsCount))
                 .description(textProducer.randomString(charsCount))
+                .total(defaultTotal)
                 .active(true)
                 .creationDate(LocalDateTime.now())
-                .author(User.builder().id(LONG_ONE).build())
-                .build();
-    }
-
-    public static QuizForm generateQuizForm() {
-        Fairy fairy = Fairy.create();
-        TextProducer textProducer = fairy.textProducer();
-        int charsCount = 200;
-        return QuizForm
-                .builder()
-                .title(textProducer.randomString(charsCount))
-                .description(textProducer.randomString(charsCount))
-                .active(true)
-                .authorId(LONG_ONE)
+                .author(UserUtils.generateUser())
                 .build();
     }
 
@@ -62,12 +44,14 @@ public class QuizUtils {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
+        int defaultTotal = 100;
         Quiz quiz = Quiz
                 .builder()
                 .title(textProducer.randomString(charsCount))
                 .description(textProducer.randomString(charsCount))
+                .total(defaultTotal)
                 .active(true)
-                .author(User.builder().id(LONG_ONE).build())
+                .author(UserUtils.generateUser())
                 .build();
 
         int size = 10;
