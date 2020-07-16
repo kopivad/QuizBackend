@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.dto.QuestionDto;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("all")
-    public List<Question> getAll() {
+    public List<QuestionDto> getAll() {
         return questionService.getAll();
     }
 
@@ -24,17 +25,17 @@ public class QuestionController {
     }
 
     @PostMapping()
-    public Question add(@RequestBody Question question) {
-        return questionService.save(question);
+    public long save(@RequestBody QuestionDto questionDto) {
+        return questionService.save(questionDto);
     }
 
-    @PutMapping("{id}")
-    public Question update(@PathVariable("id") Long id, @RequestBody Question question) {
-        return questionService.update(id, question);
+    @PutMapping()
+    public boolean update(@RequestBody QuestionDto questionDto) {
+        return questionService.update(questionDto);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id) {
-        questionService.delete(id);
+    public boolean delete(@PathVariable Long id) {
+        return questionService.delete(id);
     }
 }

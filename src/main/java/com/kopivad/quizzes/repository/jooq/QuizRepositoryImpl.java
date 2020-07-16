@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public Quiz save(Quiz quiz) {
+    public long save(Quiz quiz) {
         return dslContext
                 .insertInto(QUIZZES)
                 .set(QUIZZES.TITLE, quiz.getTitle())
@@ -46,32 +47,33 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
-                .returning(QUIZZES.fields())
+                .returning(QUIZZES.ID)
                 .fetchOne()
-                .map(getQuizFromRecordMapper());
+                .getId();
     }
 
     @Override
-    public Quiz update(Long id, Quiz quiz) {
-        return dslContext
+    public boolean update(Quiz quiz) {
+        int affectedRows = dslContext
                 .update(QUIZZES)
                 .set(QUIZZES.TITLE, quiz.getTitle())
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
-                .where(QUIZZES.ID.eq(id))
-                .returningResult(QUIZZES.fields())
-                .fetchOne()
-                .map(getQuizFromRecordMapper());
+                .where(QUIZZES.ID.eq(quiz.getId()))
+                .execute();
+
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public void delete(Long id) {
-        dslContext
+    public boolean delete(Long id) {
+        int affectedRows = dslContext
                 .deleteFrom(QUIZZES)
                 .where(QUIZZES.ID.eq(id))
                 .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     private RecordMapper<Record, Quiz> getQuizFromRecordMapper() {

@@ -1,6 +1,6 @@
 package com.kopivad.quizzes.config;
 
-import com.kopivad.quizzes.filter.JwtRequestFilter;
+//import com.kopivad.quizzes.filter.JwtRequestFilter;
 import com.kopivad.quizzes.service.ApiClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ApiClientService clientService;
-    private final JwtRequestFilter requestFilter;
+//    private final JwtRequestFilter requestFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,20 +38,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity
+                .csrf().disable()
                 .authorizeRequests().antMatchers("/api/v1/**").permitAll()
                 .and().exceptionHandling()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        httpSecurity.csrf().disable()
-//                .authorizeRequests().antMatchers("/api/auth", "/v2/api-docs",
-//                "/configuration/ui",
-//                "/swagger-resources/**",
-//                "/configuration/security",
-//                "/swagger-ui.html",
-//                "/webjars/**").permitAll().
-//                anyRequest().authenticated().and().
-//                exceptionHandling().and().sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 //        httpSecurity.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
 
     }

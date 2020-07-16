@@ -1,14 +1,14 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.form.UserForm;
+import com.kopivad.quizzes.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getAll();
+    List<UserDto> getAll();
     User getById(Long id);
-    User save(UserForm userForm);
-    User update(Long id, UserForm userForm);
-    void delete(Long id);
+    long save(UserDto userDto);
+    boolean update(UserDto userDto);
+    boolean delete(Long id);
 }

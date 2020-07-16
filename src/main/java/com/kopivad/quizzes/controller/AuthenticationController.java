@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.form.AuthenticationRequestForm;
-import com.kopivad.quizzes.form.AuthenticationResponseForm;
+import com.kopivad.quizzes.dto.AuthenticationRequestForm;
+import com.kopivad.quizzes.dto.AuthenticationResponseForm;
 import com.kopivad.quizzes.service.ApiClientService;
 import com.kopivad.quizzes.service.JwtService;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,10 @@ package com.kopivad.quizzes.service.impl;
 import com.kopivad.quizzes.domain.EvaluationStep;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
+import com.kopivad.quizzes.dto.EvaluationStepDto;
+import com.kopivad.quizzes.dto.QuestionDto;
+import com.kopivad.quizzes.dto.QuizDto;
+import com.kopivad.quizzes.mapper.QuizMapper;
 import com.kopivad.quizzes.repository.QuizRepository;
 import com.kopivad.quizzes.service.EvaluationStepService;
 import com.kopivad.quizzes.service.QuestionService;
@@ -12,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,57 +24,62 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final EvaluationStepService evaluationStepService;
+    private final QuizMapper mapper;
 
     @Override
-    public List<Quiz> getAll() {
-        return quizRepository.findAll();
+    public List<QuizDto> getAll() {
+        List<Quiz> quizzes = quizRepository.findAll();
+        return quizzes
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public Quiz getById(Long id) {
         Quiz quizById = quizRepository.findById(id);
         List<Question> questions = questionService.getByQuizId(id);
-        return quizById.toBuilder().questions(questions).build();
+        List<EvaluationStep> steps = evaluationStepService.getByQuizId(id);
+        return quizById.toBuilder().questions(questions).evaluationSteps(steps).build();
     }
 
     @Override
-    public Quiz save(Quiz quiz) {
-        Quiz quizWithCreationDate = quiz.toBuilder().creationDate(LocalDateTime.now()).build();
-        Quiz savedQuiz = quizRepository.save(quizWithCreationDate);
-        if (ObjectUtils.isNotEmpty(quiz.getEvaluationSteps())) {
-            List<EvaluationStep> steps = setQuizForAllSteps(savedQuiz, quiz.getEvaluationSteps());
-            List<EvaluationStep> savedSteps = evaluationStepService.saveAll(steps);
-            savedQuiz = savedQuiz.toBuilder().evaluationSteps(savedSteps).build();
+    public long save(QuizDto quizDto) {
+        Quiz quiz = mapper.toEntity(quizDto);
+        long id = quizRepository.save(quiz);
+        if (ObjectUtils.isNotEmpty(quizDto.getEvaluationSteps())) {
+            List<EvaluationStepDto> steps = setQuizForAllSteps(id, quizDto.getEvaluationSteps());
+            evaluationStepService.saveAll(steps);
         }
-        if (ObjectUtils.isNotEmpty(quiz.getQuestions())) {
-            List<Question> questions = setQuizForAllQuestions(savedQuiz, quiz.getQuestions());
-            List<Question> savedQuestions = questionService.saveAll(questions);
-            return savedQuiz.toBuilder().questions(savedQuestions).build();
+        if (ObjectUtils.isNotEmpty(quizDto.getQuestions())) {
+            List<QuestionDto> dtos = setQuizForAllQuestions(id, quizDto.getQuestions());
+            questionService.saveAll(dtos);
         }
-        return savedQuiz;
+        return id;
     }
 
     @Override
-    public Quiz update(Long id, Quiz quiz) {
-        return quizRepository.update(id, quiz);
+    public boolean update(QuizDto quizDto) {
+        Quiz quiz = mapper.toEntity(quizDto);
+        return quizRepository.update(quiz);
     }
 
     @Override
-    public void delete(Long id) {
-        quizRepository.delete(id);
+    public boolean delete(Long id) {
+        return quizRepository.delete(id);
     }
 
-    private List<Question> setQuizForAllQuestions(Quiz quiz, List<Question> questions) {
-        return questions
+    private List<QuestionDto> setQuizForAllQuestions(long quizId, List<QuestionDto> dtos) {
+        return dtos
                 .stream()
-                .map(question ->  question.toBuilder().quiz(quiz).build())
+                .map(question ->  question.toBuilder().quizId(quizId).build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<EvaluationStep> setQuizForAllSteps(Quiz quiz, List<EvaluationStep> steps) {
-        return steps
+    private List<EvaluationStepDto> setQuizForAllSteps(long quizId, List<EvaluationStepDto> dtos) {
+        return dtos
                 .stream()
-                .map(s -> s.toBuilder().quiz(quiz).build())
+                .map(step -> step.toBuilder().quizId(quizId).build())
                 .collect(Collectors.toUnmodifiableList());
     }
 }

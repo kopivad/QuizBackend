@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Questions.QUESTIONS;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,38 +38,38 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Question save(Question question) {
+    public long save(Question question) {
         return dslContext
                 .insertInto(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
                 .set(QUESTIONS.TYPE, question.getType().name())
                 .set(QUESTIONS.VALUE, question.getValue())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
-                .returning(QUESTIONS.fields())
+                .returning(QUESTIONS.ID)
                 .fetchOne()
-                .map(getQuestionFromRecordMapper());
+                .getId();
     }
 
     @Override
-    public Question update(Long id, Question question) {
-        return dslContext
+    public boolean update(Question question) {
+        int affectedRows = dslContext
                 .update(QUESTIONS)
                 .set(QUESTIONS.TITLE, question.getTitle())
                 .set(QUESTIONS.TYPE, question.getType().name())
                 .set(QUESTIONS.VALUE, question.getValue())
                 .set(QUESTIONS.QUIZ_ID, question.getQuiz().getId())
-                .where(QUESTIONS.ID.eq(id))
-                .returningResult(QUESTIONS.fields())
-                .fetchOne()
-                .map(getQuestionFromRecordMapper());
+                .where(QUESTIONS.ID.eq(question.getId()))
+                .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public void delete(Long id) {
-        dslContext
+    public boolean delete(Long id) {
+        int affectedRows = dslContext
                 .deleteFrom(QUESTIONS)
                 .where(QUESTIONS.ID.eq(id))
                 .execute();
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override

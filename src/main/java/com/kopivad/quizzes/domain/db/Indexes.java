@@ -8,8 +8,12 @@ import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Questions;
+import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
+import com.kopivad.quizzes.domain.db.tables.QuizHistories;
+import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 
 import javax.annotation.processing.Generated;
 
@@ -39,8 +43,12 @@ public class Indexes {
     public static final Index API_CLIENTS_PKEY = Indexes0.API_CLIENTS_PKEY;
     public static final Index EVALUATION_STEPS_PK = Indexes0.EVALUATION_STEPS_PK;
     public static final Index QUESTIONS_PKEY = Indexes0.QUESTIONS_PKEY;
+    public static final Index QUIZ_RESULTS_PK = Indexes0.QUIZ_RESULTS_PK;
+    public static final Index QUIZ_HISTORIES_PK = Indexes0.QUIZ_HISTORIES_PK;
+    public static final Index QUIZ_SESSIONS_PK = Indexes0.QUIZ_SESSIONS_PK;
     public static final Index QUIZZES_PKEY = Indexes0.QUIZZES_PKEY;
     public static final Index USR_PKEY = Indexes0.USR_PKEY;
+    public static final Index USR_ROLES_PK = Indexes0.USR_ROLES_PK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -51,7 +59,11 @@ public class Indexes {
         public static Index API_CLIENTS_PKEY = Internal.createIndex("api_clients_pkey", ApiClients.API_CLIENTS, new OrderField[] { ApiClients.API_CLIENTS.ID }, true);
         public static Index EVALUATION_STEPS_PK = Internal.createIndex("evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS, new OrderField[] { EvaluationSteps.EVALUATION_STEPS.ID }, true);
         public static Index QUESTIONS_PKEY = Internal.createIndex("questions_pkey", Questions.QUESTIONS, new OrderField[] { Questions.QUESTIONS.ID }, true);
+        public static Index QUIZ_RESULTS_PK = Internal.createIndex("quiz_results_pk", QuizAnswers.QUIZ_ANSWERS, new OrderField[] { QuizAnswers.QUIZ_ANSWERS.ID }, true);
+        public static Index QUIZ_HISTORIES_PK = Internal.createIndex("quiz_histories_pk", QuizHistories.QUIZ_HISTORIES, new OrderField[] { QuizHistories.QUIZ_HISTORIES.ID }, true);
+        public static Index QUIZ_SESSIONS_PK = Internal.createIndex("quiz_sessions_pk", QuizSessions.QUIZ_SESSIONS, new OrderField[] { QuizSessions.QUIZ_SESSIONS.ID }, true);
         public static Index QUIZZES_PKEY = Internal.createIndex("quizzes_pkey", Quizzes.QUIZZES, new OrderField[] { Quizzes.QUIZZES.ID }, true);
         public static Index USR_PKEY = Internal.createIndex("usr_pkey", Usr.USR, new OrderField[] { Usr.USR.ID }, true);
+        public static Index USR_ROLES_PK = Internal.createIndex("usr_roles_pk", UsrRoles.USR_ROLES, new OrderField[] { UsrRoles.USR_ROLES.ID }, true);
     }
 }
