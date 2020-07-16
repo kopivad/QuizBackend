@@ -1,7 +1,6 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.repository.RoleRepository;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.utils.TestUtils;
 import com.kopivad.quizzes.utils.UserUtils;
@@ -25,8 +24,7 @@ public class UserRepositoryImplTest {
     @BeforeClass
     public static void init() {
         DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
-        RoleRepository roleRepository = new RoleRepositoryImpl(dslContext);
-        userRepository = new UserRepositoryImpl(dslContext, roleRepository);
+        userRepository = new UserRepositoryImpl(dslContext);
     }
 
     @Test
