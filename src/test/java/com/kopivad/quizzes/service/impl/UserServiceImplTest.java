@@ -1,9 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.form.UserForm;
+import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.mapper.UserMapper;
 import com.kopivad.quizzes.repository.UserRepository;
-import com.kopivad.quizzes.utils.FormUtils;
 import com.kopivad.quizzes.utils.UserUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,14 +14,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,6 +30,8 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private UserMapper mapper;
 
     @BeforeEach
     void setUp() {
@@ -41,55 +41,66 @@ public class UserServiceImplTest {
     @Test
     public void testGetAll() {
         int size = 10;
-        List<User> expectedResult = UserUtils.generateUsers(size);
-        when(userRepository.findAll()).thenReturn(expectedResult);
-        List<User> actualResult = userService.getAll();
-        assertThat(actualResult, is(expectedResult));
+        List<User> expected = UserUtils.generateUsers(size);
+        when(userRepository.findAll()).thenReturn(expected);
+        when(mapper.toDto(any(User.class))).thenReturn(UserUtils.generateUserDto());
+        List<UserDto> actual = userService.getAll();
+
+        assertThat(actual.size(), is(expected.size()));
+
         verify(userRepository).findAll();
+        verify(mapper, times(size)).toDto(any(User.class));
     }
 
     @Test
     public void testGetById() {
         User expectedResult = UserUtils.generateUser();
-        when(userRepository.findById(eq(LONG_ONE))).thenReturn(expectedResult);
-        User actualResult = userService.getById(LONG_ONE);
+        when(userRepository.findById(anyLong())).thenReturn(expectedResult);
+        User actualResult = userService.getById(expectedResult.getId());
+
         assertThat(actualResult, is(expectedResult));
-        verify(userRepository).findById(LONG_ONE);
+
+        verify(userRepository).findById(anyLong());
     }
 
     @Test
     public void testSave() {
-        UserForm userForSave = UserUtils.generateUserForm();
-        User expectedResult = FormUtils.toUser(userForSave)
-                .toBuilder()
-                .creationDate(LocalDateTime.now())
-                .password(String.valueOf(UUID.randomUUID()))
-                .id(LONG_ONE)
-                .build();
+        UserDto expected = UserUtils.generateUserDto();
+        when(mapper.toEntity(any(UserDto.class))).thenReturn(UserUtils.generateUser());
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.save(any())).thenReturn(expectedResult);
-        User actualResult = userService.save(userForSave);
-        assertThat(actualResult, is(expectedResult));
+        when(userRepository.save(any())).thenReturn(expected.getId());
+        long actual = userService.save(expected);
+
+        assertThat(actual, is(expected.getId()));
+
         verify(passwordEncoder).encode(anyString());
         verify(userRepository).save(any(User.class));
+        verify(mapper).toEntity(any(UserDto.class));
     }
 
     @Test
     public void testUpdate() {
-        String dataForUpdate = "Name";
-        UserForm userForUpdate = UserUtils.generateUserForm().toBuilder().name(dataForUpdate).build();
-        User expectedResult = FormUtils.toUser(userForUpdate).toBuilder().id(LONG_ONE).build();
+        UserDto expected = UserUtils.generateUserDto();
+        when(mapper.toEntity(any(UserDto.class))).thenReturn(UserUtils.generateUser());
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.update(anyLong(), any())).thenReturn(expectedResult);
-        User actualResult = userService.update(LONG_ONE, userForUpdate);
-        assertThat(actualResult.getName(), is(expectedResult.getName()));
+        when(userRepository.update(any(User.class))).thenReturn(true);
+        boolean actualResult = userService.update(expected);
+
+        assertTrue(actualResult);
+
+        verify(mapper).toEntity(any(UserDto.class));
         verify(passwordEncoder).encode(anyString());
-        verify(userRepository).update(eq(LONG_ONE), any());
+        verify(userRepository).update(any(User.class));
     }
 
     @Test
     public void testDelete() {
-        userService.delete(LONG_ONE);
-        verify(userRepository).delete(LONG_ONE);
+        long expected = UserUtils.generateUser().getId();
+        when(userRepository.delete(anyLong())).thenReturn(true);
+        boolean actual = userRepository.delete(expected);
+
+        assertTrue(actual);
+
+        verify(userRepository).delete(anyLong());
     }
 }

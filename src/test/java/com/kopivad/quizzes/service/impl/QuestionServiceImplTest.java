@@ -2,6 +2,8 @@ package com.kopivad.quizzes.service.impl;
 
 
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.dto.QuestionDto;
+import com.kopivad.quizzes.mapper.QuestionMapper;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import com.kopivad.quizzes.utils.QuestionUtils;
@@ -16,23 +18,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.apache.commons.lang3.math.NumberUtils.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 class QuestionServiceImplTest {
     @InjectMocks
     private QuestionServiceImpl questionService;
-    
     @Mock
     private QuestionRepository questionRepository;
-
     @Mock
     private AnswerService answerService;
+    @Mock
+    private QuestionMapper questionMapper;
 
     @BeforeEach
     void setUp() {
@@ -44,76 +43,93 @@ class QuestionServiceImplTest {
         int size = 10;
         List<Question> expectedResult = QuestionUtils.generateQuestions(size);
         when(questionRepository.findAll()).thenReturn(expectedResult);
-        List<Question> actualResult = questionService.getAll();
-        assertEquals(expectedResult, actualResult);
+        when(questionMapper.toDto(any(Question.class))).thenReturn(QuestionUtils.generateQuestionDto());
+        List<QuestionDto> actualResult = questionService.getAll();
+
+        assertThat(actualResult.size(), is(expectedResult.size()));
+
         verify(questionRepository).findAll();
+        verify(questionMapper, times(size)).toDto(any(Question.class));
     }
 
     @Test
-    void testSaveQuestion() {
-        Question expectedResult = QuestionUtils.generateQuestionWithAnswers();
-        when(questionRepository.save(any())).thenReturn(expectedResult);
-        when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
-        Question actualResult = questionService.save(expectedResult);
-        assertThat(actualResult, is(expectedResult));
-        verify(questionRepository).save(any());
-        verify(answerService).saveAll(expectedResult.getAnswers());
+    void testSaveQuestionDtoWithFullData() {
+        QuestionDto expectedResult = QuestionUtils.generateQuestionDtoWithFullData();
+        when(questionMapper.toEntity(any(QuestionDto.class))).thenReturn(QuestionUtils.generateQuestionWithFullData());
+        when(questionRepository.save(any())).thenReturn(expectedResult.getId());
+        long actualResult = questionService.save(expectedResult);
+
+        assertThat(actualResult, is(expectedResult.getId()));
+
+        verify(questionRepository).save(any(Question.class));
+        verify(questionMapper).toEntity(any(QuestionDto.class));
+        verify(answerService).saveAll(anyList());
     }
 
     @Test
-    void testSaveQuestionWithNullAnswers() {
-        Question expectedResult = QuestionUtils.generateQuestion();
-        when(questionRepository.save(any())).thenReturn(expectedResult);
-        when(answerService.saveAll(expectedResult.getAnswers())).thenReturn(expectedResult.getAnswers());
-        Question actualResult = questionService.save(expectedResult);
-        assertThat(actualResult, is(expectedResult));
-        verify(questionRepository).save(any());
-        verify(answerService, never()).saveAll(any());
+    void testSaveQuestionWithNullData() {
+        QuestionDto expectedResult = QuestionUtils.generateQuestionDto();
+        when(questionMapper.toEntity(any(QuestionDto.class))).thenReturn(QuestionUtils.generateQuestion());
+        when(questionRepository.save(any())).thenReturn(expectedResult.getId());
+
+        long actualResult = questionService.save(expectedResult);
+
+        assertThat(actualResult, is(expectedResult.getId()));
+
+        verify(questionRepository).save(any(Question.class));
+        verify(questionMapper).toEntity(any(QuestionDto.class));
+        verify(answerService, never()).saveAll(anyList());
     }
 
     @Test
-    void testGetQuizById() {
-        Question dataForSave = QuestionUtils.generateQuestionWithAnswers();
-        when(questionRepository.save(any())).thenReturn(dataForSave);
-        when(questionRepository.findById(eq(LONG_ONE))).thenReturn(dataForSave);
-        when(answerService.getByQuestionId(LONG_ONE)).thenReturn(dataForSave.getAnswers());
-        when(answerService.saveAll(dataForSave.getAnswers())).thenReturn(dataForSave.getAnswers());
+    void testGetQuestionById() {
+        Question expected = QuestionUtils.generateQuestionWithFullData();
+        when(questionRepository.findById(anyLong())).thenReturn(expected);
+        when(answerService.getByQuestionId(anyLong())).thenReturn(expected.getAnswers());
+        Question actual = questionService.getById(expected.getId());
 
-        Question expectedResult = questionService.save(dataForSave);
-        Question actualResult = questionService.getById(expectedResult.getId());
+        assertThat(actual, is(expected));
 
-        assertThat(actualResult, is(expectedResult));
-
-        verify(questionRepository).save(any());
-        verify(questionRepository).findById(LONG_ONE);
-        verify(answerService).getByQuestionId(LONG_ONE);
-        verify(answerService).saveAll(dataForSave.getAnswers());
+        verify(questionRepository).findById(anyLong());
+        verify(answerService).getByQuestionId(anyLong());
     }
 
     @Test
     void testUpdate() {
-        Question questionForUpdate = QuestionUtils.generateQuestion();
-        String dataForUpdate = "Title";
-        Question expectedResult = questionForUpdate.toBuilder().title(dataForUpdate).build();
-        when(questionRepository.update(eq(LONG_ONE), any())).thenReturn(expectedResult);
-        Question actualResult = questionService.update(LONG_ONE, expectedResult);
-        assertThat(actualResult, is(expectedResult));
-        verify(questionRepository).update(eq(LONG_ONE), any());
+        QuestionDto expectedResult = QuestionUtils.generateQuestionDto();
+        when(questionMapper.toEntity(any(QuestionDto.class))).thenReturn(QuestionUtils.generateQuestion());
+        when(questionRepository.update(any(Question.class))).thenReturn(true);
+
+        boolean actualResult = questionService.update(expectedResult);
+
+        assertTrue(actualResult);
+
+        verify(questionRepository).update(any(Question.class));
+        verify(questionMapper).toEntity(any(QuestionDto.class));
     }
 
     @Test
     void testDelete() {
-        questionService.delete(LONG_ONE);
-        verify(questionRepository).delete(eq(LONG_ONE));
+        long expected = QuestionUtils.generateQuestion().getId();
+        when(questionRepository.delete(anyLong())).thenReturn(true);
+        boolean actual = questionService.delete(expected);
+
+        assertTrue(actual);
+
+        verify(questionRepository).delete(anyLong());
     }
 
     @Test
     void testSaveAll() {
         int size = 10;
-        List<Question> expectedResult = QuestionUtils.generateQuestions(size);
-        when(questionRepository.save(any(Question.class))).thenReturn(expectedResult.get(INTEGER_ZERO));
-        List<Question> actualResult = questionService.saveAll(expectedResult);
-        assertThat(actualResult.size(), is(expectedResult.size()));
+        List<QuestionDto> expectedResult = QuestionUtils.generateQuestionDtos(size);
+        when(questionRepository.save(any(Question.class))).thenReturn(LONG_ONE);
+        when(questionMapper.toEntity(any(QuestionDto.class))).thenReturn(QuestionUtils.generateQuestion());
+        questionService.saveAll(expectedResult);
+
+        assertThat(size, is(expectedResult.size()));
+
         verify(questionRepository, times(size)).save(any(Question.class));
+        verify(questionMapper, times(size)).toEntity(any(QuestionDto.class));
     }
 }
