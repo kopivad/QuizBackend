@@ -13,7 +13,6 @@ import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 
 import javax.annotation.processing.Generated;
 
@@ -75,9 +74,4 @@ public class Tables {
      * The table <code>public.usr</code>.
      */
     public static final Usr USR = Usr.USR;
-
-    /**
-     * The table <code>public.usr_roles</code>.
-     */
-    public static final UsrRoles USR_ROLES = UsrRoles.USR_ROLES;
 }

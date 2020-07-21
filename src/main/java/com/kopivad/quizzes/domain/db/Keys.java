@@ -13,7 +13,6 @@ import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
 import com.kopivad.quizzes.domain.db.tables.records.ApiClientsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.EvaluationStepsRecord;
@@ -23,7 +22,6 @@ import com.kopivad.quizzes.domain.db.tables.records.QuizHistoriesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizSessionsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
-import com.kopivad.quizzes.domain.db.tables.records.UsrRolesRecord;
 
 import javax.annotation.processing.Generated;
 
@@ -64,7 +62,6 @@ public class Keys {
     public static final UniqueKey<QuizSessionsRecord> QUIZ_SESSIONS_PK = UniqueKeys0.QUIZ_SESSIONS_PK;
     public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = UniqueKeys0.QUIZZES_PKEY;
     public static final UniqueKey<UsrRecord> USR_PKEY = UniqueKeys0.USR_PKEY;
-    public static final UniqueKey<UsrRolesRecord> USR_ROLES_PK = UniqueKeys0.USR_ROLES_PK;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -81,7 +78,6 @@ public class Keys {
     public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK;
     public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK;
     public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = ForeignKeys0.QUIZZES__QUIZZES_USR_FK;
-    public static final ForeignKey<UsrRolesRecord, UsrRecord> USR_ROLES__USR_ROLES_USR_ID_FK = ForeignKeys0.USR_ROLES__USR_ROLES_USR_ID_FK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -97,7 +93,6 @@ public class Keys {
         public static final UniqueKey<QuizSessionsRecord> QUIZ_SESSIONS_PK = Internal.createUniqueKey(QuizSessions.QUIZ_SESSIONS, "quiz_sessions_pk", QuizSessions.QUIZ_SESSIONS.ID);
         public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = Internal.createUniqueKey(Quizzes.QUIZZES, "quizzes_pkey", Quizzes.QUIZZES.ID);
         public static final UniqueKey<UsrRecord> USR_PKEY = Internal.createUniqueKey(Usr.USR, "usr_pkey", Usr.USR.ID);
-        public static final UniqueKey<UsrRolesRecord> USR_ROLES_PK = Internal.createUniqueKey(UsrRoles.USR_ROLES, "usr_roles_pk", UsrRoles.USR_ROLES.ID);
     }
 
     private static class ForeignKeys0 {
@@ -112,6 +107,5 @@ public class Keys {
         public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_quizzes_id_fk", QuizSessions.QUIZ_SESSIONS.QUIZ_ID);
         public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_usr_id_fk", QuizSessions.QUIZ_SESSIONS.USER_ID);
         public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, Quizzes.QUIZZES, "quizzes__quizzes_usr_fk", Quizzes.QUIZZES.AUTHOR_ID);
-        public static final ForeignKey<UsrRolesRecord, UsrRecord> USR_ROLES__USR_ROLES_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, UsrRoles.USR_ROLES, "usr_roles__usr_roles_usr_id_fk", UsrRoles.USR_ROLES.USER_ID);
     }
 }

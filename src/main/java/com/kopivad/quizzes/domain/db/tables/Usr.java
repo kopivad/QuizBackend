@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Usr extends TableImpl<UsrRecord> {
 
-    private static final long serialVersionUID = 1460310031;
+    private static final long serialVersionUID = -150966375;
 
     /**
      * The reference instance of <code>public.usr</code>
@@ -81,6 +81,11 @@ public class Usr extends TableImpl<UsrRecord> {
      * The column <code>public.usr.password</code>.
      */
     public final TableField<UsrRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>public.usr.role</code>.
+     */
+    public final TableField<UsrRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * Create a <code>public.usr</code> table reference
@@ -162,11 +167,11 @@ public class Usr extends TableImpl<UsrRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Timestamp, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

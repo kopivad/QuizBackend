@@ -16,7 +16,7 @@ public interface QuizHistoryService {
 
     long createHistory(long sessionId);
 
-    QuizHistoryDto getById(long id);
+    QuizHistory getById(long id);
 
     List<QuizHistoryDto> getAll();
 }

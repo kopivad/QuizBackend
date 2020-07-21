@@ -13,7 +13,6 @@ import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 
 import javax.annotation.processing.Generated;
 
@@ -48,7 +47,6 @@ public class Indexes {
     public static final Index QUIZ_SESSIONS_PK = Indexes0.QUIZ_SESSIONS_PK;
     public static final Index QUIZZES_PKEY = Indexes0.QUIZZES_PKEY;
     public static final Index USR_PKEY = Indexes0.USR_PKEY;
-    public static final Index USR_ROLES_PK = Indexes0.USR_ROLES_PK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -64,6 +62,5 @@ public class Indexes {
         public static Index QUIZ_SESSIONS_PK = Internal.createIndex("quiz_sessions_pk", QuizSessions.QUIZ_SESSIONS, new OrderField[] { QuizSessions.QUIZ_SESSIONS.ID }, true);
         public static Index QUIZZES_PKEY = Internal.createIndex("quizzes_pkey", Quizzes.QUIZZES, new OrderField[] { Quizzes.QUIZZES.ID }, true);
         public static Index USR_PKEY = Internal.createIndex("usr_pkey", Usr.USR, new OrderField[] { Usr.USR.ID }, true);
-        public static Index USR_ROLES_PK = Internal.createIndex("usr_roles_pk", UsrRoles.USR_ROLES, new OrderField[] { UsrRoles.USR_ROLES.ID }, true);
     }
 }

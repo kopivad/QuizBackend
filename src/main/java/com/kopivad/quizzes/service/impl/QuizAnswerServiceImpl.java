@@ -31,7 +31,7 @@ public class QuizAnswerServiceImpl implements QuizAnswerService {
     }
 
     @Override
-    public List<QuizAnswer> findAllBySessionId(long sessionId) {
+    public List<QuizAnswer> getAllBySessionId(long sessionId) {
         List<QuizAnswer> quizAnswers = quizAnswerRepository.findAllBySessionId(sessionId);
         return quizAnswers.stream()
                 .map(a -> {

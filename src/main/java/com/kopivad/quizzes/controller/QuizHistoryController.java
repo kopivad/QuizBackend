@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.controller;
 
+import com.kopivad.quizzes.domain.QuizHistory;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.service.QuizHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class QuizHistoryController {
     }
 
     @GetMapping("{id}")
-    public QuizHistoryDto getById(@PathVariable(name = "id") long id) {
+    public QuizHistory getById(@PathVariable(name = "id") long id) {
         return quizHistoryService.getById(id);
     }
 
