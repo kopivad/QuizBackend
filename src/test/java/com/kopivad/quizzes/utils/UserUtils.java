@@ -2,6 +2,7 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.dto.UserDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
@@ -27,6 +28,20 @@ public class UserUtils {
         Fairy fairy = Fairy.create();
         Person person = fairy.person();
         return User
+                .builder()
+                .id(LONG_ONE)
+                .email(person.getEmail())
+                .name(person.getUsername())
+                .password(person.getPassword())
+                .creationDate(LocalDateTime.now())
+                .role(Role.USER)
+                .build();
+    }
+
+    public static UserDto generateUserDto() {
+        Fairy fairy = Fairy.create();
+        Person person = fairy.person();
+        return UserDto
                 .builder()
                 .id(LONG_ONE)
                 .email(person.getEmail())

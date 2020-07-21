@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.dto.AnswerDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -32,5 +33,25 @@ public class AnswerUtils {
                 .isRight(true)
                 .question(QuestionUtils.generateQuestion())
                 .build();
+    }
+
+    public static AnswerDto generateAnswerDto() {
+        Fairy fairy = Fairy.create();
+        TextProducer textProducer = fairy.textProducer();
+        int charsCount = 200;
+        return AnswerDto
+                .builder()
+                .id(LONG_ONE)
+                .body(textProducer.randomString(charsCount))
+                .isRight(true)
+                .questionId(QuestionUtils.generateQuestion().getId())
+                .build();
+    }
+
+    public static List<AnswerDto> generateAnswerDtos(int size) {
+        return IntStream
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateAnswerDto().toBuilder().id(i + LONG_ONE).build())
+                .collect(Collectors.toUnmodifiableList());
     }
 }

@@ -2,6 +2,7 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.QuizAnswer;
 import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +26,29 @@ public class QuizAnswerUtils {
         return IntStream
                 .range(INTEGER_ZERO, size)
                 .mapToObj(i -> generateAnswer()
-                        .toBuilder().id(i + LONG_ONE)
+                        .toBuilder()
+                        .id(i + LONG_ONE)
                         .session(QuizSession.builder().id(sessionId).build())
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public static QuizAnswerDto generateAnswerDto() {
+            return QuizAnswerDto
+                    .builder()
+                    .id(LONG_ONE)
+                    .sessionId(QuizSessionUtils.generateQuizSession().getId())
+                    .answerId(AnswerUtils.generateAnswer().getId())
+                    .questionId(QuestionUtils.generateQuestion().getId())
+                    .build();
+    }
+
+    public static List<QuizAnswer> generateAnswers(int count) {
+        return IntStream
+                .range(INTEGER_ZERO, count)
+                .mapToObj(i -> generateAnswer()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
                         .build())
                 .collect(Collectors.toUnmodifiableList());
     }

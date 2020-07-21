@@ -1,7 +1,11 @@
 package com.kopivad.quizzes.utils;
 
+import com.kopivad.quizzes.domain.EvaluationStep;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.dto.EvaluationStepDto;
+import com.kopivad.quizzes.dto.QuestionDto;
+import com.kopivad.quizzes.dto.QuizDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -40,22 +44,37 @@ public class QuizUtils {
                 .build();
     }
 
-    public static Quiz generateQuizWithQuestions() {
+    public static Quiz generateQuizWithFullData() {
+        Quiz quiz = generateQuiz();
+        int size = 10;
+        List<Question> questions = QuestionUtils.generateQuestions(size);
+        List<EvaluationStep> steps = EvaluationStepUtils.generateSteps(size);
+        return quiz.toBuilder().questions(questions).evaluationSteps(steps).build();
+    }
+
+    public static QuizDto generateQuizDto() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
         int defaultTotal = 100;
-        Quiz quiz = Quiz
+        return QuizDto
                 .builder()
+                .id(LONG_ONE)
                 .title(textProducer.randomString(charsCount))
                 .description(textProducer.randomString(charsCount))
                 .total(defaultTotal)
                 .active(true)
-                .author(UserUtils.generateUser())
+                .creationDate(LocalDateTime.now())
+                .authorId(UserUtils.generateUser().getId())
                 .build();
+    }
 
-        int size = 10;
-        List<Question> questions = QuestionUtils.generateQuestions(size);
-        return quiz.toBuilder().questions(questions).build();
+    public static QuizDto generateQuizDtoWithFullData() {
+        QuizDto dto = generateQuizDto();
+        int questionsCount = 10;
+        int stepsCount = 10;
+        List<QuestionDto> questionDtos = QuestionUtils.generateQuestionDtosWithAnswers(questionsCount);
+        List<EvaluationStepDto> stepDtos = EvaluationStepUtils.generateStepDtos(stepsCount);
+        return dto.toBuilder().questions(questionDtos).evaluationSteps(stepDtos).build();
     }
 }

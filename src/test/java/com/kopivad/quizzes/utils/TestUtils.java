@@ -1,8 +1,12 @@
 package com.kopivad.quizzes.utils;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+
+import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
 
 public class TestUtils {
     private static final String URL = "jdbc:postgresql://localhost:5432/quizzes";
@@ -18,5 +22,15 @@ public class TestUtils {
         dataSource.setUsername(USERNAME);
         dataSource.setPassword(PASSWORD);
         return dataSource;
+    }
+
+    public static ModelMapper getModelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setFieldMatchingEnabled(true)
+                .setSkipNullEnabled(true)
+                .setFieldAccessLevel(PRIVATE);
+        return mapper;
     }
 }

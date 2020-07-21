@@ -3,6 +3,7 @@ package com.kopivad.quizzes.utils;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.dto.QuizSessionDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,8 +28,18 @@ public class QuizSessionUtils {
                 .builder()
                 .id(LONG_ONE)
                 .date(LocalDateTime.now())
-                .user(User.builder().id(LONG_ONE).build())
-                .quiz(Quiz.builder().id(LONG_ONE).build())
+                .user(UserUtils.generateUser())
+                .quiz(QuizUtils.generateQuizWithFullData())
+                .build();
+    }
+
+    public static QuizSessionDto generateQuizSessionDto() {
+        return QuizSessionDto
+                .builder()
+                .id(LONG_ONE)
+                .date(LocalDateTime.now())
+                .userId(UserUtils.generateUser().getId())
+                .quizId(QuizUtils.generateQuiz().getId())
                 .build();
     }
 }
