@@ -13,96 +13,64 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class UserRepositoryImplTest {
-    private static DSLContext dslContext;
     private static UserRepository userRepository;
-
 
     @BeforeClass
     public static void init() {
-        dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
+        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
         userRepository = new UserRepositoryImpl(dslContext);
     }
 
     @Test
     public void findAllTest() {
         List<User> generatedAccounts = UserUtils.generateUsers(5);
-        List<User> savedUsers = generatedAccounts
+        List<User> expected = generatedAccounts
                 .stream()
-                .map(user -> userRepository.save(user))
+                .map(user -> user.toBuilder().id(userRepository.save(user)).build())
                 .collect(Collectors.toUnmodifiableList());
-        List<User> allUsers = userRepository.findAll();
+        List<User> actual = userRepository.findAll();
 
-        assertThat(savedUsers, notNullValue());
-        assertThat(allUsers, notNullValue());
-        assertTrue(allUsers.containsAll(savedUsers));
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     public void findByIdTest() {
         User generatedUser = UserUtils.generateUser();
-        User savedUser = userRepository.save(generatedUser);
-        User user = userRepository.findById(savedUser.getId());
+        long expected = userRepository.save(generatedUser);
+        User actual = userRepository.findById(expected);
 
-        assertThat(savedUser, notNullValue());
-        assertThat(user, notNullValue());
-        assertThat(savedUser, equalTo(user));
+        assertThat(actual.getId(), is(expected));
     }
 
     @Test
     public void saveTest() {
         User generatedUser = UserUtils.generateUser();
-        int accountsCountBeforeInsert = userRepository.findAll().size();
-        User user = userRepository.save(generatedUser);
-        List<User> allUsers = userRepository.findAll();
+        long actual = userRepository.save(generatedUser);
 
-        assertThat(user.getId(), notNullValue());
-        assertThat(accountsCountBeforeInsert + 1, equalTo(allUsers.size()));
-        assertThat(allUsers, hasItem(user));
+        assertThat(actual, notNullValue());
     }
 
     @Test
     public void updateTest() {
-        String dataForUpdate = "some@email.com";
         User generatedUser = UserUtils.generateUser();
-        User savedUser = userRepository.save(generatedUser);
-        User userForUpdate = generatedUser.toBuilder().email(dataForUpdate).build();
-        User updatedUser = userRepository.update(savedUser.getId(), userForUpdate);
+        User expectedResult = generatedUser.toBuilder().id(userRepository.save(generatedUser)).build();
+        boolean actual = userRepository.update(expectedResult);
 
-
-        assertThat(savedUser, notNullValue());
-        assertThat(updatedUser, notNullValue());
-        assertThat(savedUser.getId(), is(updatedUser.getId()));
-        assertThat(savedUser.getEmail(), not(equalTo(updatedUser.getEmail())));
+        assertTrue(actual);
     }
 
     @Test
     public void deleteTest() {
         User generatedUser = UserUtils.generateUser();
-        User savedUser = userRepository.save(generatedUser);
-        List<User> allUsersBeforeDeleting = userRepository.findAll();
-        userRepository.delete(savedUser.getId());
-        List<User> allUsersAfterDeleting = userRepository.findAll();
+        long id = userRepository.save(generatedUser);
+        boolean actual = userRepository.delete(id);
 
-        assertThat(savedUser, notNullValue());
-        assertThat(allUsersBeforeDeleting, notNullValue());
-        assertThat(allUsersAfterDeleting, notNullValue());
-        assertThat(allUsersBeforeDeleting, hasItem(savedUser));
-        assertThat(allUsersAfterDeleting, not(hasItem(savedUser)));
-    }
-
-    @Test
-    public void findByEmailTest() {
-        User generatedUser = UserUtils.generateUser();
-        User savedUser = userRepository.save(generatedUser);
-        User user = userRepository.findByEmail(savedUser.getEmail());
-
-        assertThat(savedUser, notNullValue());
-        assertThat(user, notNullValue());
-        assertThat(savedUser, equalTo(user));
+        assertTrue(actual);
     }
 }

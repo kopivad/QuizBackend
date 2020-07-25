@@ -13,84 +13,64 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class QuizRepositoryImplTest {
-    private static DSLContext dslContext;
     private static QuizRepository quizRepository;
-
 
     @BeforeClass
     public static void init() {
-        dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
+        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
         quizRepository = new QuizRepositoryImpl(dslContext);
     }
 
     @Test
     public void findAllTest() {
         List<Quiz> generatedQuizzes = QuizUtils.generateQuizzes(5);
-        List<Quiz> savedQuizzes = generatedQuizzes
+        List<Quiz> expected = generatedQuizzes
                 .stream()
-                .map(quiz -> quizRepository.save(quiz))
+                .map(quiz -> quiz.toBuilder().id(quizRepository.save(quiz)).build())
                 .collect(Collectors.toUnmodifiableList());
-        List<Quiz> quizzes = quizRepository.findAll();
+        List<Quiz> actual = quizRepository.findAll();
 
-        assertThat(savedQuizzes, notNullValue());
-        assertThat(quizzes, notNullValue());
-        assertTrue(quizzes.containsAll(savedQuizzes));
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     public void findByIdTest() {
         Quiz generatedQuiz = QuizUtils.generateQuiz();
-        Quiz savedQuiz = quizRepository.save(generatedQuiz);
-        Quiz quiz = quizRepository.findById(savedQuiz.getId());
+        long expected = quizRepository.save(generatedQuiz);
+        Quiz actual = quizRepository.findById(expected);
 
-        assertThat(savedQuiz, notNullValue());
-        assertThat(quiz, notNullValue());
-        assertThat(savedQuiz, equalTo(quiz));
+        assertThat(actual.getId(), is(expected));
     }
 
     @Test
     public void saveTest() {
         Quiz generatedQuiz = QuizUtils.generateQuiz();
-        int quizzesCountBeforeInsert = quizRepository.findAll().size();
-        Quiz quiz = quizRepository.save(generatedQuiz);
-        List<Quiz> quizzes = quizRepository.findAll();
+        long actual = quizRepository.save(generatedQuiz);
 
-        assertThat(quiz.getId(), notNullValue());
-        assertThat(quizzesCountBeforeInsert + 1, equalTo(quizzes.size()));
-        assertThat(quizzes, hasItem(quiz));
+        assertThat(actual, notNullValue());
     }
 
     @Test
     public void updateTest() {
-        String dataForUpdate = "some text";
         Quiz generatedQuiz = QuizUtils.generateQuiz();
-        Quiz savedQuiz = quizRepository.save(generatedQuiz);
-        Quiz quizForUpdate = generatedQuiz.toBuilder().title(dataForUpdate).build();
-        Quiz updatedQuiz = quizRepository.update(savedQuiz.getId(), quizForUpdate);
+        Quiz expectedResult = generatedQuiz.toBuilder().id(quizRepository.save(generatedQuiz)).build();
+        boolean actual = quizRepository.update(expectedResult);
 
-
-        assertThat(savedQuiz, notNullValue());
-        assertThat(updatedQuiz, notNullValue());
-        assertThat(savedQuiz.getId(), equalTo(updatedQuiz.getId()));
-        assertNotEquals(savedQuiz.getTitle(), not(equalTo(updatedQuiz.getTitle())));
+        assertTrue(actual);
     }
 
     @Test
     public void deleteTest() {
-        Quiz generateQuiz = QuizUtils.generateQuiz();
-        Quiz savedQuiz = quizRepository.save(generateQuiz);
-        List<Quiz> allQuizzesBeforeDeleting = quizRepository.findAll();
-        quizRepository.delete(savedQuiz.getId());
-        List<Quiz> allQuizzesAfterDeleting = quizRepository.findAll();
+        Quiz generatedQuiz = QuizUtils.generateQuiz();
+        long id = quizRepository.save(generatedQuiz);
+        boolean actual = quizRepository.delete(id);
 
-        assertThat(savedQuiz, notNullValue());
-        assertThat(allQuizzesBeforeDeleting, notNullValue());
-        assertThat(allQuizzesAfterDeleting, notNullValue());
-        assertThat(allQuizzesBeforeDeleting, hasItem(savedQuiz));
-        assertThat(allQuizzesAfterDeleting, not(hasItem(savedQuiz)));
+        assertTrue(actual);
     }
 }

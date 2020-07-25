@@ -104,7 +104,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     @Override
     public long createHistory(long sessionId) {
         QuizSession session = quizSessionService.getById(sessionId);
-        int total = calculateTotal(quizAnswerService.findAllBySessionId(sessionId));
+        int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
         String rating = calculateRating(total, session.getQuiz().getEvaluationSteps());
         String pdfFilename = UUID.randomUUID().toString() +  ".pdf";
         String csvFilename = UUID.randomUUID().toString() +  ".csv";
@@ -126,8 +126,8 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     @Override
-    public QuizHistoryDto getById(long id) {
-        return quizHistoryMapper.toDto(quizHistoryRepository.findById(id));
+    public QuizHistory getById(long id) {
+        return quizHistoryRepository.findById(id);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     private String calculateRating(int total, List<EvaluationStep> steps) {
-        AtomicReference<String> rating = new AtomicReference<>(" ");
+        AtomicReference<String> rating = new AtomicReference<>("Lowest rating");
         steps.forEach(step -> {
             if(step.getMinTotal() <= total && step.getMaxTotal() >= total) rating.set(step.getRating());
         });

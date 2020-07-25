@@ -13,7 +13,6 @@ import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
 import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrRoles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1770187052;
+    private static final long serialVersionUID = 1952738322;
 
     /**
      * The reference instance of <code>public</code>
@@ -92,11 +91,6 @@ public class Public extends SchemaImpl {
     public final Usr USR = com.kopivad.quizzes.domain.db.tables.Usr.USR;
 
     /**
-     * The table <code>public.usr_roles</code>.
-     */
-    public final UsrRoles USR_ROLES = com.kopivad.quizzes.domain.db.tables.UsrRoles.USR_ROLES;
-
-    /**
      * No further instances allowed
      */
     private Public() {
@@ -126,7 +120,6 @@ public class Public extends SchemaImpl {
             QuizHistories.QUIZ_HISTORIES,
             QuizSessions.QUIZ_SESSIONS,
             Quizzes.QUIZZES,
-            Usr.USR,
-            UsrRoles.USR_ROLES);
+            Usr.USR);
     }
 }

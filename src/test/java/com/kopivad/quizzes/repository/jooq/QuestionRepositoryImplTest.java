@@ -13,85 +13,65 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class QuestionRepositoryImplTest {
-    private static DSLContext dslContext;
     private static QuestionRepository questionRepository;
 
 
     @BeforeClass
     public static void init() {
-        dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
+        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
         questionRepository = new QuestionRepositoryImpl(dslContext);
     }
 
     @Test
     public void findAllTest() {
-        List<Question> generateQuestions = QuestionUtils.generateQuestions(5);
-        List<Question> savedQuestions = generateQuestions
+        List<Question> generatedQuestions = QuestionUtils.generateQuestions(5);
+        List<Question> expected = generatedQuestions
                 .stream()
-                .map(question -> questionRepository.save(question))
+                .map(q -> q.toBuilder().id(questionRepository.save(q)).build())
                 .collect(Collectors.toUnmodifiableList());
-        List<Question> allQuestions = questionRepository.findAll();
+        List<Question> actual = questionRepository.findAll();
 
-        assertThat(savedQuestions, notNullValue());
-        assertThat(allQuestions, notNullValue());
-        assertTrue(allQuestions.containsAll(savedQuestions));
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     public void findByIdTest() {
-        Question generateQuestion = QuestionUtils.generateQuestion();
-        Question savedQuestion = questionRepository.save(generateQuestion);
-        Question question = questionRepository.findById(savedQuestion.getId());
+        Question question = QuestionUtils.generateQuestion();
+        long id = questionRepository.save(question);
+        Question actual = questionRepository.findById(id);
 
-        assertThat(savedQuestion, notNullValue());
-        assertThat(question, notNullValue());
-        assertThat(savedQuestion, equalTo(question));
+        assertThat(actual.getId(), is(id));
     }
 
     @Test
     public void saveTest() {
-        Question generatedQuestion = QuestionUtils.generateQuestion();
-        int accountsCountBeforeInsert = questionRepository.findAll().size();
-        Question user = questionRepository.save(generatedQuestion);
-        List<Question> allQuestions = questionRepository.findAll();
+        Question question = QuestionUtils.generateQuestion();
+        long id = questionRepository.save(question);
 
-        assertThat(user.getId(), notNullValue());
-        assertThat(accountsCountBeforeInsert + 1, equalTo(allQuestions.size()));
-        assertThat(allQuestions, hasItem(user));
+        assertThat(id, notNullValue());
     }
 
     @Test
     public void updateTest() {
-        String dataForUpdate = "Some title";
-        Question generatedQuestion = QuestionUtils.generateQuestion();
-        Question savedQuestion = questionRepository.save(generatedQuestion);
-        Question questionWithTitle = generatedQuestion.toBuilder().title(dataForUpdate).build();
-        Question updatedQuestion = questionRepository.update(savedQuestion.getId(), questionWithTitle);
+        Question question = QuestionUtils.generateQuestion();
+        Question expectedResult = question.toBuilder().id(questionRepository.save(question)).build();
+        boolean actual = questionRepository.update(expectedResult);
 
-
-        assertThat(savedQuestion, notNullValue());
-        assertThat(updatedQuestion, notNullValue());
-        assertThat(updatedQuestion.getId(), equalTo(updatedQuestion.getId()));
-        assertThat(savedQuestion.getTitle(), not(equalTo(updatedQuestion.getTitle())));
+        assertTrue(actual);
     }
 
     @Test
     public void deleteTest() {
-        Question generatedQuestion = QuestionUtils.generateQuestion();
-        Question savedQuestion = questionRepository.save(generatedQuestion);
-        List<Question> allQuestionsBeforeDeleting = questionRepository.findAll();
-        questionRepository.delete(savedQuestion.getId());
-        List<Question> allQuestionsAfterDeleting = questionRepository.findAll();
+        Question question = QuestionUtils.generateQuestion();
+        long id = questionRepository.save(question);
+        boolean actual = questionRepository.delete(id);
 
-        assertThat(savedQuestion, notNullValue());
-        assertThat(allQuestionsBeforeDeleting, notNullValue());
-        assertThat(allQuestionsAfterDeleting, notNullValue());
-        assertThat(allQuestionsBeforeDeleting, hasItem(savedQuestion));
-        assertThat(allQuestionsAfterDeleting, not(hasItem(savedQuestion)));
+        assertTrue(actual);
     }
 }

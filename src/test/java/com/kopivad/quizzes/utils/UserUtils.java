@@ -2,7 +2,7 @@ package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.form.UserForm;
+import com.kopivad.quizzes.dto.UserDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
@@ -17,13 +17,10 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class UserUtils {
     public static List<User> generateUsers(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> {
-                    User user = generateUser()
-                            .toBuilder()
-                            .id(i + LONG_ONE)
-                            .build();
-                    return user;
-                })
+                .mapToObj(i -> generateUser()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -34,23 +31,24 @@ public class UserUtils {
                 .builder()
                 .id(LONG_ONE)
                 .email(person.getEmail())
-                .name(person.getFirstName())
+                .name(person.getUsername())
                 .password(person.getPassword())
                 .creationDate(LocalDateTime.now())
                 .role(Role.USER)
                 .build();
     }
 
-    public static UserForm generateUserForm() {
+    public static UserDto generateUserDto() {
         Fairy fairy = Fairy.create();
         Person person = fairy.person();
-        return UserForm
+        return UserDto
                 .builder()
+                .id(LONG_ONE)
                 .email(person.getEmail())
-                .name(person.getFirstName())
+                .name(person.getUsername())
                 .password(person.getPassword())
+                .creationDate(LocalDateTime.now())
                 .role(Role.USER)
                 .build();
     }
-
 }

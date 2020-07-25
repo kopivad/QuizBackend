@@ -1,8 +1,7 @@
 package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.form.AnswerForm;
+import com.kopivad.quizzes.dto.AnswerDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -16,14 +15,10 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class AnswerUtils {
     public static List<Answer> generateAnswers(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> {
-                    Answer answer = generateAnswer()
-                            .toBuilder()
-                            .id(i + LONG_ONE)
-                            .build();
-
-                    return answer;
-                })
+                .mapToObj(i -> generateAnswer()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -36,25 +31,27 @@ public class AnswerUtils {
                 .id(LONG_ONE)
                 .body(textProducer.randomString(charsCount))
                 .isRight(true)
-                .question(Question.builder().id(LONG_ONE).build())
+                .question(QuestionUtils.generateQuestion())
                 .build();
     }
 
-    public static AnswerForm generateAnswerForm() {
+    public static AnswerDto generateAnswerDto() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
-        return AnswerForm
+        return AnswerDto
                 .builder()
+                .id(LONG_ONE)
                 .body(textProducer.randomString(charsCount))
-                .right(true)
-                .questionId(LONG_ONE)
+                .isRight(true)
+                .questionId(QuestionUtils.generateQuestion().getId())
                 .build();
     }
 
-    public static List<AnswerForm> generateAnswerForms(int size) {
-        return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateAnswerForm())
+    public static List<AnswerDto> generateAnswerDtos(int size) {
+        return IntStream
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateAnswerDto().toBuilder().id(i + LONG_ONE).build())
                 .collect(Collectors.toUnmodifiableList());
     }
 }

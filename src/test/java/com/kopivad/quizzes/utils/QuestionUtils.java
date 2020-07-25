@@ -1,9 +1,10 @@
 package com.kopivad.quizzes.utils;
 
+import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuestionType;
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.form.QuestionForm;
+import com.kopivad.quizzes.dto.AnswerDto;
+import com.kopivad.quizzes.dto.QuestionDto;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.text.TextProducer;
 
@@ -17,7 +18,10 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class QuestionUtils {
     public static List<Question> generateQuestions(int size) {
         return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateQuestion())
+                .mapToObj(i -> generateQuestion()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -25,44 +29,66 @@ public class QuestionUtils {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
+        int defaultValue = 15;
+
         return Question
                 .builder()
                 .id(LONG_ONE)
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
-                .quiz(Quiz.builder().id(LONG_ONE).build())
+                .quiz(QuizUtils.generateQuiz())
+                .value(defaultValue)
                 .build();
     }
 
-    public static List<QuestionForm> generateQuestionForms(int size) {
-        return IntStream.range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateQuestionForm())
+    public static Question generateQuestionWithFullData() {
+        Question question = generateQuestion();
+        int size = 4;
+        List<Answer> answers = AnswerUtils.generateAnswers(size);
+        return question.toBuilder().answers(answers).build();
+    }
+
+    public static List<QuestionDto> generateQuestionDtosWithAnswers(int size) {
+        return IntStream
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> {
+                            int answerCount = 4;
+                            return generateQuestionDto()
+                                    .toBuilder()
+                                    .id(i + LONG_ONE)
+                                    .answers(AnswerUtils.generateAnswerDtos(answerCount))
+                                    .build();
+                        }
+                )
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public static QuestionForm generateQuestionForm() {
+    public static QuestionDto generateQuestionDto() {
         Fairy fairy = Fairy.create();
         TextProducer textProducer = fairy.textProducer();
         int charsCount = 200;
-        return QuestionForm
+        int defaultValue = 15;
+
+        return QuestionDto
                 .builder()
+                .id(LONG_ONE)
                 .type(QuestionType.SINGLE)
                 .title(textProducer.randomString(charsCount))
-                .quizId(LONG_ONE)
+                .quizId(QuizUtils.generateQuiz().getId())
+                .value(defaultValue)
                 .build();
     }
 
-    public static Question generateQuestionWithAnswers() {
-        Fairy fairy = Fairy.create();
-        TextProducer textProducer = fairy.textProducer();
-        int charsCount = 200;
-        Question question = Question
-                .builder()
-                .type(QuestionType.SINGLE)
-                .title(textProducer.randomString(charsCount))
-                .quiz(Quiz.builder().id(LONG_ONE).build())
-                .build();
-        int size = 10;
-        return question.toBuilder().answers(AnswerUtils.generateAnswers(size)).build();
+    public static QuestionDto generateQuestionDtoWithFullData() {
+        int size = 4;
+        List<AnswerDto> answerDtos = AnswerUtils.generateAnswerDtos(size);
+        return generateQuestionDto().toBuilder().answers(answerDtos).build();
+    }
+
+    public static List<QuestionDto> generateQuestionDtos(int size) {
+        return IntStream
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateQuestionDto().toBuilder().id(i + LONG_ONE).build())
+                .collect(Collectors.toUnmodifiableList());
     }
 }

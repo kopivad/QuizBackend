@@ -32,7 +32,7 @@ public class QuizSessionServiceImpl implements QuizSessionService {
     public QuizSession getById(long sessionId) {
         QuizSession session = quizSessionRepository.findById(sessionId);
         Quiz quiz = quizService.getById(session.getQuiz().getId());
-        List<QuizAnswer> quizAnswers = quizAnswerService.findAllBySessionId(sessionId);
+        List<QuizAnswer> quizAnswers = quizAnswerService.getAllBySessionId(sessionId);
         return session.toBuilder().results(quizAnswers).quiz(quiz).build();
     }
 }

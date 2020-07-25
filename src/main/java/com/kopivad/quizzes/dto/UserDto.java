@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.kopivad.quizzes.domain.Role;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Value
 @Builder(toBuilder = true)
+@EqualsAndHashCode(of = "id")
 @JsonDeserialize(builder = UserDto.UserDtoBuilder.class)
 public class UserDto {
     long id;
