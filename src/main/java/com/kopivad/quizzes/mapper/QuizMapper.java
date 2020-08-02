@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.mapper;
 
+import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.QuizDto;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,12 +34,14 @@ public class QuizMapper {
     private void setupMapper() {
         mapper.createTypeMap(Quiz.class, QuizDto.QuizDtoBuilder.class)
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::authorId))
+                .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::groupId))
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::questions))
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::evaluationSteps))
                 .setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(QuizDto.class, Quiz.QuizBuilder.class)
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::author))
+                .addMappings(m -> m.skip(Quiz.QuizBuilder::group))
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::questions))
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::evaluationSteps))
                 .setPostConverter(toEntityConverter());
@@ -63,6 +67,7 @@ public class QuizMapper {
 
     private void mapSpecificFields(Quiz source, QuizDto.QuizDtoBuilder destination) {
         destination.authorId(source.getAuthor().getId()).build();
+        destination.groupId(source.getGroup().getId()).build();
         destination.questions(
                 ObjectUtils.isNotEmpty(source.getQuestions())
                         ? source.getQuestions().stream().map(questionMapper::toDto).collect(Collectors.toUnmodifiableList())
@@ -77,6 +82,7 @@ public class QuizMapper {
 
     private void mapSpecificFields(QuizDto source, Quiz.QuizBuilder destination) {
         destination.author(User.builder().id(source.getAuthorId()).build()).build();
+        destination.group(Group.builder().id(source.getGroupId()).build()).build();
         destination.questions(
                 ObjectUtils.isNotEmpty(source.getQuestions())
                         ? source.getQuestions().stream().map(questionMapper::toEntity).collect(Collectors.toUnmodifiableList())
@@ -87,5 +93,12 @@ public class QuizMapper {
                         ? source.getEvaluationSteps().stream().map(stepMapper::toEntity).collect(Collectors.toUnmodifiableList())
                         : Collections.emptyList()
         );
+    }
+
+    public List<QuizDto> allToDto(List<Quiz> quizzes) {
+        return quizzes
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

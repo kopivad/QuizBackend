@@ -24,6 +24,11 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @GetMapping()
+    public List<UserDto> getByEmailStartsWith(@RequestParam("email") String email) {
+        return userService.getByEmailStartsWith(email);
+    }
+
     @PostMapping()
     public long save(@RequestBody UserDto userDto) {
         return userService.save(userDto);

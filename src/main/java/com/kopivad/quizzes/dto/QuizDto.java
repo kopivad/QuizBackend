@@ -1,9 +1,9 @@
 package com.kopivad.quizzes.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.kopivad.quizzes.domain.QuizSession;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -21,11 +21,12 @@ public class QuizDto {
     String description;
     int total;
     boolean active;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime creationDate;
     long authorId;
+    List<QuizSession> sessions;
     List<QuestionDto> questions;
     List<EvaluationStepDto> evaluationSteps;
+    long groupId;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

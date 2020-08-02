@@ -1,9 +1,11 @@
 package com.kopivad.quizzes.repository.jooq;
 
+import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
@@ -47,6 +49,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
+                .set(QUIZZES.GROUP_ID, quiz.getGroup().getId())
                 .returning(QUIZZES.ID)
                 .fetchOne()
                 .getId();
@@ -61,6 +64,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
+                .set(QUIZZES.GROUP_ID, quiz.getGroup().getId())
                 .where(QUIZZES.ID.eq(quiz.getId()))
                 .execute();
 
@@ -73,7 +77,26 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .deleteFrom(QUIZZES)
                 .where(QUIZZES.ID.eq(id))
                 .execute();
+
         return affectedRows > INTEGER_ZERO;
+    }
+
+    @Override
+    public List<Quiz> findByGroupId(long id) {
+        return dslContext
+                .selectFrom(QUIZZES)
+                .where(QUIZZES.GROUP_ID.eq(id))
+                .fetch()
+                .map(getQuizFromRecordMapper());
+    }
+
+    @Override
+    public List<Quiz> findByTitleStartsWith(String title) {
+        return dslContext
+                .selectFrom(QUIZZES)
+                .where(QUIZZES.TITLE.startsWithIgnoreCase(title))
+                .fetch()
+                .map(getQuizFromRecordMapper());
     }
 
     private RecordMapper<Record, Quiz> getQuizFromRecordMapper() {
@@ -86,6 +109,11 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .author(User.builder().id(record.getValue(QUIZZES.AUTHOR_ID)).build())
                 .active(record.getValue(QUIZZES.ACTIVE))
                 .creationDate(record.getValue(QUIZZES.CREATION_DATE).toLocalDateTime())
+                .group(
+                        ObjectUtils.isNotEmpty(record.getValue(QUIZZES.GROUP_ID))
+                                ? Group.builder().id(record.getValue(QUIZZES.GROUP_ID)).build()
+                                : Group.builder().build()
+                )
                 .build();
     }
 }

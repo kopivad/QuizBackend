@@ -14,4 +14,8 @@ public interface QuizRepository {
     boolean update(Quiz quiz);
 
     boolean delete(Long id);
+
+    List<Quiz> findByGroupId(long id);
+
+    List<Quiz> findByTitleStartsWith(String title);
 }

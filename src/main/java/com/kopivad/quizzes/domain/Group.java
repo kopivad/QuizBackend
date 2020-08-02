@@ -1,6 +1,5 @@
 package com.kopivad.quizzes.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -8,17 +7,19 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @EqualsAndHashCode(of = {"id"})
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = QuizAnswer.QuizAnswerBuilder.class)
-public class QuizAnswer {
+@JsonDeserialize(builder = Group.GroupBuilder.class)
+public class Group {
     long id;
-    Question question;
-    QuizSession session;
-    Answer answer;
+    String name;
+    List<Quiz> quizzes;
+    List<User> users;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class QuizAnswerBuilder { }
+    public static class GroupBuilder { }
 }

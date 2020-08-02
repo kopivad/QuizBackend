@@ -7,6 +7,7 @@ package com.kopivad.quizzes.domain.db;
 import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
+import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
 import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
 import com.kopivad.quizzes.domain.db.tables.QuizHistories;
@@ -21,6 +22,7 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -38,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1952738322;
+    private static final long serialVersionUID = -1792378041;
 
     /**
      * The reference instance of <code>public</code>
@@ -59,6 +61,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.evaluation_steps</code>.
      */
     public final EvaluationSteps EVALUATION_STEPS = com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
+
+    /**
+     * The table <code>public.groups</code>.
+     */
+    public final Groups GROUPS = com.kopivad.quizzes.domain.db.tables.Groups.GROUPS;
 
     /**
      * The table <code>public.questions</code>.
@@ -104,6 +111,18 @@ public class Public extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        List result = new ArrayList();
+        result.addAll(getSequences0());
+        return result;
+    }
+
+    private final List<Sequence<?>> getSequences0() {
+        return Arrays.<Sequence<?>>asList(
+            Sequences.GROUPS_ID_SEQ);
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         List result = new ArrayList();
         result.addAll(getTables0());
@@ -115,6 +134,7 @@ public class Public extends SchemaImpl {
             Answers.ANSWERS,
             ApiClients.API_CLIENTS,
             EvaluationSteps.EVALUATION_STEPS,
+            Groups.GROUPS,
             Questions.QUESTIONS,
             QuizAnswers.QUIZ_ANSWERS,
             QuizHistories.QUIZ_HISTORIES,

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @EqualsAndHashCode(of = {"id"})
 @Builder(toBuilder = true)
@@ -16,6 +18,7 @@ public class AnswerDto {
     String body;
     boolean isRight;
     long questionId;
+    List<QuizAnswerDto> quizAnswers;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

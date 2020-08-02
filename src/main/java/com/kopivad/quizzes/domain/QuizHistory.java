@@ -13,8 +13,8 @@ import lombok.Value;
 @JsonDeserialize(builder = QuizHistory.QuizHistoryBuilder.class)
 public class QuizHistory {
     long id;
-    String rating;
     int total;
+    String rating;
     QuizSession session;
     User user;
     String pdfFilename;

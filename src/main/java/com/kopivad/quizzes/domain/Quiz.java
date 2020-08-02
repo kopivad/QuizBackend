@@ -1,10 +1,11 @@
 package com.kopivad.quizzes.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,11 +20,12 @@ public class Quiz {
     String description;
     int total;
     boolean active;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime creationDate;
     User author;
+    List<QuizSession> sessions;
     List<Question> questions;
     List<EvaluationStep> evaluationSteps;
+    Group group;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -1,6 +1,5 @@
 package com.kopivad.quizzes.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -10,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Value
 @Builder(toBuilder = true)
@@ -21,8 +21,11 @@ public class UserDto {
     String name;
     String password;
     Role role;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime creationDate;
+    List<QuizDto> quizzes;
+    List<QuizHistoryDto> histories;
+    List<QuizSessionDto> sessions;
+    long groupId;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

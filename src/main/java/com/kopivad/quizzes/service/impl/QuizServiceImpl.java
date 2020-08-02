@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.EvaluationStep;
+import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.dto.EvaluationStepDto;
@@ -24,28 +25,28 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final QuestionService questionService;
     private final EvaluationStepService evaluationStepService;
-    private final QuizMapper mapper;
+    private final QuizMapper quizMapper;
 
     @Override
     public List<QuizDto> getAll() {
         List<Quiz> quizzes = quizRepository.findAll();
         return quizzes
                 .stream()
-                .map(mapper::toDto)
+                .map(quizMapper::toDto)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public Quiz getById(Long id) {
-        Quiz quizById = quizRepository.findById(id);
+        Quiz quiz = quizRepository.findById(id);
         List<Question> questions = questionService.getByQuizId(id);
         List<EvaluationStep> steps = evaluationStepService.getByQuizId(id);
-        return quizById.toBuilder().questions(questions).evaluationSteps(steps).build();
+        return quiz.toBuilder().questions(questions).evaluationSteps(steps).build();
     }
 
     @Override
     public long save(QuizDto quizDto) {
-        Quiz quiz = mapper.toEntity(quizDto);
+        Quiz quiz = quizMapper.toEntity(quizDto);
         long id = quizRepository.save(quiz);
         if (ObjectUtils.isNotEmpty(quizDto.getEvaluationSteps())) {
             List<EvaluationStepDto> steps = setQuizForAllSteps(id, quizDto.getEvaluationSteps());
@@ -60,13 +61,33 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public boolean update(QuizDto quizDto) {
-        Quiz quiz = mapper.toEntity(quizDto);
+        Quiz quiz = quizMapper.toEntity(quizDto);
         return quizRepository.update(quiz);
     }
 
     @Override
     public boolean delete(Long id) {
         return quizRepository.delete(id);
+    }
+
+    @Override
+    public boolean addGroup(long quizId, long groupId) {
+        Quiz quiz = quizRepository.findById(quizId);
+        Quiz quizWithGroup = quiz.toBuilder().group(Group.builder().id(groupId).build()).build();
+        return quizRepository.update(quizWithGroup);
+    }
+
+    @Override
+    public List<Quiz> getByGroupId(long id) {
+        return quizRepository.findByGroupId(id);
+    }
+
+    @Override
+    public List<QuizDto> getByTitleStartsWith(String title) {
+        return quizRepository.findByTitleStartsWith(title)
+                .stream()
+                .map(quizMapper::toDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private List<QuestionDto> setQuizForAllQuestions(long quizId, List<QuestionDto> dtos) {

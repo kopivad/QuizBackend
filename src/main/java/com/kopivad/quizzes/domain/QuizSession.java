@@ -19,6 +19,7 @@ public class QuizSession {
     Quiz quiz;
     User user;
     List<QuizAnswer> results;
+    List<QuizHistory> histories;
     LocalDateTime date;
 
     @JsonPOJOBuilder(withPrefix = "")

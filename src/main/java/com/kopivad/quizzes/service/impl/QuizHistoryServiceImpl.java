@@ -1,15 +1,10 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.EvaluationStep;
-import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.domain.QuizHistory;
-import com.kopivad.quizzes.domain.QuizSession;
-import com.kopivad.quizzes.dto.QuizHistoryDto;
+import com.kopivad.quizzes.domain.*;
+import com.kopivad.quizzes.dto.*;
 import com.kopivad.quizzes.mapper.QuizHistoryMapper;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
-import com.kopivad.quizzes.service.QuizAnswerService;
-import com.kopivad.quizzes.service.QuizHistoryService;
-import com.kopivad.quizzes.service.QuizSessionService;
+import com.kopivad.quizzes.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
@@ -41,6 +36,9 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private final QuizHistoryRepository quizHistoryRepository;
     private final QuizSessionService quizSessionService;
     private final QuizAnswerService quizAnswerService;
+    private final AnswerService answerService;
+    private final QuestionService questionService;
+    private final EvaluationStepService stepService;
     private final QuizHistoryMapper quizHistoryMapper;
 
 
@@ -103,9 +101,9 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
 
     @Override
     public long createHistory(long sessionId) {
-        QuizSession session = quizSessionService.getById(sessionId);
+        QuizSessionDto session = quizSessionService.getById(sessionId);
         int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
-        String rating = calculateRating(total, session.getQuiz().getEvaluationSteps());
+        String rating = calculateRating(total, session.getQuizId());
         String pdfFilename = UUID.randomUUID().toString() +  ".pdf";
         String csvFilename = UUID.randomUUID().toString() +  ".csv";
 
@@ -116,8 +114,8 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
                         .rating(rating)
                         .csvFilename(csvFilename)
                         .pdfFilename(pdfFilename)
-                        .user(session.getUser())
-                        .session(session)
+                        .user(User.builder().id(session.getUserId()).build())
+                        .session(QuizSession.builder().id(sessionId).build())
                         .build();
         long id = save(quizHistory);
         createPDF(pdfFilename, id);
@@ -139,7 +137,8 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private String calculateRating(int total, List<EvaluationStep> steps) {
+    private String calculateRating(int total, long quizId) {
+        List<EvaluationStep> steps = stepService.getByQuizId(quizId);
         AtomicReference<String> rating = new AtomicReference<>("Lowest rating");
         steps.forEach(step -> {
             if(step.getMinTotal() <= total && step.getMaxTotal() >= total) rating.set(step.getRating());
@@ -147,11 +146,13 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
         return rating.get();
     }
 
-    private int calculateTotal(List<QuizAnswer> quizAnswers) {
+    private int calculateTotal(List<QuizAnswerDto> quizAnswers) {
         AtomicInteger total = new AtomicInteger(0);
         quizAnswers.forEach(a -> {
-            if (a.getAnswer().isRight()) {
-                total.getAndAdd(a.getQuestion().getValue());
+            Answer answer = answerService.getById(a.getAnswerId());
+            if (answer.isRight()) {
+                Question question = questionService.getById(a.getQuestionId());
+                total.getAndAdd(question.getValue());
             }
         });
         return total.get();
