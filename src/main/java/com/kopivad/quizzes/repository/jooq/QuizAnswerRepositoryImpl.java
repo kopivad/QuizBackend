@@ -1,19 +1,15 @@
 package com.kopivad.quizzes.repository.jooq;
 
-import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.domain.QuizSession;
-import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
 import com.kopivad.quizzes.repository.QuizAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizAnswers.QUIZ_ANSWERS;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getQuizAnswersRecordQuizAnswerRecordMapper;
 
 
 @Repository
@@ -41,15 +37,5 @@ public class QuizAnswerRepositoryImpl implements QuizAnswerRepository {
                 .fetch()
                 .map(getQuizAnswersRecordQuizAnswerRecordMapper()
                 );
-    }
-
-    public RecordMapper<QuizAnswersRecord, QuizAnswer> getQuizAnswersRecordQuizAnswerRecordMapper() {
-        return r -> QuizAnswer
-                .builder()
-                .id(r.getValue(QUIZ_ANSWERS.ID))
-                .answer(Answer.builder().id(r.getValue(QUIZ_ANSWERS.ANSWER_ID)).build())
-                .question(Question.builder().id(r.getValue(QUIZ_ANSWERS.QUESTION_ID)).build())
-                .session(QuizSession.builder().id(r.getValue(QUIZ_ANSWERS.SESSION_ID)).build())
-                .build();
     }
 }

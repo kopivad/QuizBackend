@@ -1,17 +1,15 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getAnswerFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -76,15 +74,5 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .where(ANSWERS.QUESTION_ID.eq(id))
                 .fetch()
                 .map(getAnswerFromRecordMapper());
-    }
-
-    private RecordMapper<Record, Answer> getAnswerFromRecordMapper() {
-        return record -> Answer
-                .builder()
-                .id(record.getValue(ANSWERS.ID))
-                .body(record.getValue(ANSWERS.BODY))
-                .question(Question.builder().id(record.getValue(ANSWERS.QUESTION_ID)).build())
-                .isRight(record.getValue(ANSWERS.IS_RIGHT))
-                .build();
     }
 }

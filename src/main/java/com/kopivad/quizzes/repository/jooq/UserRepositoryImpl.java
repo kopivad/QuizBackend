@@ -1,20 +1,16 @@
 package com.kopivad.quizzes.repository.jooq;
 
-import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Usr.USR;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getUserFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -94,22 +90,5 @@ public class UserRepositoryImpl implements UserRepository {
                 .where(USR.EMAIL.startsWithIgnoreCase(email))
                 .fetch()
                 .map(getUserFromRecordMapper());
-    }
-
-    private RecordMapper<Record, User> getUserFromRecordMapper() {
-        return record -> User
-                .builder()
-                .id(record.getValue(USR.ID))
-                .name(record.getValue(USR.NAME))
-                .email(record.getValue(USR.EMAIL))
-                .role(Role.valueOf(record.getValue(USR.ROLE)))
-                .creationDate(record.getValue(USR.CREATION_DATE).toLocalDateTime())
-                .password(record.getValue(USR.PASSWORD))
-                .group(
-                        ObjectUtils.isNotEmpty(record.getValue(USR.GROUP_ID))
-                                ? Group.builder().id(record.getValue(USR.GROUP_ID)).build()
-                                : Group.builder().build()
-                )
-                .build();
     }
 }

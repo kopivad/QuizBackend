@@ -1,20 +1,16 @@
 package com.kopivad.quizzes.repository.jooq;
 
-import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getQuizFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -97,23 +93,5 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .where(QUIZZES.TITLE.startsWithIgnoreCase(title))
                 .fetch()
                 .map(getQuizFromRecordMapper());
-    }
-
-    private RecordMapper<Record, Quiz> getQuizFromRecordMapper() {
-        return record -> Quiz
-                .builder()
-                .id(record.getValue(QUIZZES.ID))
-                .title(record.getValue(QUIZZES.TITLE))
-                .description(record.getValue(QUIZZES.DESCRIPTION))
-                .total(record.getValue(QUIZZES.TOTAL))
-                .author(User.builder().id(record.getValue(QUIZZES.AUTHOR_ID)).build())
-                .active(record.getValue(QUIZZES.ACTIVE))
-                .creationDate(record.getValue(QUIZZES.CREATION_DATE).toLocalDateTime())
-                .group(
-                        ObjectUtils.isNotEmpty(record.getValue(QUIZZES.GROUP_ID))
-                                ? Group.builder().id(record.getValue(QUIZZES.GROUP_ID)).build()
-                                : Group.builder().build()
-                )
-                .build();
     }
 }

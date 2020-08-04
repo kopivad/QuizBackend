@@ -1,18 +1,15 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.EvaluationStep;
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.db.tables.records.EvaluationStepsRecord;
 import com.kopivad.quizzes.repository.EvaluationStepRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getEvaluationStepsRecordEvaluationStepRecordMapper;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,16 +36,5 @@ public class EvaluationStepRepositoryImpl implements EvaluationStepRepository {
                 .where(EVALUATION_STEPS.QUIZ_ID.eq(id))
                 .fetch()
                 .map(getEvaluationStepsRecordEvaluationStepRecordMapper());
-    }
-
-    public RecordMapper<Record, EvaluationStep> getEvaluationStepsRecordEvaluationStepRecordMapper() {
-        return r -> EvaluationStep
-                .builder()
-                .quiz(Quiz.builder().id(r.getValue(EVALUATION_STEPS.QUIZ_ID)).build())
-                .rating(r.getValue(EVALUATION_STEPS.RATING))
-                .id(r.getValue(EVALUATION_STEPS.ID))
-                .minTotal(r.getValue(EVALUATION_STEPS.MINTOTAL))
-                .maxTotal(r.getValue(EVALUATION_STEPS.MAXTOTAL))
-                .build();
     }
 }

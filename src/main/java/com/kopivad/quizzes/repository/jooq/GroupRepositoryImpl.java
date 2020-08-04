@@ -1,17 +1,15 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.domain.db.tables.records.GroupsRecord;
 import com.kopivad.quizzes.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.Groups.GROUPS;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getGroupsRecordGroupRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -54,13 +52,5 @@ public class GroupRepositoryImpl implements GroupRepository {
                 .where(GROUPS.ID.eq(id))
                 .fetchOne()
                 .map(getGroupsRecordGroupRecordMapper());
-    }
-
-    public RecordMapper<Record, Group> getGroupsRecordGroupRecordMapper() {
-        return r -> Group
-                .builder()
-                .id(r.getValue(GROUPS.ID))
-                .name(r.getValue(GROUPS.NAME))
-                .build();
     }
 }
