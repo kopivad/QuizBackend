@@ -1,7 +1,9 @@
 package com.kopivad.quizzes.mapper;
 
-import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.domain.*;
+import com.kopivad.quizzes.dto.QuizDto;
+import com.kopivad.quizzes.dto.QuizHistoryDto;
+import com.kopivad.quizzes.dto.QuizSessionDto;
 import com.kopivad.quizzes.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -65,43 +67,79 @@ public class UserMapper {
     }
 
     private void mapSpecificFields(User source, UserDto.UserDtoBuilder destination) {
-        destination.groupId(source.getGroup().getId()).build();
-
-        destination.histories(
-                ObjectUtils.isNotEmpty(source.getHistories())
-                        ? source.getHistories().stream().map(quizHistoryMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.quizzes(
-                ObjectUtils.isNotEmpty(source.getQuizzes())
-                        ? source.getQuizzes().stream().map(quizMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.sessions(
-                ObjectUtils.isNotEmpty(source.getSessions())
-                        ? source.getSessions().stream().map(quizSessionMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+        mapGroupToDto(source, destination);
+        mapHistoriesToDto(source, destination);
+        mapQuizzesToDto(source, destination);
+        mapSessionsToDto(source, destination);
     }
 
     private void mapSpecificFields(UserDto source, User.UserBuilder destination) {
-        destination.group(Group.builder().id(source.getGroupId()).build()).build();
+        mapGroupToEntity(source, destination);
+        mapHistoriesToEntity(source, destination);
+        mapQuizzesToEntity(source, destination);
+        mapSessionsToEntity(source, destination);
+    }
 
-        destination.histories(
-                ObjectUtils.isNotEmpty(source.getHistories())
-                        ? source.getHistories().stream().map(quizHistoryMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.quizzes(
-                ObjectUtils.isNotEmpty(source.getQuizzes())
-                        ? source.getQuizzes().stream().map(quizMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.sessions(
-                ObjectUtils.isNotEmpty(source.getSessions())
-                        ? source.getSessions().stream().map(quizSessionMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+    private void mapSessionsToEntity(UserDto source, User.UserBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getSessions())) {
+            List<QuizSession> sessions = source.getSessions().stream().map(quizSessionMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.sessions(sessions);
+        } else {
+            destination.sessions(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizzesToEntity(UserDto source, User.UserBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuizzes())) {
+            List<Quiz> quizzes = source.getQuizzes().stream().map(quizMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.quizzes(quizzes);
+        } else {
+            destination.quizzes(Collections.emptyList());
+        }
+    }
+
+    private void mapHistoriesToEntity(UserDto source, User.UserBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getHistories())) {
+            List<QuizHistory> histories = source.getHistories().stream().map(quizHistoryMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.histories(histories);
+        } else {
+            destination.histories(Collections.emptyList());
+        }
+    }
+
+    private void mapGroupToEntity(UserDto source, User.UserBuilder destination) {
+        destination.group(Group.builder().id(source.getGroupId()).build()).build();
+    }
+
+    private void mapSessionsToDto(User source, UserDto.UserDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getSessions())) {
+            List<QuizSessionDto> dtos = source.getSessions().stream().map(quizSessionMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.sessions(dtos);
+        } else {
+            destination.sessions(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizzesToDto(User source, UserDto.UserDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuizzes())) {
+            List<QuizDto> dtos = source.getQuizzes().stream().map(quizMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.quizzes(dtos);
+        } else {
+            destination.quizzes(Collections.emptyList());
+        }
+    }
+
+    private void mapHistoriesToDto(User source, UserDto.UserDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(ObjectUtils.isNotEmpty(source.getHistories()))) {
+            List<QuizHistoryDto> dtos = source.getHistories().stream().map(quizHistoryMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.histories(dtos);
+        } else {
+            destination.histories(Collections.emptyList());
+        }
+    }
+
+    private void mapGroupToDto(User source, UserDto.UserDtoBuilder destination) {
+        destination.groupId(source.getGroup().getId()).build();
     }
 
     public List<UserDto> allToDto(List<User> users) {

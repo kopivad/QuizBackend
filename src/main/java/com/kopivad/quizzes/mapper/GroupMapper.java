@@ -1,11 +1,11 @@
 package com.kopivad.quizzes.mapper;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.GroupDto;
-import com.kopivad.quizzes.dto.QuestionDto;
-import liquibase.pro.packaged.G;
+import com.kopivad.quizzes.dto.QuizDto;
+import com.kopivad.quizzes.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.Converter;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -62,33 +63,62 @@ public class GroupMapper {
     }
 
     private void mapSpecificFields(Group source, GroupDto.GroupDtoBuilder destination) {
-        destination.users(
-                ObjectUtils.isNotEmpty(
-                        source.getUsers())
-                        ? source.getUsers().stream().map(userMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.quizzes(
-                ObjectUtils.isNotEmpty(
-                        source.getQuizzes())
-                        ? source.getQuizzes().stream().map(quizMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+        mapUsersToDto(source, destination);
+        mapQuizzesToDto(source, destination);
     }
 
     private void mapSpecificFields(GroupDto source, Group.GroupBuilder destination) {
-        destination.users(
-                ObjectUtils.isNotEmpty(
-                        source.getUsers())
-                        ? source.getUsers().stream().map(userMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.quizzes(
-                ObjectUtils.isNotEmpty(
-                        source.getQuizzes())
-                        ? source.getQuizzes().stream().map(quizMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+        mapUsersToEntity(source, destination);
+        mapQuizzesToEntity(source, destination);
+    }
+
+    private void mapQuizzesToDto(Group source, GroupDto.GroupDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuizzes())) {
+            List<QuizDto> dtos = source.getQuizzes()
+                    .stream()
+                    .map(quizMapper::toDto)
+                    .collect(Collectors.toUnmodifiableList());
+            destination.quizzes(dtos);
+        } else {
+            destination.quizzes(Collections.emptyList());
+        }
+    }
+
+    private void mapUsersToDto(Group source, GroupDto.GroupDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getUsers())) {
+            List<UserDto> dtos = source.getUsers()
+                    .stream()
+                    .map(userMapper::toDto)
+                    .collect(Collectors.toUnmodifiableList());
+            destination.users(dtos);
+        } else {
+            destination.users(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizzesToEntity(GroupDto source, Group.GroupBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuizzes())) {
+            List<Quiz> quizzes = source.getQuizzes()
+                    .stream()
+                    .map(quizMapper::toEntity)
+                    .collect(Collectors.toUnmodifiableList());
+            destination.quizzes(quizzes);
+        } else {
+            destination.quizzes(Collections.emptyList());
+        }
+    }
+
+    private void mapUsersToEntity(GroupDto source, Group.GroupBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getUsers())) {
+            List<User> users = source.getUsers()
+                    .stream()
+                    .map(userMapper::toEntity)
+                    .collect(Collectors.toUnmodifiableList());
+            destination.users(users);
+        } else {
+            destination.users(Collections.emptyList());
+        }
+
     }
 
 }

@@ -5,14 +5,11 @@ import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -60,12 +57,28 @@ public class QuizHistoryMapper {
     }
 
     private void mapSpecificFields(QuizHistory source, QuizHistoryDto.QuizHistoryDtoBuilder destination) {
-        destination.userId(source.getUser().getId()).build();
-        destination.sessionId(source.getSession().getId()).build();
+        mapUserToDto(source, destination);
+        mapSessionToDto(source, destination);
     }
 
     private void mapSpecificFields(QuizHistoryDto source, QuizHistory.QuizHistoryBuilder destination) {
-        destination.user(User.builder().id(source.getUserId()).build());
+        mapUserToEntity(source, destination);
+        mapSessionToEntity(source, destination);
+    }
+
+    private void mapSessionToEntity(QuizHistoryDto source, QuizHistory.QuizHistoryBuilder destination) {
         destination.session(QuizSession.builder().id(source.getSessionId()).build());
+    }
+
+    private void mapUserToEntity(QuizHistoryDto source, QuizHistory.QuizHistoryBuilder destination) {
+        destination.user(User.builder().id(source.getUserId()).build());
+    }
+
+    private void mapSessionToDto(QuizHistory source, QuizHistoryDto.QuizHistoryDtoBuilder destination) {
+        destination.sessionId(source.getSession().getId()).build();
+    }
+
+    private void mapUserToDto(QuizHistory source, QuizHistoryDto.QuizHistoryDtoBuilder destination) {
+        destination.userId(source.getUser().getId()).build();
     }
 }

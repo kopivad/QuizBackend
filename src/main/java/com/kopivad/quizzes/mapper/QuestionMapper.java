@@ -1,14 +1,19 @@
 package com.kopivad.quizzes.mapper;
 
+import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.dto.QuestionDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -56,12 +61,41 @@ public class QuestionMapper {
     }
 
     private void mapSpecificFields(Question source, QuestionDto.QuestionDtoBuilder destination) {
-        destination.quizId(source.getQuiz().getId()).build();
-        destination.answers(source.getAnswers().stream().map(answerMapper::toDto).collect(Collectors.toUnmodifiableList()));
+        mapQuizToDto(source, destination);
+        mapAnswersToDto(source, destination);
     }
 
     private void mapSpecificFields(QuestionDto source, Question.QuestionBuilder destination) {
+        mapQuizToEntity(source, destination);
+        mapAnswersToEntity(source, destination);
+    }
+
+    private void mapAnswersToEntity(QuestionDto source, Question.QuestionBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getAnswers())) {
+            List<Answer> answers = source.getAnswers()
+                    .stream()
+                    .map(answerMapper::toEntity)
+                    .collect(Collectors.toUnmodifiableList());
+            destination.answers(answers);
+        } else {
+            destination.answers(Collections.emptyList());
+        }
+    }
+
+    private void mapAnswersToDto(Question source, QuestionDto.QuestionDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getAnswers())) {
+            List<AnswerDto> answers = source.getAnswers().stream().map(answerMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.answers(answers);
+        } else {
+            destination.answers(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizToEntity(QuestionDto source, Question.QuestionBuilder destination) {
         destination.quiz(Quiz.builder().id(source.getQuizId()).build()).build();
-        destination.answers(source.getAnswers().stream().map(answerMapper::toEntity).collect(Collectors.toUnmodifiableList()));
+    }
+
+    private void mapQuizToDto(Question source, QuestionDto.QuestionDtoBuilder destination) {
+        destination.quizId(source.getQuiz().getId()).build();
     }
 }

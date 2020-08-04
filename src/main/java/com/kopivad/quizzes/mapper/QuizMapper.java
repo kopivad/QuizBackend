@@ -1,8 +1,8 @@
 package com.kopivad.quizzes.mapper;
 
-import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.domain.*;
+import com.kopivad.quizzes.dto.EvaluationStepDto;
+import com.kopivad.quizzes.dto.QuestionDto;
 import com.kopivad.quizzes.dto.QuizDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -66,33 +66,69 @@ public class QuizMapper {
     }
 
     private void mapSpecificFields(Quiz source, QuizDto.QuizDtoBuilder destination) {
-        destination.authorId(source.getAuthor().getId()).build();
-        destination.groupId(source.getGroup().getId()).build();
-        destination.questions(
-                ObjectUtils.isNotEmpty(source.getQuestions())
-                        ? source.getQuestions().stream().map(questionMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.evaluationSteps(
-                ObjectUtils.isNotEmpty(source.getQuestions())
-                        ? source.getEvaluationSteps().stream().map(stepMapper::toDto).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+        mapUserToDto(source, destination);
+        mapGroupToDto(source, destination);
+        mapQuestionsToDto(source, destination);
+        mapStepsToDto(source, destination);
     }
 
     private void mapSpecificFields(QuizDto source, Quiz.QuizBuilder destination) {
-        destination.author(User.builder().id(source.getAuthorId()).build()).build();
+        mapUserToEntity(source, destination);
+        mapGroupToEntity(source, destination);
+        mapQuestionsToEntity(source, destination);
+        mapStepsToEntity(source, destination);
+    }
+
+    private void mapStepsToEntity(QuizDto source, Quiz.QuizBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuestions())) {
+            List<EvaluationStep> steps = source.getEvaluationSteps().stream().map(stepMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.evaluationSteps(steps);
+        } else {
+            destination.evaluationSteps(Collections.emptyList());
+        }
+    }
+
+    private void mapQuestionsToEntity(QuizDto source, Quiz.QuizBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuestions())) {
+            List<Question> questions = source.getQuestions().stream().map(questionMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.questions(questions);
+        } else {
+            destination.questions(Collections.emptyList());
+        }
+    }
+
+    private void mapGroupToEntity(QuizDto source, Quiz.QuizBuilder destination) {
         destination.group(Group.builder().id(source.getGroupId()).build()).build();
-        destination.questions(
-                ObjectUtils.isNotEmpty(source.getQuestions())
-                        ? source.getQuestions().stream().map(questionMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
-        destination.evaluationSteps(
-                ObjectUtils.isNotEmpty(source.getQuestions())
-                        ? source.getEvaluationSteps().stream().map(stepMapper::toEntity).collect(Collectors.toUnmodifiableList())
-                        : Collections.emptyList()
-        );
+    }
+
+    private void mapUserToEntity(QuizDto source, Quiz.QuizBuilder destination) {
+        destination.author(User.builder().id(source.getAuthorId()).build()).build();
+    }
+
+    private void mapStepsToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuestions())) {
+            List<EvaluationStepDto> steps = source.getEvaluationSteps().stream().map(stepMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.evaluationSteps(steps);
+        } else {
+            destination.evaluationSteps(Collections.emptyList());
+        }
+    }
+
+    private void mapQuestionsToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getQuestions())) {
+            List<QuestionDto> questions = source.getQuestions().stream().map(questionMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.questions(questions);
+        } else {
+            destination.questions(Collections.emptyList());
+        }
+    }
+
+    private void mapGroupToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
+        destination.groupId(source.getGroup().getId()).build();
+    }
+
+    private void mapUserToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
+        destination.authorId(source.getAuthor().getId()).build();
     }
 
     public List<QuizDto> allToDto(List<Quiz> quizzes) {
