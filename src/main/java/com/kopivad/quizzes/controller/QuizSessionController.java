@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuizSessionController {
     private final QuizSessionService quizSessionService;
 
-    @PostMapping()
+    @PostMapping
     public long startSession(@RequestBody QuizSessionDto quizSessionDto) {
         return quizSessionService.startSession(quizSessionDto);
     }

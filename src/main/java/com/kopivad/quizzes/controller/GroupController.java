@@ -14,12 +14,12 @@ import java.util.List;
 public class GroupController {
     private final GroupService groupService;
 
-    @PostMapping()
+    @PostMapping
     public long create(@RequestBody GroupDto dto) {
         return groupService.create(dto);
     }
 
-    @PutMapping()
+    @PutMapping
     public boolean update(@RequestBody GroupDto dto) {
         return groupService.update(dto);
     }

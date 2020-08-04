@@ -24,7 +24,7 @@ public class AnswerController {
         return answerService.getById(id);
     }
 
-    @PostMapping()
+    @PostMapping
     public long save(@RequestBody AnswerDto answerDto) {
         return answerService.save(answerDto);
     }

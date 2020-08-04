@@ -24,12 +24,12 @@ public class QuestionController {
         return questionService.getById(id);
     }
 
-    @PostMapping()
+    @PostMapping
     public long save(@RequestBody QuestionDto questionDto) {
         return questionService.save(questionDto);
     }
 
-    @PutMapping()
+    @PutMapping
     public boolean update(@RequestBody QuestionDto questionDto) {
         return questionService.update(questionDto);
     }
