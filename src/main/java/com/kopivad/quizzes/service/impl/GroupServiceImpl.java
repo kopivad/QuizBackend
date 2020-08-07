@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,15 +71,19 @@ public class GroupServiceImpl implements GroupService {
 
         return groups
                 .stream()
-                .map(g -> {
-                    List<UserDto> users = userMapper.allToDto(userService.getByGroupId(g.getId()));
-                    List<QuizDto> quizzes = quizMapper.allToDto(quizService.getByGroupId(g.getId()));
-                    return g.toBuilder()
-                            .users(users)
-                            .quizzes(quizzes)
-                            .build();
-                })
+                .map(getGroupDataFunction())
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private Function<GroupDto, GroupDto> getGroupDataFunction() {
+        return g -> {
+            List<UserDto> users = userMapper.allToDto(userService.getByGroupId(g.getId()));
+            List<QuizDto> quizzes = quizMapper.allToDto(quizService.getByGroupId(g.getId()));
+            return g.toBuilder()
+                    .users(users)
+                    .quizzes(quizzes)
+                    .build();
+        };
     }
 
     @Override

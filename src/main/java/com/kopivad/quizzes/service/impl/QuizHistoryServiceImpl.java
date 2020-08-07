@@ -104,8 +104,8 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
         QuizSessionDto session = quizSessionService.getById(sessionId);
         int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
         String rating = calculateRating(total, session.getQuizId());
-        String pdfFilename = UUID.randomUUID().toString() +  ".pdf";
-        String csvFilename = UUID.randomUUID().toString() +  ".csv";
+        String pdfFilename = UUID.randomUUID().toString() + ".pdf";
+        String csvFilename = UUID.randomUUID().toString() + ".csv";
 
         QuizHistory quizHistory =
                 QuizHistory
@@ -139,22 +139,20 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
 
     private String calculateRating(int total, long quizId) {
         List<EvaluationStep> steps = stepService.getByQuizId(quizId);
-        AtomicReference<String> rating = new AtomicReference<>("Lowest rating");
-        steps.forEach(step -> {
-            if(step.getMinTotal() <= total && step.getMaxTotal() >= total) rating.set(step.getRating());
-        });
-        return rating.get();
+        return steps
+                .stream()
+                .filter(step -> step.getMinTotal() <= total && step.getMaxTotal() >= total)
+                .map(EvaluationStep::getRating)
+                .findFirst()
+                .orElse("Lowest rating");
     }
 
     private int calculateTotal(List<QuizAnswerDto> quizAnswers) {
-        AtomicInteger total = new AtomicInteger(0);
-        quizAnswers.forEach(a -> {
-            Answer answer = answerService.getById(a.getAnswerId());
-            if (answer.isRight()) {
-                Question question = questionService.getById(a.getQuestionId());
-                total.getAndAdd(question.getValue());
-            }
-        });
-        return total.get();
+        return quizAnswers
+                .stream()
+                .map(a -> answerService.getById(a.getAnswerId()))
+                .filter(Answer::isRight)
+                .map(a -> questionService.getById(a.getQuestion().getId()).getValue())
+                .mapToInt(value -> value).sum();
     }
 }
