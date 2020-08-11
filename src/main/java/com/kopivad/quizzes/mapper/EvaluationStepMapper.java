@@ -52,10 +52,18 @@ public class EvaluationStepMapper {
     }
 
     private void mapSpecificFields(EvaluationStep source, EvaluationStepDto.EvaluationStepDtoBuilder destination) {
+        mapQuizToDto(source, destination);
+    }
+
+    private void mapQuizToDto(EvaluationStep source, EvaluationStepDto.EvaluationStepDtoBuilder destination) {
         destination.quizId(source.getQuiz().getId()).build();
     }
 
     private void mapSpecificFields(EvaluationStepDto source, EvaluationStep.EvaluationStepBuilder destination) {
+        mapQuizToEntity(source, destination);
+    }
+
+    private void mapQuizToEntity(EvaluationStepDto source, EvaluationStep.EvaluationStepBuilder destination) {
         destination.quiz(Quiz.builder().id(source.getQuizId()).build());
     }
 }

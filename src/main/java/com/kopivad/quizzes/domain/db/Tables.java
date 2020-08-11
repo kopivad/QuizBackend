@@ -7,6 +7,7 @@ package com.kopivad.quizzes.domain.db;
 import com.kopivad.quizzes.domain.db.tables.Answers;
 import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
+import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
 import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
 import com.kopivad.quizzes.domain.db.tables.QuizHistories;
@@ -44,6 +45,11 @@ public class Tables {
      * The table <code>public.evaluation_steps</code>.
      */
     public static final EvaluationSteps EVALUATION_STEPS = EvaluationSteps.EVALUATION_STEPS;
+
+    /**
+     * The table <code>public.groups</code>.
+     */
+    public static final Groups GROUPS = Groups.GROUPS;
 
     /**
      * The table <code>public.questions</code>.

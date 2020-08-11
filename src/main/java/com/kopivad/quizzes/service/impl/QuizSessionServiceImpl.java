@@ -1,8 +1,8 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.QuizAnswer;
 import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
+import com.kopivad.quizzes.dto.QuizDto;
 import com.kopivad.quizzes.dto.QuizSessionDto;
 import com.kopivad.quizzes.mapper.QuizSessionMapper;
 import com.kopivad.quizzes.repository.QuizSessionRepository;
@@ -18,21 +18,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuizSessionServiceImpl implements QuizSessionService {
     private final QuizSessionRepository quizSessionRepository;
-    private final QuizSessionMapper mapper;
+    private final QuizSessionMapper quizSessionMapper;
     private final QuizAnswerService quizAnswerService;
-    private final QuizService quizService;
 
     @Override
     public long startSession(QuizSessionDto quizSessionDto) {
-        QuizSession session = mapper.toEntity(quizSessionDto);
+        QuizSession session = quizSessionMapper.toEntity(quizSessionDto);
         return quizSessionRepository.save(session);
     }
 
     @Override
-    public QuizSession getById(long sessionId) {
+    public QuizSessionDto getById(long sessionId) {
         QuizSession session = quizSessionRepository.findById(sessionId);
-        Quiz quiz = quizService.getById(session.getQuiz().getId());
-        List<QuizAnswer> quizAnswers = quizAnswerService.getAllBySessionId(sessionId);
-        return session.toBuilder().results(quizAnswers).quiz(quiz).build();
+        QuizSessionDto dto = quizSessionMapper.toDto(session);
+        List<QuizAnswerDto> quizAnswers = quizAnswerService.getAllBySessionId(sessionId);
+        return dto.toBuilder().results(quizAnswers).build();
     }
 }

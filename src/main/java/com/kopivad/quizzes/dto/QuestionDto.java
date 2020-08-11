@@ -20,6 +20,7 @@ public class QuestionDto {
     int value;
     QuestionType type;
     List<AnswerDto> answers;
+    List<QuizAnswerDto> quizAnswers;
     long quizId;
 
     @JsonPOJOBuilder(withPrefix = "")

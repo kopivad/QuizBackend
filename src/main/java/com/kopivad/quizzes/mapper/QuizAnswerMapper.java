@@ -59,14 +59,38 @@ public class QuizAnswerMapper {
     }
 
     private void mapSpecificFields(QuizAnswer source, QuizAnswerDto.QuizAnswerDtoBuilder destination) {
-        destination.questionId(source.getQuestion().getId()).build();
-        destination.sessionId(source.getSession().getId()).build();
-        destination.answerId(source.getAnswer().getId()).build();
+        mapQuizToDto(source, destination);
+        mapSessionToDto(source, destination);
+        mapAnswerToDto(source, destination);
     }
 
     private void mapSpecificFields(QuizAnswerDto source, QuizAnswer.QuizAnswerBuilder destination) {
-        destination.question(Question.builder().id(source.getQuestionId()).build());
-        destination.session(QuizSession.builder().id(source.getSessionId()).build());
+        mapQuestionToEntity(source, destination);
+        mapSessionToEntity(source, destination);
+        mapAnswerToEntity(source, destination);
+    }
+
+    private void mapAnswerToEntity(QuizAnswerDto source, QuizAnswer.QuizAnswerBuilder destination) {
         destination.answer(Answer.builder().id(source.getAnswerId()).build());
+    }
+
+    private void mapSessionToEntity(QuizAnswerDto source, QuizAnswer.QuizAnswerBuilder destination) {
+        destination.session(QuizSession.builder().id(source.getSessionId()).build());
+    }
+
+    private void mapQuestionToEntity(QuizAnswerDto source, QuizAnswer.QuizAnswerBuilder destination) {
+        destination.question(Question.builder().id(source.getQuestionId()).build());
+    }
+
+    private void mapAnswerToDto(QuizAnswer source, QuizAnswerDto.QuizAnswerDtoBuilder destination) {
+        destination.answerId(source.getAnswer().getId()).build();
+    }
+
+    private void mapSessionToDto(QuizAnswer source, QuizAnswerDto.QuizAnswerDtoBuilder destination) {
+        destination.sessionId(source.getSession().getId()).build();
+    }
+
+    private void mapQuizToDto(QuizAnswer source, QuizAnswerDto.QuizAnswerDtoBuilder destination) {
+        destination.questionId(source.getQuestion().getId()).build();
     }
 }

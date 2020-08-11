@@ -17,6 +17,7 @@ public class QuizSessionDto {
     long quizId;
     long userId;
     List<QuizAnswerDto> results;
+    List<QuizHistoryDto> histories;
     LocalDateTime date;
 
     @JsonPOJOBuilder(withPrefix = "")

@@ -17,6 +17,7 @@ public class Question {
     int value;
     QuestionType type;
     List<Answer> answers;
+    List<QuizAnswer> quizAnswers;
     Quiz quiz;
 
     @JsonPOJOBuilder(withPrefix = "")

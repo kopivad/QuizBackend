@@ -24,12 +24,17 @@ public class QuizController {
         return quizService.getById(id);
     }
 
-    @PostMapping()
+    @GetMapping
+    public List<QuizDto> getByTitleStartWith(@RequestParam(name = "title") String title) {
+        return quizService.getByTitleStartsWith(title);
+    }
+
+    @PostMapping
     public long save(@RequestBody QuizDto quizDto) {
         return quizService.save(quizDto);
     }
 
-    @PutMapping()
+    @PutMapping
     public boolean update(@RequestBody QuizDto quizDto) {
         return quizService.update(quizDto);
     }

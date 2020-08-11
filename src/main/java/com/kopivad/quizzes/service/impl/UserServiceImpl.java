@@ -1,5 +1,6 @@
 package com.kopivad.quizzes.service.impl;
 
+import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.mapper.UserMapper;
@@ -17,13 +18,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper mapper;
+    private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getAll() {
         return userRepository.findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(userMapper::toDto)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public long save(UserDto userDto) {
-        User user = mapper.toEntity(userDto);
+        User user = userMapper.toEntity(userDto);
         User userWithEncodedPassword = user
                 .toBuilder()
                 .password(passwordEncoder.encode(user.getPassword()))
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean update(UserDto userDto) {
-        User user = mapper.toEntity(userDto);
+        User user = userMapper.toEntity(userDto);
         User userWithEncodedPassword = user
                 .toBuilder()
                 .password(passwordEncoder.encode(userDto.getPassword()))
@@ -55,5 +56,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean delete(Long id) {
         return userRepository.delete(id);
+    }
+
+    @Override
+    public boolean addGroup(long userId, long groupId) {
+        User user = userRepository.findById(userId);
+
+        User userWithGroup = user.toBuilder()
+                .group(
+                        Group.builder()
+                        .id(groupId)
+                        .build()
+                ).build();
+
+        return userRepository.update(userWithGroup);
+    }
+
+    @Override
+    public List<User> getByGroupId(long id) {
+        return userRepository.findByGroupId(id);
+    }
+
+    @Override
+    public List<UserDto> getByEmailStartsWith(String email) {
+        return userRepository.findByEmailStartsWith(email)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toUnmodifiableList());
     }
 }

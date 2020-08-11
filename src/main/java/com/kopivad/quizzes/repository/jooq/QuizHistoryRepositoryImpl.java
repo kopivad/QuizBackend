@@ -1,18 +1,15 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.QuizHistory;
-import com.kopivad.quizzes.domain.QuizSession;
-import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizHistories.QUIZ_HISTORIES;
+import static com.kopivad.quizzes.repository.jooq.RecordMappers.getRecordQuizHistoryRecordMapper;
 
 @Repository
 @RequiredArgsConstructor
@@ -49,18 +46,5 @@ public class QuizHistoryRepositoryImpl implements QuizHistoryRepository {
                 .selectFrom(QUIZ_HISTORIES)
                 .fetch()
                 .map(getRecordQuizHistoryRecordMapper());
-    }
-
-    public RecordMapper<Record, QuizHistory> getRecordQuizHistoryRecordMapper() {
-        return r -> QuizHistory
-                .builder()
-                .id(r.getValue(QUIZ_HISTORIES.ID))
-                .rating(r.getValue(QUIZ_HISTORIES.RATING))
-                .total(r.getValue(QUIZ_HISTORIES.TOTAL))
-                .pdfFilename(r.getValue(QUIZ_HISTORIES.PDF_FILENAME))
-                .csvFilename(r.getValue(QUIZ_HISTORIES.CSV_FILENAME))
-                .session(QuizSession.builder().id(r.getValue(QUIZ_HISTORIES.SESSION_ID)).build())
-                .user(User.builder().id(r.getValue(QUIZ_HISTORIES.USER_ID)).build())
-                .build();
     }
 }

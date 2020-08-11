@@ -52,10 +52,18 @@ public class AnswerMapper {
     }
 
     private void mapSpecificFields(Answer source, AnswerDto.AnswerDtoBuilder destination) {
-        destination.questionId(source.getQuestion().getId()).build();
+        mapQuestionToDto(source, destination);
     }
 
     private void mapSpecificFields(AnswerDto source, Answer.AnswerBuilder destination) {
+        mapAnswerToEntity(source, destination);
+    }
+
+    private void mapQuestionToDto(Answer source, AnswerDto.AnswerDtoBuilder destination) {
+        destination.questionId(source.getQuestion().getId()).build();
+    }
+
+    private void mapAnswerToEntity(AnswerDto source, Answer.AnswerBuilder destination) {
         destination.question(Question.builder().id(source.getQuestionId()).build());
     }
 }

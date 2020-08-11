@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.*;
 
+import java.util.List;
+
 @Value
 @EqualsAndHashCode(of = {"id"})
 @Builder(toBuilder = true)
@@ -14,6 +16,7 @@ public class Answer {
     String body;
     boolean isRight;
     Question question;
+    List<QuizAnswer> quizAnswers;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

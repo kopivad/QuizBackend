@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuizAnswerController {
     private final QuizAnswerService quizAnswerService;
 
-    @PostMapping()
+    @PostMapping
     public long save(@RequestBody QuizAnswerDto quizAnswerDto) {
         return quizAnswerService.save(quizAnswerDto);
     }

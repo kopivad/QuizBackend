@@ -1,15 +1,20 @@
 package com.kopivad.quizzes.mapper;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.QuizAnswer;
 import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 import com.kopivad.quizzes.dto.QuizSessionDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -60,14 +65,48 @@ public class QuizSessionMapper {
     }
 
     private void mapSpecificFields(QuizSession source, QuizSessionDto.QuizSessionDtoBuilder destination) {
-        destination.userId(source.getUser().getId()).build();
-        destination.quizId(source.getQuiz().getId()).build();
-        destination.results(source.getResults().stream().map(quizAnswerMapper::toDto).collect(Collectors.toUnmodifiableList()));
+        mapUserToDto(source, destination);
+        mapQuizToDto(source, destination);
+        mapResultsToDto(source, destination);
     }
 
     private void mapSpecificFields(QuizSessionDto source, QuizSession.QuizSessionBuilder destination) {
-        destination.user(User.builder().id(source.getUserId()).build()).build();
+        mapUserToEntity(source, destination);
+        mapQuizToEntity(source, destination);
+        mapResultsToEntity(source, destination);
+    }
+
+    private void mapResultsToEntity(QuizSessionDto source, QuizSession.QuizSessionBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getResults())) {
+            List<QuizAnswer> answers = source.getResults().stream().map(quizAnswerMapper::toEntity).collect(Collectors.toUnmodifiableList());
+            destination.results(answers);
+        } else {
+            destination.results(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizToEntity(QuizSessionDto source, QuizSession.QuizSessionBuilder destination) {
         destination.quiz(Quiz.builder().id(source.getQuizId()).build());
-        destination.results(source.getResults().stream().map(quizAnswerMapper::toEntity).collect(Collectors.toUnmodifiableList()));
+    }
+
+    private void mapUserToEntity(QuizSessionDto source, QuizSession.QuizSessionBuilder destination) {
+        destination.user(User.builder().id(source.getUserId()).build()).build();
+    }
+
+    private void mapResultsToDto(QuizSession source, QuizSessionDto.QuizSessionDtoBuilder destination) {
+        if (ObjectUtils.isNotEmpty(source.getResults())) {
+            List<QuizAnswerDto> dtos = source.getResults().stream().map(quizAnswerMapper::toDto).collect(Collectors.toUnmodifiableList());
+            destination.results(dtos);
+        } else {
+            destination.results(Collections.emptyList());
+        }
+    }
+
+    private void mapQuizToDto(QuizSession source, QuizSessionDto.QuizSessionDtoBuilder destination) {
+        destination.quizId(source.getQuiz().getId()).build();
+    }
+
+    private void mapUserToDto(QuizSession source, QuizSessionDto.QuizSessionDtoBuilder destination) {
+        destination.userId(source.getUser().getId()).build();
     }
 }
