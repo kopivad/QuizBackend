@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,17 +33,23 @@ public class GroupServiceImpl implements GroupService {
     private final QuizMapper quizMapper;
 
     @Override
-    public long create(GroupDto dto) {
+    public long save(GroupDto dto) {
         Group group = groupMapper.toEntity(dto);
-        long id = groupRepository.save(group);
+        String defaultJoinCode = UUID.randomUUID().toString();
+        Group groupWithJoinCode = group
+                .toBuilder()
+                .joinCode(defaultJoinCode)
+                .build();
+
+        long id = groupRepository.save(groupWithJoinCode);
 
         if (ObjectUtils.isNotEmpty(dto.getUsers()))
             dto.getUsers()
-                    .forEach(u -> userService.addGroup(u.getId(), id));
+                    .forEach(u -> addGroupForUser(id, u));
 
         if (ObjectUtils.isNotEmpty(dto.getQuizzes()))
             dto.getQuizzes()
-                    .forEach(q -> quizService.addGroup(q.getId(), id));
+                    .forEach(q -> addGroupForQuiz(id, q));
 
         return id;
     }
@@ -50,15 +57,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public boolean update(GroupDto dto) {
         Group group = groupMapper.toEntity(dto);
-
-        if (ObjectUtils.isNotEmpty(dto.getUsers()))
-            dto.getUsers()
-                    .forEach(u -> userService.addGroup(u.getId(), dto.getId()));
-
-        if (ObjectUtils.isNotEmpty(dto.getQuizzes()))
-            dto.getQuizzes()
-                    .forEach(q -> quizService.addGroup(q.getId(), dto.getId()));
-
         return groupRepository.update(group);
     }
 
@@ -92,5 +90,22 @@ public class GroupServiceImpl implements GroupService {
         List<User> users = userService.getByGroupId(id);
         List<Quiz> quizzes = quizService.getByGroupId(id);
         return group.toBuilder().quizzes(quizzes).users(users).build();
+    }
+
+    @Override
+    public List<GroupDto> getAllByUserId(long id) {
+        List<Group> groups = groupRepository.findAllByUserId(id);
+        return groups
+                .stream()
+                .map(groupMapper::toDto)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public boolean addGroupForUser(long id, UserDto userDto) {
+        return groupRepository.saveGroupForUser(id, userDto);
+    }
+
+    public boolean addGroupForQuiz(long id, QuizDto quizDto) {
+        return groupRepository.saveGroupForQuiz(id, quizDto);
     }
 }

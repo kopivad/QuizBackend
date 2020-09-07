@@ -5,7 +5,6 @@ package com.kopivad.quizzes.domain.db;
 
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
@@ -13,7 +12,9 @@ import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
 import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.QuizzesGroups;
 import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1792378041;
+    private static final long serialVersionUID = 1936402347;
 
     /**
      * The reference instance of <code>public</code>
@@ -51,11 +52,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.answers</code>.
      */
     public final Answers ANSWERS = com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
-
-    /**
-     * The table <code>public.api_clients</code>.
-     */
-    public final ApiClients API_CLIENTS = com.kopivad.quizzes.domain.db.tables.ApiClients.API_CLIENTS;
 
     /**
      * The table <code>public.evaluation_steps</code>.
@@ -93,9 +89,19 @@ public class Public extends SchemaImpl {
     public final Quizzes QUIZZES = com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
 
     /**
+     * The table <code>public.quizzes_groups</code>.
+     */
+    public final QuizzesGroups QUIZZES_GROUPS = com.kopivad.quizzes.domain.db.tables.QuizzesGroups.QUIZZES_GROUPS;
+
+    /**
      * The table <code>public.usr</code>.
      */
     public final Usr USR = com.kopivad.quizzes.domain.db.tables.Usr.USR;
+
+    /**
+     * The table <code>public.usrs_groups</code>.
+     */
+    public final UsrsGroups USRS_GROUPS = com.kopivad.quizzes.domain.db.tables.UsrsGroups.USRS_GROUPS;
 
     /**
      * No further instances allowed
@@ -132,7 +138,6 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Answers.ANSWERS,
-            ApiClients.API_CLIENTS,
             EvaluationSteps.EVALUATION_STEPS,
             Groups.GROUPS,
             Questions.QUESTIONS,
@@ -140,6 +145,8 @@ public class Public extends SchemaImpl {
             QuizHistories.QUIZ_HISTORIES,
             QuizSessions.QUIZ_SESSIONS,
             Quizzes.QUIZZES,
-            Usr.USR);
+            QuizzesGroups.QUIZZES_GROUPS,
+            Usr.USR,
+            UsrsGroups.USRS_GROUPS);
     }
 }

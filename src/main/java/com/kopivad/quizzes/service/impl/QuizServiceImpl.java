@@ -71,13 +71,6 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public boolean addGroup(long quizId, long groupId) {
-        Quiz quiz = quizRepository.findById(quizId);
-        Quiz quizWithGroup = quiz.toBuilder().group(Group.builder().id(groupId).build()).build();
-        return quizRepository.update(quizWithGroup);
-    }
-
-    @Override
     public List<Quiz> getByGroupId(long id) {
         return quizRepository.findByGroupId(id);
     }

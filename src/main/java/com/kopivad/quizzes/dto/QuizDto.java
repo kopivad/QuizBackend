@@ -26,7 +26,7 @@ public class QuizDto {
     List<QuizSession> sessions;
     List<QuestionDto> questions;
     List<EvaluationStepDto> evaluationSteps;
-    long groupId;
+    List<GroupDto> groups;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

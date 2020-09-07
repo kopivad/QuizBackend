@@ -25,7 +25,8 @@ public class UserDto {
     List<QuizDto> quizzes;
     List<QuizHistoryDto> histories;
     List<QuizSessionDto> sessions;
-    long groupId;
+    List<GroupDto> groups;
+    String token;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -16,6 +16,7 @@ import java.util.List;
 public class Group {
     long id;
     String name;
+    String joinCode;
     List<Quiz> quizzes;
     List<User> users;
 

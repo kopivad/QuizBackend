@@ -1,35 +1,29 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.dto.AuthenticationRequestForm;
-import com.kopivad.quizzes.dto.AuthenticationResponseForm;
-import com.kopivad.quizzes.service.ApiClientService;
-import com.kopivad.quizzes.service.JwtService;
+import com.kopivad.quizzes.dto.*;
+import com.kopivad.quizzes.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final ApiClientService clientService;
+    private final AuthService authService;
 
-    @PostMapping(value = "api/auth")
-    public ResponseEntity<AuthenticationResponseForm> createAuthenticationToken(@RequestBody AuthenticationRequestForm authenticationRequestForm) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequestForm.getUsername(), authenticationRequestForm.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-        UserDetails userDetails = clientService.loadUserByUsername(authenticationRequestForm.getUsername());
-        String jwt = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponseForm(jwt));
+    @PostMapping("login")
+    public UserDto login(@RequestBody LoginDto dto) {
+        return authService.login(dto);
+    }
+
+    @PostMapping("register")
+    public ResponseEntity<?> register(@RequestBody RegisterDto dto) {
+        if (authService.register(dto)) return ResponseEntity.status(HttpStatus.OK).build();
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

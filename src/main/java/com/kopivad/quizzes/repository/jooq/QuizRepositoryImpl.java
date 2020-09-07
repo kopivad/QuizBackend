@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.domain.db.tables.records.QuizzesGroupsRecord;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
+import static com.kopivad.quizzes.domain.db.tables.QuizzesGroups.QUIZZES_GROUPS;
 import static com.kopivad.quizzes.repository.jooq.RecordMappers.getQuizFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
@@ -45,7 +48,6 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
-                .set(QUIZZES.GROUP_ID, quiz.getGroup().getId())
                 .returning(QUIZZES.ID)
                 .fetchOne()
                 .getId();
@@ -60,7 +62,6 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
-                .set(QUIZZES.GROUP_ID, quiz.getGroup().getId())
                 .where(QUIZZES.ID.eq(quiz.getId()))
                 .execute();
 
@@ -79,9 +80,17 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public List<Quiz> findByGroupId(long id) {
+        List<Long> ids = dslContext
+                .selectFrom(QUIZZES_GROUPS)
+                .where(QUIZZES_GROUPS.GROUP_ID.eq(id))
+                .fetch()
+                .stream()
+                .map(QuizzesGroupsRecord::getQuizId)
+                .collect(Collectors.toUnmodifiableList());
+
         return dslContext
                 .selectFrom(QUIZZES)
-                .where(QUIZZES.GROUP_ID.eq(id))
+                .where(QUIZZES.ID.in(ids))
                 .fetch()
                 .map(getQuizFromRecordMapper());
     }

@@ -60,8 +60,8 @@ class QuizSessionServiceImplTest {
         QuizSession expected = QuizSessionUtils.generateQuizSession();
         when(quizSessionRepository.findById(anyLong())).thenReturn(QuizSessionUtils.generateQuizSession());
         when(quizService.getById(anyLong())).thenReturn(QuizUtils.generateQuiz());
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswers(count));
-        QuizSession actual = quizSessionService.getById(expected.getId());
+        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
+        QuizSessionDto actual = quizSessionService.getById(expected.getId());
 
         assertThat(actual, is(expected));
 

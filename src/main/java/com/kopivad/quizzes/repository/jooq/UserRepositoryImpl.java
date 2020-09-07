@@ -1,6 +1,8 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
+import com.kopivad.quizzes.domain.db.tables.records.UsrsGroupsRecord;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -8,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.kopivad.quizzes.domain.db.tables.Usr.USR;
+import static com.kopivad.quizzes.domain.db.tables.UsrsGroups.*;
 import static com.kopivad.quizzes.repository.jooq.RecordMappers.getUserFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
@@ -44,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.PASSWORD, user.getPassword())
                 .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
                 .set(USR.ROLE, user.getRole().name())
-                .set(USR.GROUP_ID, user.getGroup().getId())
+//                .set(USR.GROUP_ID, user.getGroup().getId())
                 .returning(USR.ID)
                 .fetchOne()
                 .getId();
@@ -58,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.EMAIL, user.getEmail())
                 .set(USR.PASSWORD, user.getPassword())
                 .set(USR.ROLE, user.getRole().name())
-                .set(USR.GROUP_ID, user.getGroup().getId())
+//                .set(USR.GROUP_ID, user.getGroup().getId())
                 .where(USR.ID.eq(user.getId()))
                 .execute();
 
@@ -76,9 +80,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findByGroupId(long id) {
+        List<Long> ids = dslContext
+                .selectFrom(USRS_GROUPS)
+                .where(USRS_GROUPS.GROUP_ID.eq(id))
+                .fetch()
+                .stream()
+                .map(UsrsGroupsRecord::getUserId)
+                .collect(Collectors.toUnmodifiableList());
+
         return dslContext
                 .selectFrom(USR)
-                .where(USR.GROUP_ID.eq(id))
+                .where(USR.ID.in(ids))
                 .fetch()
                 .map(getUserFromRecordMapper());
     }
@@ -90,5 +102,19 @@ public class UserRepositoryImpl implements UserRepository {
                 .where(USR.EMAIL.startsWithIgnoreCase(email))
                 .fetch()
                 .map(getUserFromRecordMapper());
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return dslContext
+                .selectFrom(USR)
+                .where(USR.EMAIL.eq(email))
+                .fetchOne()
+                .map(getUserFromRecordMapper());
+    }
+
+    @Override
+    public boolean isUserExistsByEmail(String email) {
+        return false;
     }
 }

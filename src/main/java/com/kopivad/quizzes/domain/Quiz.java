@@ -25,7 +25,7 @@ public class Quiz {
     List<QuizSession> sessions;
     List<Question> questions;
     List<EvaluationStep> evaluationSteps;
-    Group group;
+    List<Group> groups;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Quizzes extends TableImpl<QuizzesRecord> {
 
-    private static final long serialVersionUID = 1455828479;
+    private static final long serialVersionUID = -2136429809;
 
     /**
      * The reference instance of <code>public.quizzes</code>
@@ -91,11 +91,6 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
      * The column <code>public.quizzes.total</code>.
      */
     public final TableField<QuizzesRecord, Integer> TOTAL = createField(DSL.name("total"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("100", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.quizzes.group_id</code>.
-     */
-    public final TableField<QuizzesRecord, Long> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.quizzes</code> table reference
@@ -152,15 +147,11 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
 
     @Override
     public List<ForeignKey<QuizzesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<QuizzesRecord, ?>>asList(Keys.QUIZZES__QUIZZES_USR_FK, Keys.QUIZZES__QUIZZES_GROUPS_ID_FK);
+        return Arrays.<ForeignKey<QuizzesRecord, ?>>asList(Keys.QUIZZES__QUIZZES_USR_FK);
     }
 
     public Usr usr() {
         return new Usr(this, Keys.QUIZZES__QUIZZES_USR_FK);
-    }
-
-    public Groups groups() {
-        return new Groups(this, Keys.QUIZZES__QUIZZES_GROUPS_ID_FK);
     }
 
     @Override
@@ -190,11 +181,11 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, Boolean, Timestamp, String, String, Long, Integer, Long> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, Boolean, Timestamp, String, String, Long, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

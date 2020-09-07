@@ -18,4 +18,8 @@ public interface UserRepository {
     List<User> findByGroupId(long id);
 
     List<User> findByEmailStartsWith(String email);
+
+    User findByEmail(String email);
+
+    boolean isUserExistsByEmail(String email);
 }

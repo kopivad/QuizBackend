@@ -1,14 +1,13 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.*;
-import com.kopivad.quizzes.domain.api.ApiClient;
 import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
-import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.Record;
 import org.jooq.RecordMapper;
 
+import java.util.Collections;
+
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
-import static com.kopivad.quizzes.domain.db.tables.ApiClients.API_CLIENTS;
 import static com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
 import static com.kopivad.quizzes.domain.db.tables.Groups.GROUPS;
 import static com.kopivad.quizzes.domain.db.tables.Questions.QUESTIONS;
@@ -29,16 +28,7 @@ public class RecordMappers {
                 .role(Role.valueOf(record.getValue(USR.ROLE)))
                 .creationDate(record.getValue(USR.CREATION_DATE).toLocalDateTime())
                 .password(record.getValue(USR.PASSWORD))
-                .group(getGroupFromUserIfNotEmpty(record))
                 .build();
-    }
-
-    private static Group getGroupFromUserIfNotEmpty(Record record) {
-        if (ObjectUtils.isNotEmpty(record.getValue(USR.GROUP_ID)))
-            return Group.builder().id(record.getValue(USR.GROUP_ID)).build();
-        else
-            return Group.builder().build();
-
     }
 
     public static RecordMapper<Record, Answer> getAnswerFromRecordMapper() {
@@ -48,15 +38,6 @@ public class RecordMappers {
                 .body(record.getValue(ANSWERS.BODY))
                 .question(Question.builder().id(record.getValue(ANSWERS.QUESTION_ID)).build())
                 .isRight(record.getValue(ANSWERS.IS_RIGHT))
-                .build();
-    }
-
-    public static RecordMapper<Record, ApiClient> getApiClientFromRecord() {
-        return record -> ApiClient
-                .builder()
-                .id(record.getValue(API_CLIENTS.ID))
-                .username(record.getValue(API_CLIENTS.USERNAME))
-                .password(record.getValue(API_CLIENTS.PASSWORD))
                 .build();
     }
 
@@ -123,16 +104,8 @@ public class RecordMappers {
                 .author(User.builder().id(record.getValue(QUIZZES.AUTHOR_ID)).build())
                 .active(record.getValue(QUIZZES.ACTIVE))
                 .creationDate(record.getValue(QUIZZES.CREATION_DATE).toLocalDateTime())
-                .group(getGroupFromQuizIfNotEmpty(record))
+                .groups(Collections.emptyList())
                 .build();
-    }
-
-    private static Group getGroupFromQuizIfNotEmpty(Record record) {
-        if (ObjectUtils.isNotEmpty(record.getValue(QUIZZES.GROUP_ID)))
-            return Group.builder().id(record.getValue(QUIZZES.GROUP_ID)).build();
-        else
-            return Group.builder().build();
-
     }
 
     public static RecordMapper<Record, QuizSession> getRecordQuizSessionRecordMapper() {

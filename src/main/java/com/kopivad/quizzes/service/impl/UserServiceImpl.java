@@ -59,20 +59,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addGroup(long userId, long groupId) {
-        User user = userRepository.findById(userId);
-
-        User userWithGroup = user.toBuilder()
-                .group(
-                        Group.builder()
-                        .id(groupId)
-                        .build()
-                ).build();
-
-        return userRepository.update(userWithGroup);
-    }
-
-    @Override
     public List<User> getByGroupId(long id) {
         return userRepository.findByGroupId(id);
     }

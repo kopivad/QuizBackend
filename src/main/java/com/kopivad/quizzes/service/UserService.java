@@ -16,8 +16,6 @@ public interface UserService {
 
     boolean delete(Long id);
 
-    boolean addGroup(long userId, long groupId);
-
     List<User> getByGroupId(long id);
 
     List<UserDto> getByEmailStartsWith(String email);

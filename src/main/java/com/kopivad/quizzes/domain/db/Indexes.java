@@ -5,7 +5,6 @@ package com.kopivad.quizzes.domain.db;
 
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
@@ -40,7 +39,6 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index ANSWERS_PKEY = Indexes0.ANSWERS_PKEY;
-    public static final Index API_CLIENTS_PKEY = Indexes0.API_CLIENTS_PKEY;
     public static final Index EVALUATION_STEPS_PK = Indexes0.EVALUATION_STEPS_PK;
     public static final Index GROUPS_PK = Indexes0.GROUPS_PK;
     public static final Index QUESTIONS_PKEY = Indexes0.QUESTIONS_PKEY;
@@ -56,7 +54,6 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index ANSWERS_PKEY = Internal.createIndex("answers_pkey", Answers.ANSWERS, new OrderField[] { Answers.ANSWERS.ID }, true);
-        public static Index API_CLIENTS_PKEY = Internal.createIndex("api_clients_pkey", ApiClients.API_CLIENTS, new OrderField[] { ApiClients.API_CLIENTS.ID }, true);
         public static Index EVALUATION_STEPS_PK = Internal.createIndex("evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS, new OrderField[] { EvaluationSteps.EVALUATION_STEPS.ID }, true);
         public static Index GROUPS_PK = Internal.createIndex("groups_pk", Groups.GROUPS, new OrderField[] { Groups.GROUPS.ID }, true);
         public static Index QUESTIONS_PKEY = Internal.createIndex("questions_pkey", Questions.QUESTIONS, new OrderField[] { Questions.QUESTIONS.ID }, true);

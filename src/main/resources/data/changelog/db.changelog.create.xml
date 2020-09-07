@@ -1,6 +1,33 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="Vadym (generated)" id="1594409960767-25" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="answers_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="evaluation_steps_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="groups_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="questions_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="quiz_answers_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="quiz_histories_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="quiz_sessions_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="quizzes_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-9" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="usr_id_seq"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-10" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="answers">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="answers_pkey"/>
@@ -14,20 +41,7 @@
             <column name="question_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-26" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <createTable tableName="api_clients">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="api_clients_pkey"/>
-            </column>
-            <column name="password" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="username" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-27" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-11" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="evaluation_steps">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="evaluation_steps_pk"/>
@@ -44,7 +58,20 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-28" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-12" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="groups">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="groups_pk"/>
+            </column>
+            <column name="name" type="CHARACTER VARYING">
+                <constraints nullable="false"/>
+            </column>
+            <column name="join_code" type="CHARACTER VARYING">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-13" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="questions">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="questions_pkey"/>
@@ -61,7 +88,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-29" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-14" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="quiz_answers">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="quiz_results_pk"/>
@@ -77,7 +104,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-30" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-15" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="quiz_histories">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="quiz_histories_pk"/>
@@ -94,9 +121,11 @@
             <column name="rating" type="CHARACTER VARYING">
                 <constraints nullable="false"/>
             </column>
+            <column name="pdf_filename" type="CHARACTER VARYING"/>
+            <column name="csv_filename" type="CHARACTER VARYING"/>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-31" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-16" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="quiz_sessions">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="quiz_sessions_pk"/>
@@ -112,7 +141,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-32" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-17" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="quizzes">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="quizzes_pkey"/>
@@ -135,7 +164,13 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-33" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-18" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="quizzes_groups">
+            <column name="quiz_id" type="BIGINT"/>
+            <column name="group_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-19" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createTable tableName="usr">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="usr_pkey"/>
@@ -152,55 +187,62 @@
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="CHARACTER VARYING"/>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-34" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <createTable tableName="usr_roles">
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
-                <constraints primaryKey="true" primaryKeyName="usr_roles_pk"/>
-            </column>
+    <changeSet author="Vadym (generated)" id="1598544928406-20" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="usrs_groups">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="role" type="CHARACTER VARYING">
+            <column name="group_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-35" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-21" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="answers" constraintName="answers_questions_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="questions"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-36" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-22" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="evaluation_steps" constraintName="evaluation_steps_quizzes_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="quizzes"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-37" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-23" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="questions" constraintName="questions_quizzes_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="quizzes"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-38" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-24" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="quiz_histories" constraintName="quiz_histories_quiz_sessions_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="quiz_sessions"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-39" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-25" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="quiz_histories" constraintName="quiz_histories_usr_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-40" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-26" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="answer_id" baseTableName="quiz_answers" constraintName="quiz_results_answers_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="answers"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-41" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-27" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="quiz_answers" constraintName="quiz_results_questions_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="questions"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-42" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-28" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="quiz_answers" constraintName="quiz_results_quiz_sessions_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="quiz_sessions"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-43" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-29" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quiz_sessions" constraintName="quiz_sessions_quizzes_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="quizzes"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-44" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-30" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="quiz_sessions" constraintName="quiz_sessions_usr_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-45" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet author="Vadym (generated)" id="1598544928406-31" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="quizzes_groups" constraintName="quizzes_groups_groups_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="groups"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-32" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="quiz_id" baseTableName="quizzes_groups" constraintName="quizzes_groups_quizzes_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="quizzes"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-33" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="quizzes" constraintName="quizzes_usr_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
-    <changeSet author="Vadym (generated)" id="1594409960767-46" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="usr_roles" constraintName="usr_roles_usr_id_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="usr"/>
+    <changeSet author="Vadym (generated)" id="1598544928406-34" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="usrs_groups" constraintName="usrs_groups_groups_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="groups"/>
+    </changeSet>
+    <changeSet author="Vadym (generated)" id="1598544928406-35" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="usrs_groups" constraintName="usrs_groups_usr_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="usr"/>
     </changeSet>
 </databaseChangeLog>

@@ -3,6 +3,7 @@ package com.kopivad.quizzes.service.impl;
 import com.kopivad.quizzes.domain.QuizHistory;
 import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
+import com.kopivad.quizzes.dto.QuizSessionDto;
 import com.kopivad.quizzes.mapper.QuizHistoryMapper;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.QuizAnswerService;
@@ -85,11 +86,11 @@ class QuizHistoryServiceImplTest {
     void testCreateHistory() {
         int count = 4;
         QuizHistory history = QuizHistoryUtils.generateHistory();
-        QuizSession session = QuizSessionUtils.generateQuizSession();
+        QuizSessionDto session = QuizSessionUtils.generateQuizSessionDto();
         when(quizSessionService.getById(anyLong())).thenReturn(session);
         when(quizHistoryRepository.save(any(QuizHistory.class))).thenReturn(history.getId());
         when(quizHistoryRepository.findById(anyLong())).thenReturn(history);
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswers(count));
+        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
         long actual = quizHistoryService.createHistory(session.getId());
 
         assertThat(actual, notNullValue());

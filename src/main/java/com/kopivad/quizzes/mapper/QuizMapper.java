@@ -34,14 +34,14 @@ public class QuizMapper {
     private void setupMapper() {
         mapper.createTypeMap(Quiz.class, QuizDto.QuizDtoBuilder.class)
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::authorId))
-                .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::groupId))
+//                .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::groupId))
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::questions))
                 .addMappings(m -> m.skip(QuizDto.QuizDtoBuilder::evaluationSteps))
                 .setPostConverter(toDtoConverter());
 
         mapper.createTypeMap(QuizDto.class, Quiz.QuizBuilder.class)
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::author))
-                .addMappings(m -> m.skip(Quiz.QuizBuilder::group))
+//                .addMappings(m -> m.skip(Quiz.QuizBuilder::group))
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::questions))
                 .addMappings(m -> m.skip(Quiz.QuizBuilder::evaluationSteps))
                 .setPostConverter(toEntityConverter());
@@ -67,14 +67,14 @@ public class QuizMapper {
 
     private void mapSpecificFields(Quiz source, QuizDto.QuizDtoBuilder destination) {
         mapUserToDto(source, destination);
-        mapGroupToDto(source, destination);
+//        mapGroupToDto(source, destination);
         mapQuestionsToDto(source, destination);
         mapStepsToDto(source, destination);
     }
 
     private void mapSpecificFields(QuizDto source, Quiz.QuizBuilder destination) {
         mapUserToEntity(source, destination);
-        mapGroupToEntity(source, destination);
+//        mapGroupToEntity(source, destination);
         mapQuestionsToEntity(source, destination);
         mapStepsToEntity(source, destination);
     }
@@ -97,9 +97,9 @@ public class QuizMapper {
         }
     }
 
-    private void mapGroupToEntity(QuizDto source, Quiz.QuizBuilder destination) {
-        destination.group(Group.builder().id(source.getGroupId()).build()).build();
-    }
+//    private void mapGroupToEntity(QuizDto source, Quiz.QuizBuilder destination) {
+//        destination.group(Group.builder().id(source.getGroupId()).build()).build();
+//    }
 
     private void mapUserToEntity(QuizDto source, Quiz.QuizBuilder destination) {
         destination.author(User.builder().id(source.getAuthorId()).build()).build();
@@ -123,9 +123,9 @@ public class QuizMapper {
         }
     }
 
-    private void mapGroupToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
-        destination.groupId(source.getGroup().getId()).build();
-    }
+//    private void mapGroupToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
+//        destination.groupId(source.getGroup().getId()).build();
+//    }
 
     private void mapUserToDto(Quiz source, QuizDto.QuizDtoBuilder destination) {
         destination.authorId(source.getAuthor().getId()).build();

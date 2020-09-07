@@ -64,7 +64,7 @@ class QuizAnswerServiceImplTest {
         when(quizAnswerRepository.findAllBySessionId(anyLong())).thenReturn(expected);
         when(questionService.getById(anyLong())).thenReturn(QuestionUtils.generateQuestion());
         when(answerService.getById(anyLong())).thenReturn(AnswerUtils.generateAnswer());
-        List<QuizAnswer> actual = quizAnswerService.getAllBySessionId(LONG_ONE);
+        List<QuizAnswerDto> actual = quizAnswerService.getAllBySessionId(LONG_ONE);
 
         assertThat(count, is(actual.size()));
 

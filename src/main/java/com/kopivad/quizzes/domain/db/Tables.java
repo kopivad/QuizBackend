@@ -5,7 +5,6 @@ package com.kopivad.quizzes.domain.db;
 
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
@@ -13,7 +12,9 @@ import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
 import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.QuizzesGroups;
 import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
 
 import javax.annotation.processing.Generated;
 
@@ -35,11 +36,6 @@ public class Tables {
      * The table <code>public.answers</code>.
      */
     public static final Answers ANSWERS = Answers.ANSWERS;
-
-    /**
-     * The table <code>public.api_clients</code>.
-     */
-    public static final ApiClients API_CLIENTS = ApiClients.API_CLIENTS;
 
     /**
      * The table <code>public.evaluation_steps</code>.
@@ -77,7 +73,17 @@ public class Tables {
     public static final Quizzes QUIZZES = Quizzes.QUIZZES;
 
     /**
+     * The table <code>public.quizzes_groups</code>.
+     */
+    public static final QuizzesGroups QUIZZES_GROUPS = QuizzesGroups.QUIZZES_GROUPS;
+
+    /**
      * The table <code>public.usr</code>.
      */
     public static final Usr USR = Usr.USR;
+
+    /**
+     * The table <code>public.usrs_groups</code>.
+     */
+    public static final UsrsGroups USRS_GROUPS = UsrsGroups.USRS_GROUPS;
 }

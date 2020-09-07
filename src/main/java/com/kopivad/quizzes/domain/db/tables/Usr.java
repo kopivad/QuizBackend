@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Usr extends TableImpl<UsrRecord> {
 
-    private static final long serialVersionUID = -2129207709;
+    private static final long serialVersionUID = 1103070104;
 
     /**
      * The reference instance of <code>public.usr</code>
@@ -85,12 +85,7 @@ public class Usr extends TableImpl<UsrRecord> {
     /**
      * The column <code>public.usr.role</code>.
      */
-    public final TableField<UsrRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
-
-    /**
-     * The column <code>public.usr.group_id</code>.
-     */
-    public final TableField<UsrRecord, Long> GROUP_ID = createField(DSL.name("group_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<UsrRecord, String> ROLE = createField(DSL.name("role"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>public.usr</code> table reference
@@ -146,15 +141,6 @@ public class Usr extends TableImpl<UsrRecord> {
     }
 
     @Override
-    public List<ForeignKey<UsrRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<UsrRecord, ?>>asList(Keys.USR__USR_GROUPS_ID_FK);
-    }
-
-    public Groups groups() {
-        return new Groups(this, Keys.USR__USR_GROUPS_ID_FK);
-    }
-
-    @Override
     public Usr as(String alias) {
         return new Usr(DSL.name(alias), this);
     }
@@ -181,11 +167,11 @@ public class Usr extends TableImpl<UsrRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Timestamp, String, String, String, String, Long> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

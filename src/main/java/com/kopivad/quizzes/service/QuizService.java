@@ -16,8 +16,6 @@ public interface QuizService {
 
     boolean delete(Long id);
 
-    boolean addGroup(long quizId, long groupId);
-
     List<Quiz> getByGroupId(long id);
 
     List<QuizDto> getByTitleStartsWith(String title);

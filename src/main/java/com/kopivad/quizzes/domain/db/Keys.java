@@ -5,7 +5,6 @@ package com.kopivad.quizzes.domain.db;
 
 
 import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
 import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
 import com.kopivad.quizzes.domain.db.tables.Groups;
 import com.kopivad.quizzes.domain.db.tables.Questions;
@@ -13,17 +12,20 @@ import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
 import com.kopivad.quizzes.domain.db.tables.QuizHistories;
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
 import com.kopivad.quizzes.domain.db.tables.Quizzes;
+import com.kopivad.quizzes.domain.db.tables.QuizzesGroups;
 import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
 import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
-import com.kopivad.quizzes.domain.db.tables.records.ApiClientsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.EvaluationStepsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.GroupsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuestionsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizHistoriesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizSessionsRecord;
+import com.kopivad.quizzes.domain.db.tables.records.QuizzesGroupsRecord;
 import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
+import com.kopivad.quizzes.domain.db.tables.records.UsrsGroupsRecord;
 
 import javax.annotation.processing.Generated;
 
@@ -58,7 +60,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = UniqueKeys0.ANSWERS_PKEY;
-    public static final UniqueKey<ApiClientsRecord> API_CLIENTS_PKEY = UniqueKeys0.API_CLIENTS_PKEY;
     public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = UniqueKeys0.EVALUATION_STEPS_PK;
     public static final UniqueKey<GroupsRecord> GROUPS_PK = UniqueKeys0.GROUPS_PK;
     public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = UniqueKeys0.QUESTIONS_PKEY;
@@ -83,8 +84,10 @@ public class Keys {
     public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK;
     public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK;
     public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = ForeignKeys0.QUIZZES__QUIZZES_USR_FK;
-    public static final ForeignKey<QuizzesRecord, GroupsRecord> QUIZZES__QUIZZES_GROUPS_ID_FK = ForeignKeys0.QUIZZES__QUIZZES_GROUPS_ID_FK;
-    public static final ForeignKey<UsrRecord, GroupsRecord> USR__USR_GROUPS_ID_FK = ForeignKeys0.USR__USR_GROUPS_ID_FK;
+    public static final ForeignKey<QuizzesGroupsRecord, QuizzesRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK = ForeignKeys0.QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK;
+    public static final ForeignKey<QuizzesGroupsRecord, GroupsRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK = ForeignKeys0.QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK;
+    public static final ForeignKey<UsrsGroupsRecord, UsrRecord> USRS_GROUPS__USRS_GROUPS_USR_ID_FK = ForeignKeys0.USRS_GROUPS__USRS_GROUPS_USR_ID_FK;
+    public static final ForeignKey<UsrsGroupsRecord, GroupsRecord> USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK = ForeignKeys0.USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -96,7 +99,6 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = Internal.createUniqueKey(Answers.ANSWERS, "answers_pkey", Answers.ANSWERS.ID);
-        public static final UniqueKey<ApiClientsRecord> API_CLIENTS_PKEY = Internal.createUniqueKey(ApiClients.API_CLIENTS, "api_clients_pkey", ApiClients.API_CLIENTS.ID);
         public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = Internal.createUniqueKey(EvaluationSteps.EVALUATION_STEPS, "evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS.ID);
         public static final UniqueKey<GroupsRecord> GROUPS_PK = Internal.createUniqueKey(Groups.GROUPS, "groups_pk", Groups.GROUPS.ID);
         public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = Internal.createUniqueKey(Questions.QUESTIONS, "questions_pkey", Questions.QUESTIONS.ID);
@@ -119,7 +121,9 @@ public class Keys {
         public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_quizzes_id_fk", QuizSessions.QUIZ_SESSIONS.QUIZ_ID);
         public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_usr_id_fk", QuizSessions.QUIZ_SESSIONS.USER_ID);
         public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, Quizzes.QUIZZES, "quizzes__quizzes_usr_fk", Quizzes.QUIZZES.AUTHOR_ID);
-        public static final ForeignKey<QuizzesRecord, GroupsRecord> QUIZZES__QUIZZES_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, Quizzes.QUIZZES, "quizzes__quizzes_groups_id_fk", Quizzes.QUIZZES.GROUP_ID);
-        public static final ForeignKey<UsrRecord, GroupsRecord> USR__USR_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, Usr.USR, "usr__usr_groups_id_fk", Usr.USR.GROUP_ID);
+        public static final ForeignKey<QuizzesGroupsRecord, QuizzesRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, QuizzesGroups.QUIZZES_GROUPS, "quizzes_groups__quizzes_groups_quizzes_id_fk", QuizzesGroups.QUIZZES_GROUPS.QUIZ_ID);
+        public static final ForeignKey<QuizzesGroupsRecord, GroupsRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, QuizzesGroups.QUIZZES_GROUPS, "quizzes_groups__quizzes_groups_groups_id_fk", QuizzesGroups.QUIZZES_GROUPS.GROUP_ID);
+        public static final ForeignKey<UsrsGroupsRecord, UsrRecord> USRS_GROUPS__USRS_GROUPS_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, UsrsGroups.USRS_GROUPS, "usrs_groups__usrs_groups_usr_id_fk", UsrsGroups.USRS_GROUPS.USER_ID);
+        public static final ForeignKey<UsrsGroupsRecord, GroupsRecord> USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, UsrsGroups.USRS_GROUPS, "usrs_groups__usrs_groups_groups_id_fk", UsrsGroups.USRS_GROUPS.GROUP_ID);
     }
 }

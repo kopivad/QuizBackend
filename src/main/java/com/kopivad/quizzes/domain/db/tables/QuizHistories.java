@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
 
-    private static final long serialVersionUID = 232941589;
+    private static final long serialVersionUID = -598172013;
 
     /**
      * The reference instance of <code>public.quiz_histories</code>
@@ -84,12 +84,12 @@ public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
     /**
      * The column <code>public.quiz_histories.pdf_filename</code>.
      */
-    public final TableField<QuizHistoriesRecord, String> PDF_FILENAME = createField(DSL.name("pdf_filename"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<QuizHistoriesRecord, String> PDF_FILENAME = createField(DSL.name("pdf_filename"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>public.quiz_histories.csv_filename</code>.
      */
-    public final TableField<QuizHistoriesRecord, String> CSV_FILENAME = createField(DSL.name("csv_filename"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<QuizHistoriesRecord, String> CSV_FILENAME = createField(DSL.name("csv_filename"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>public.quiz_histories</code> table reference
