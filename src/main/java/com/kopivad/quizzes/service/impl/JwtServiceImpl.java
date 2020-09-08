@@ -16,10 +16,16 @@ import java.util.Set;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    @Value("#{environment.JWT_SECRET}")
-    private String secret;
-    @Value("#{environment.JWT_EXPIRATION}")
-    private String expirationTime;
+    private final String secret;
+    private final String expirationTime;
+
+    public JwtServiceImpl(
+            @Value("#{environment.JWT_SECRET}") String secret,
+            @Value("#{environment.JWT_EXPIRATION}") String expirationTime
+    ) {
+        this.secret = secret;
+        this.expirationTime = expirationTime;
+    }
 
     public String extractSubject(String authToken) {
         return getClaimsFromToken(authToken)
