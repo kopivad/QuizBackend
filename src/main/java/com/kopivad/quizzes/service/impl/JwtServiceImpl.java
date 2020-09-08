@@ -1,23 +1,23 @@
-package com.kopivad.quizzes.utils;
+package com.kopivad.quizzes.service.impl;
 
 
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
-@Component
-public class JwtUtils {
+@Service
+public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.expiration}")
     private String expirationTime;
 

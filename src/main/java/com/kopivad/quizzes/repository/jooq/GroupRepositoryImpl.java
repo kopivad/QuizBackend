@@ -29,6 +29,7 @@ public class GroupRepositoryImpl implements GroupRepository {
         return dslContext
                 .insertInto(GROUPS)
                 .set(GROUPS.NAME, group.getName())
+                .set(GROUPS.JOIN_CODE, group.getJoinCode())
                 .returning(GROUPS.ID)
                 .fetchOne()
                 .getId();
@@ -39,6 +40,7 @@ public class GroupRepositoryImpl implements GroupRepository {
         int affectedRows = dslContext
                 .update(GROUPS)
                 .set(GROUPS.NAME, group.getName())
+                .set(GROUPS.JOIN_CODE, group.getJoinCode())
                 .execute();
 
         return affectedRows > INTEGER_ZERO;

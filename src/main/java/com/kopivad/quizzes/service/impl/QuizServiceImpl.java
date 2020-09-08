@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,14 +48,15 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public long save(QuizDto quizDto) {
         Quiz quiz = quizMapper.toEntity(quizDto);
-        long id = quizRepository.save(quiz);
+        Quiz quizWithCreationDate = quiz.toBuilder().creationDate(LocalDateTime.now()).build();
+        long id = quizRepository.save(quizWithCreationDate);
         if (ObjectUtils.isNotEmpty(quizDto.getEvaluationSteps())) {
             List<EvaluationStepDto> steps = setQuizForAllSteps(id, quizDto.getEvaluationSteps());
             evaluationStepService.saveAll(steps);
         }
         if (ObjectUtils.isNotEmpty(quizDto.getQuestions())) {
-            List<QuestionDto> dtos = setQuizForAllQuestions(id, quizDto.getQuestions());
-            questionService.saveAll(dtos);
+            List<QuestionDto> questionDtos = setQuizForAllQuestions(id, quizDto.getQuestions());
+            questionService.saveAll(questionDtos);
         }
         return id;
     }

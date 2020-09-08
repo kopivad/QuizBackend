@@ -48,7 +48,6 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.PASSWORD, user.getPassword())
                 .set(USR.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
                 .set(USR.ROLE, user.getRole().name())
-//                .set(USR.GROUP_ID, user.getGroup().getId())
                 .returning(USR.ID)
                 .fetchOne()
                 .getId();
@@ -62,7 +61,6 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USR.EMAIL, user.getEmail())
                 .set(USR.PASSWORD, user.getPassword())
                 .set(USR.ROLE, user.getRole().name())
-//                .set(USR.GROUP_ID, user.getGroup().getId())
                 .where(USR.ID.eq(user.getId()))
                 .execute();
 

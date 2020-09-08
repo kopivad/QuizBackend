@@ -1,6 +1,5 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Group;
 import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.LoginDto;
@@ -9,7 +8,7 @@ import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.mapper.UserMapper;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.service.AuthService;
-import com.kopivad.quizzes.utils.JwtUtils;
+import com.kopivad.quizzes.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +23,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -36,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
-        String token = jwtUtils.generateToken(user);
+        String token = jwtService.generateToken(user);
         return userMapper
                 .toDto(user)
                 .toBuilder()

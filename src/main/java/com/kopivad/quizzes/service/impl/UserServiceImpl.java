@@ -7,6 +7,7 @@ import com.kopivad.quizzes.mapper.UserMapper;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,11 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean update(UserDto userDto) {
         User user = userMapper.toEntity(userDto);
-        User userWithEncodedPassword = user
-                .toBuilder()
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .build();
-        return userRepository.update(userWithEncodedPassword);
+        return userRepository.update(user);
     }
 
     @Override

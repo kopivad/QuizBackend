@@ -1,6 +1,8 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.dto.*;
+import com.kopivad.quizzes.dto.LoginDto;
+import com.kopivad.quizzes.dto.RegisterDto;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody RegisterDto dto) {
+    public ResponseEntity<Void> register(@RequestBody RegisterDto dto) {
         if (authService.register(dto)) return ResponseEntity.status(HttpStatus.OK).build();
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
