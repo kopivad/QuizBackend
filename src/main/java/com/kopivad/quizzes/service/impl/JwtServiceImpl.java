@@ -16,9 +16,9 @@ import java.util.Set;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    @Value("${jwt.secret}")
+    @Value("#{environment.JWT_SECRET}")
     private String secret;
-    @Value("${jwt.expiration}")
+    @Value("#{environment.JWT_EXPIRATION}")
     private String expirationTime;
 
     public String extractSubject(String authToken) {
