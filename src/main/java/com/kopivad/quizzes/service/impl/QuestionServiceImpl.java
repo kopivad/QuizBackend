@@ -2,16 +2,17 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.dto.QuestionDto;
-import com.kopivad.quizzes.mapper.QuestionMapper;
+import com.kopivad.quizzes.dto.FullQuestionDto;
+import com.kopivad.quizzes.dto.SaveAnswerDto;
+import com.kopivad.quizzes.dto.SaveQuestionDto;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,46 +20,40 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final AnswerService answerService;
-    private final QuestionMapper questionMapper;
 
     @Override
-    public List<QuestionDto> getAll() {
-        List<Question> questions = questionRepository.findAll();
-        return questions
-                .stream()
-                .map(questionMapper::toDto)
-                .collect(Collectors.toUnmodifiableList());
+    public List<Question> getAll() {
+        return questionRepository.findAll();
     }
 
     @Override
-    public Question getById(Long id) {
-        Question question = questionRepository.findById(id);
-        List<Answer> answers = answerService.getByQuestionId(id);
-        return question.toBuilder().answers(answers).build();
-    }
-
-    @Override
-    public long save(QuestionDto questionDto) {
-        Question question = questionMapper.toEntity(questionDto);
-        long id = questionRepository.save(question);
-        if (ObjectUtils.isNotEmpty(question.getAnswers())) {
-            List<Answer> answers = question.getAnswers();
-            List<Answer> answersWithQuestion = setQuestionForAllAnswers(id, answers);
-            answerService.saveAll(answersWithQuestion);
+    public Optional<FullQuestionDto> getById(Long id) {
+        Optional<Question> question = questionRepository.findById(id);
+        if (question.isPresent()) {
+            List<Answer> answers = answerService.getByQuestionId(id);
+            FullQuestionDto fullQuestionDto = new FullQuestionDto(question.get(), answers);
+            return Optional.of(fullQuestionDto);
         }
-        return id;
+        return Optional.empty();
     }
 
-    private List<Answer> setQuestionForAllAnswers(long id, List<Answer> answers) {
-        return answers
+    @Override
+    public boolean save(SaveQuestionDto dto) {
+        Question question = new Question(1L, dto.getTitle(), dto.getValue(), dto.getType(), dto.getQuizId());
+        long id = questionRepository.save(question);
+        List<Answer> answers = fillQuestionIdForAllAnswerDtos(dto.getAnswers(), id);
+        return answerService.saveAll(answers);
+    }
+
+    private List<Answer> fillQuestionIdForAllAnswerDtos(List<SaveAnswerDto> dto, Long id) {
+        return dto
                 .stream()
-                .map(answer -> answer.toBuilder().question(Question.builder().id(id).build()).build())
+                .map(d -> new Answer(1L, d.getBody(), d.isRight(), id))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public boolean update(QuestionDto questionDto) {
-        Question question = questionMapper.toEntity(questionDto);
+    public boolean update(Question question) {
         return questionRepository.update(question);
     }
 
@@ -68,19 +63,19 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getByQuizId(Long id) {
+    public List<FullQuestionDto> getFullByQuizId(Long id) {
         List<Question> questions = questionRepository.findByQuizId(id);
         return questions
                 .stream()
-                .map(question -> {
-                    List<Answer> answers = answerService.getByQuestionId(question.getId());
-                    return question.toBuilder().answers(answers).build();
-                })
-                .collect(Collectors.toUnmodifiableList());
+                .map(q -> {
+                    List<Answer> answers = answerService.getByQuestionId(q.getId());
+                    return new FullQuestionDto(q, answers);
+                }).collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public void saveAll(List<QuestionDto> dtos) {
+    public boolean saveAll(List<SaveQuestionDto> dtos) {
         dtos.forEach(this::save);
+        return true;
     }
 }

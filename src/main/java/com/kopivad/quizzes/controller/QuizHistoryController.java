@@ -1,19 +1,17 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.QuizHistory;
-import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.service.QuizHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @RestController()
 @RequestMapping("api/v1/quiz/history")
@@ -21,40 +19,45 @@ import java.util.List;
 public class QuizHistoryController {
     private final QuizHistoryService quizHistoryService;
 
-    @GetMapping("create/{id}")
-    public long createHistory(@PathVariable(name = "id") long sessionId) {
-        return quizHistoryService.createHistory(sessionId);
+    @PostMapping("create")
+    public ResponseEntity<Long> createHistory(@RequestBody long sessionId) {
+        long historyId = quizHistoryService.createHistory(sessionId);
+        if (historyId > INTEGER_ZERO) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(historyId);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @GetMapping("{id}")
-    public QuizHistory getById(@PathVariable(name = "id") long id) {
-        return quizHistoryService.getById(id);
+    public ResponseEntity<QuizHistory> getById(@PathVariable long id) {
+        return ResponseEntity.of(quizHistoryService.getById(id));
     }
 
     @GetMapping("pdf/{id}")
-    public ResponseEntity<Resource> downloadPdf(@PathVariable(name = "id") long id) {
-        Resource pdf = quizHistoryService.getPDF(id);
-        if (!pdf.exists()) return ResponseEntity.notFound().build();
-        else return ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + pdf.getFilename() + "\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdf);
+    public ResponseEntity<Resource> downloadPdf(@PathVariable long id) {
+        Optional<Resource> pdf = quizHistoryService.getPDF(id);
+        if (pdf.isPresent()) {
+            if (pdf.get().exists()) {
+                return ResponseEntity.of(pdf);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
     @GetMapping("csv/{id}")
     public ResponseEntity<Resource> downloadCsv(@PathVariable(name = "id") long id) {
-        Resource csv = quizHistoryService.getCSV(id);
-        if (!csv.exists()) return ResponseEntity.notFound().build();
-        else return ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + csv.getFilename() + "\"")
-                .contentType(MediaType.parseMediaType("text/csv;charset=utf-8"))
-                .body(csv);
+        Optional<Resource> csv = quizHistoryService.getCSV(id);
+        if (csv.isPresent()) {
+            if (csv.get().exists()) {
+                return ResponseEntity.of(csv);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("all")
-    public List<QuizHistoryDto> getAll() {
-        return quizHistoryService.getAll();
+    public ResponseEntity<List<QuizHistory>> getAll() {
+        return ResponseEntity.ok(quizHistoryService.getAll());
     }
 }

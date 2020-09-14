@@ -4,35 +4,14 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
-import com.kopivad.quizzes.domain.db.tables.Groups;
-import com.kopivad.quizzes.domain.db.tables.Questions;
-import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
-import com.kopivad.quizzes.domain.db.tables.QuizHistories;
-import com.kopivad.quizzes.domain.db.tables.QuizSessions;
-import com.kopivad.quizzes.domain.db.tables.Quizzes;
-import com.kopivad.quizzes.domain.db.tables.QuizzesGroups;
-import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
-import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
-import com.kopivad.quizzes.domain.db.tables.records.EvaluationStepsRecord;
-import com.kopivad.quizzes.domain.db.tables.records.GroupsRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuestionsRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuizHistoriesRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuizSessionsRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuizzesGroupsRecord;
-import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
-import com.kopivad.quizzes.domain.db.tables.records.UsrRecord;
-import com.kopivad.quizzes.domain.db.tables.records.UsrsGroupsRecord;
-
-import javax.annotation.processing.Generated;
-
+import com.kopivad.quizzes.domain.db.tables.*;
+import com.kopivad.quizzes.domain.db.tables.records.*;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
+
+import javax.annotation.processing.Generated;
 
 
 /**
@@ -53,77 +32,93 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<AnswersRecord, Long> IDENTITY_ANSWERS = Identities0.IDENTITY_ANSWERS;
     public static final Identity<GroupsRecord, Long> IDENTITY_GROUPS = Identities0.IDENTITY_GROUPS;
+    public static final Identity<QuestionsRecord, Long> IDENTITY_QUESTIONS = Identities0.IDENTITY_QUESTIONS;
+    public static final Identity<QuizAnswersRecord, Long> IDENTITY_QUIZ_ANSWERS = Identities0.IDENTITY_QUIZ_ANSWERS;
+    public static final Identity<QuizHistoriesRecord, Long> IDENTITY_QUIZ_HISTORIES = Identities0.IDENTITY_QUIZ_HISTORIES;
+    public static final Identity<QuizSessionsRecord, Long> IDENTITY_QUIZ_SESSIONS = Identities0.IDENTITY_QUIZ_SESSIONS;
+    public static final Identity<QuizzesRecord, Long> IDENTITY_QUIZZES = Identities0.IDENTITY_QUIZZES;
+    public static final Identity<StepsRecord, Long> IDENTITY_STEPS = Identities0.IDENTITY_STEPS;
+    public static final Identity<UsersRecord, Long> IDENTITY_USERS = Identities0.IDENTITY_USERS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = UniqueKeys0.ANSWERS_PKEY;
-    public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = UniqueKeys0.EVALUATION_STEPS_PK;
+    public static final UniqueKey<AnswersRecord> ANSWERS_PK = UniqueKeys0.ANSWERS_PK;
     public static final UniqueKey<GroupsRecord> GROUPS_PK = UniqueKeys0.GROUPS_PK;
-    public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = UniqueKeys0.QUESTIONS_PKEY;
-    public static final UniqueKey<QuizAnswersRecord> QUIZ_RESULTS_PK = UniqueKeys0.QUIZ_RESULTS_PK;
-    public static final UniqueKey<QuizHistoriesRecord> QUIZ_HISTORIES_PK = UniqueKeys0.QUIZ_HISTORIES_PK;
+    public static final UniqueKey<QuestionsRecord> QUESTIONS_PK = UniqueKeys0.QUESTIONS_PK;
+    public static final UniqueKey<QuizAnswersRecord> QUIZ_ANSWERS_PK = UniqueKeys0.QUIZ_ANSWERS_PK;
+    public static final UniqueKey<QuizHistoriesRecord> QUIZ_HISTORY_PK = UniqueKeys0.QUIZ_HISTORY_PK;
     public static final UniqueKey<QuizSessionsRecord> QUIZ_SESSIONS_PK = UniqueKeys0.QUIZ_SESSIONS_PK;
-    public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = UniqueKeys0.QUIZZES_PKEY;
-    public static final UniqueKey<UsrRecord> USR_PKEY = UniqueKeys0.USR_PKEY;
+    public static final UniqueKey<QuizzesRecord> TABLE_NAME_PK = UniqueKeys0.TABLE_NAME_PK;
+    public static final UniqueKey<StepsRecord> STEPS_PK = UniqueKeys0.STEPS_PK;
+    public static final UniqueKey<UsersRecord> USERS_PK = UniqueKeys0.USERS_PK;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_FK = ForeignKeys0.ANSWERS__ANSWERS_QUESTIONS_FK;
-    public static final ForeignKey<EvaluationStepsRecord, QuizzesRecord> EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK = ForeignKeys0.EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK;
-    public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_FK = ForeignKeys0.QUESTIONS__QUESTIONS_QUIZZES_FK;
-    public static final ForeignKey<QuizAnswersRecord, AnswersRecord> QUIZ_ANSWERS__QUIZ_RESULTS_ANSWERS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_RESULTS_ANSWERS_ID_FK;
-    public static final ForeignKey<QuizAnswersRecord, QuestionsRecord> QUIZ_ANSWERS__QUIZ_RESULTS_QUESTIONS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_RESULTS_QUESTIONS_ID_FK;
-    public static final ForeignKey<QuizAnswersRecord, QuizSessionsRecord> QUIZ_ANSWERS__QUIZ_RESULTS_QUIZ_SESSIONS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_RESULTS_QUIZ_SESSIONS_ID_FK;
-    public static final ForeignKey<QuizHistoriesRecord, UsrRecord> QUIZ_HISTORIES__QUIZ_HISTORIES_USR_ID_FK = ForeignKeys0.QUIZ_HISTORIES__QUIZ_HISTORIES_USR_ID_FK;
-    public static final ForeignKey<QuizHistoriesRecord, QuizSessionsRecord> QUIZ_HISTORIES__QUIZ_HISTORIES_QUIZ_SESSIONS_ID_FK = ForeignKeys0.QUIZ_HISTORIES__QUIZ_HISTORIES_QUIZ_SESSIONS_ID_FK;
+    public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_ID_FK = ForeignKeys0.ANSWERS__ANSWERS_QUESTIONS_ID_FK;
+    public static final ForeignKey<GroupsQuizzesRecord, GroupsRecord> GROUPS_QUIZZES__GROUPS_QUIZZES_GROUPS_ID_FK = ForeignKeys0.GROUPS_QUIZZES__GROUPS_QUIZZES_GROUPS_ID_FK;
+    public static final ForeignKey<GroupsQuizzesRecord, QuizzesRecord> GROUPS_QUIZZES__GROUPS_QUIZZES_QUIZZES_ID_FK = ForeignKeys0.GROUPS_QUIZZES__GROUPS_QUIZZES_QUIZZES_ID_FK;
+    public static final ForeignKey<GroupsUsersRecord, GroupsRecord> GROUPS_USERS__GROUPS_USERS_GROUPS_ID_FK = ForeignKeys0.GROUPS_USERS__GROUPS_USERS_GROUPS_ID_FK;
+    public static final ForeignKey<GroupsUsersRecord, UsersRecord> GROUPS_USERS__GROUPS_USERS_USERS_ID_FK = ForeignKeys0.GROUPS_USERS__GROUPS_USERS_USERS_ID_FK;
+    public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_ID_FK = ForeignKeys0.QUESTIONS__QUESTIONS_QUIZZES_ID_FK;
+    public static final ForeignKey<QuizAnswersRecord, QuestionsRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_QUESTIONS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_ANSWERS_QUESTIONS_ID_FK;
+    public static final ForeignKey<QuizAnswersRecord, QuizSessionsRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_QUIZ_SESSIONS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_ANSWERS_QUIZ_SESSIONS_ID_FK;
+    public static final ForeignKey<QuizAnswersRecord, AnswersRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_ANSWERS_ID_FK = ForeignKeys0.QUIZ_ANSWERS__QUIZ_ANSWERS_ANSWERS_ID_FK;
+    public static final ForeignKey<QuizHistoriesRecord, QuizSessionsRecord> QUIZ_HISTORIES__QUIZ_HISTORY_QUIZ_SESSIONS_ID_FK = ForeignKeys0.QUIZ_HISTORIES__QUIZ_HISTORY_QUIZ_SESSIONS_ID_FK;
+    public static final ForeignKey<QuizHistoriesRecord, UsersRecord> QUIZ_HISTORIES__QUIZ_HISTORY_USERS_ID_FK = ForeignKeys0.QUIZ_HISTORIES__QUIZ_HISTORY_USERS_ID_FK;
     public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK;
-    public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK;
-    public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = ForeignKeys0.QUIZZES__QUIZZES_USR_FK;
-    public static final ForeignKey<QuizzesGroupsRecord, QuizzesRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK = ForeignKeys0.QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK;
-    public static final ForeignKey<QuizzesGroupsRecord, GroupsRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK = ForeignKeys0.QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK;
-    public static final ForeignKey<UsrsGroupsRecord, UsrRecord> USRS_GROUPS__USRS_GROUPS_USR_ID_FK = ForeignKeys0.USRS_GROUPS__USRS_GROUPS_USR_ID_FK;
-    public static final ForeignKey<UsrsGroupsRecord, GroupsRecord> USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK = ForeignKeys0.USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK;
+    public static final ForeignKey<QuizSessionsRecord, UsersRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USERS_ID_FK = ForeignKeys0.QUIZ_SESSIONS__QUIZ_SESSIONS_USERS_ID_FK;
+    public static final ForeignKey<QuizzesRecord, UsersRecord> QUIZZES__TABLE_NAME_USERS_ID_FK = ForeignKeys0.QUIZZES__TABLE_NAME_USERS_ID_FK;
+    public static final ForeignKey<StepsRecord, QuizzesRecord> STEPS__STEPS_QUIZZES_ID_FK = ForeignKeys0.STEPS__STEPS_QUIZZES_ID_FK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<AnswersRecord, Long> IDENTITY_ANSWERS = Internal.createIdentity(Answers.ANSWERS, Answers.ANSWERS.ID);
         public static Identity<GroupsRecord, Long> IDENTITY_GROUPS = Internal.createIdentity(Groups.GROUPS, Groups.GROUPS.ID);
+        public static Identity<QuestionsRecord, Long> IDENTITY_QUESTIONS = Internal.createIdentity(Questions.QUESTIONS, Questions.QUESTIONS.ID);
+        public static Identity<QuizAnswersRecord, Long> IDENTITY_QUIZ_ANSWERS = Internal.createIdentity(QuizAnswers.QUIZ_ANSWERS, QuizAnswers.QUIZ_ANSWERS.ID);
+        public static Identity<QuizHistoriesRecord, Long> IDENTITY_QUIZ_HISTORIES = Internal.createIdentity(QuizHistories.QUIZ_HISTORIES, QuizHistories.QUIZ_HISTORIES.ID);
+        public static Identity<QuizSessionsRecord, Long> IDENTITY_QUIZ_SESSIONS = Internal.createIdentity(QuizSessions.QUIZ_SESSIONS, QuizSessions.QUIZ_SESSIONS.ID);
+        public static Identity<QuizzesRecord, Long> IDENTITY_QUIZZES = Internal.createIdentity(Quizzes.QUIZZES, Quizzes.QUIZZES.ID);
+        public static Identity<StepsRecord, Long> IDENTITY_STEPS = Internal.createIdentity(Steps.STEPS, Steps.STEPS.ID);
+        public static Identity<UsersRecord, Long> IDENTITY_USERS = Internal.createIdentity(Users.USERS, Users.USERS.ID);
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<AnswersRecord> ANSWERS_PKEY = Internal.createUniqueKey(Answers.ANSWERS, "answers_pkey", Answers.ANSWERS.ID);
-        public static final UniqueKey<EvaluationStepsRecord> EVALUATION_STEPS_PK = Internal.createUniqueKey(EvaluationSteps.EVALUATION_STEPS, "evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS.ID);
+        public static final UniqueKey<AnswersRecord> ANSWERS_PK = Internal.createUniqueKey(Answers.ANSWERS, "answers_pk", Answers.ANSWERS.ID);
         public static final UniqueKey<GroupsRecord> GROUPS_PK = Internal.createUniqueKey(Groups.GROUPS, "groups_pk", Groups.GROUPS.ID);
-        public static final UniqueKey<QuestionsRecord> QUESTIONS_PKEY = Internal.createUniqueKey(Questions.QUESTIONS, "questions_pkey", Questions.QUESTIONS.ID);
-        public static final UniqueKey<QuizAnswersRecord> QUIZ_RESULTS_PK = Internal.createUniqueKey(QuizAnswers.QUIZ_ANSWERS, "quiz_results_pk", QuizAnswers.QUIZ_ANSWERS.ID);
-        public static final UniqueKey<QuizHistoriesRecord> QUIZ_HISTORIES_PK = Internal.createUniqueKey(QuizHistories.QUIZ_HISTORIES, "quiz_histories_pk", QuizHistories.QUIZ_HISTORIES.ID);
+        public static final UniqueKey<QuestionsRecord> QUESTIONS_PK = Internal.createUniqueKey(Questions.QUESTIONS, "questions_pk", Questions.QUESTIONS.ID);
+        public static final UniqueKey<QuizAnswersRecord> QUIZ_ANSWERS_PK = Internal.createUniqueKey(QuizAnswers.QUIZ_ANSWERS, "quiz_answers_pk", QuizAnswers.QUIZ_ANSWERS.ID);
+        public static final UniqueKey<QuizHistoriesRecord> QUIZ_HISTORY_PK = Internal.createUniqueKey(QuizHistories.QUIZ_HISTORIES, "quiz_history_pk", QuizHistories.QUIZ_HISTORIES.ID);
         public static final UniqueKey<QuizSessionsRecord> QUIZ_SESSIONS_PK = Internal.createUniqueKey(QuizSessions.QUIZ_SESSIONS, "quiz_sessions_pk", QuizSessions.QUIZ_SESSIONS.ID);
-        public static final UniqueKey<QuizzesRecord> QUIZZES_PKEY = Internal.createUniqueKey(Quizzes.QUIZZES, "quizzes_pkey", Quizzes.QUIZZES.ID);
-        public static final UniqueKey<UsrRecord> USR_PKEY = Internal.createUniqueKey(Usr.USR, "usr_pkey", Usr.USR.ID);
+        public static final UniqueKey<QuizzesRecord> TABLE_NAME_PK = Internal.createUniqueKey(Quizzes.QUIZZES, "table_name_pk", Quizzes.QUIZZES.ID);
+        public static final UniqueKey<StepsRecord> STEPS_PK = Internal.createUniqueKey(Steps.STEPS, "steps_pk", Steps.STEPS.ID);
+        public static final UniqueKey<UsersRecord> USERS_PK = Internal.createUniqueKey(Users.USERS, "users_pk", Users.USERS.ID);
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUESTIONS_PKEY, Answers.ANSWERS, "answers__answers_questions_fk", Answers.ANSWERS.QUESTION_ID);
-        public static final ForeignKey<EvaluationStepsRecord, QuizzesRecord> EVALUATION_STEPS__EVALUATION_STEPS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, EvaluationSteps.EVALUATION_STEPS, "evaluation_steps__evaluation_steps_quizzes_id_fk", EvaluationSteps.EVALUATION_STEPS.QUIZ_ID);
-        public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, Questions.QUESTIONS, "questions__questions_quizzes_fk", Questions.QUESTIONS.QUIZ_ID);
-        public static final ForeignKey<QuizAnswersRecord, AnswersRecord> QUIZ_ANSWERS__QUIZ_RESULTS_ANSWERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.ANSWERS_PKEY, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_results_answers_id_fk", QuizAnswers.QUIZ_ANSWERS.ANSWER_ID);
-        public static final ForeignKey<QuizAnswersRecord, QuestionsRecord> QUIZ_ANSWERS__QUIZ_RESULTS_QUESTIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUESTIONS_PKEY, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_results_questions_id_fk", QuizAnswers.QUIZ_ANSWERS.QUESTION_ID);
-        public static final ForeignKey<QuizAnswersRecord, QuizSessionsRecord> QUIZ_ANSWERS__QUIZ_RESULTS_QUIZ_SESSIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZ_SESSIONS_PK, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_results_quiz_sessions_id_fk", QuizAnswers.QUIZ_ANSWERS.SESSION_ID);
-        public static final ForeignKey<QuizHistoriesRecord, UsrRecord> QUIZ_HISTORIES__QUIZ_HISTORIES_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, QuizHistories.QUIZ_HISTORIES, "quiz_histories__quiz_histories_usr_id_fk", QuizHistories.QUIZ_HISTORIES.USER_ID);
-        public static final ForeignKey<QuizHistoriesRecord, QuizSessionsRecord> QUIZ_HISTORIES__QUIZ_HISTORIES_QUIZ_SESSIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZ_SESSIONS_PK, QuizHistories.QUIZ_HISTORIES, "quiz_histories__quiz_histories_quiz_sessions_id_fk", QuizHistories.QUIZ_HISTORIES.SESSION_ID);
-        public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_quizzes_id_fk", QuizSessions.QUIZ_SESSIONS.QUIZ_ID);
-        public static final ForeignKey<QuizSessionsRecord, UsrRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_usr_id_fk", QuizSessions.QUIZ_SESSIONS.USER_ID);
-        public static final ForeignKey<QuizzesRecord, UsrRecord> QUIZZES__QUIZZES_USR_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, Quizzes.QUIZZES, "quizzes__quizzes_usr_fk", Quizzes.QUIZZES.AUTHOR_ID);
-        public static final ForeignKey<QuizzesGroupsRecord, QuizzesRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZZES_PKEY, QuizzesGroups.QUIZZES_GROUPS, "quizzes_groups__quizzes_groups_quizzes_id_fk", QuizzesGroups.QUIZZES_GROUPS.QUIZ_ID);
-        public static final ForeignKey<QuizzesGroupsRecord, GroupsRecord> QUIZZES_GROUPS__QUIZZES_GROUPS_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, QuizzesGroups.QUIZZES_GROUPS, "quizzes_groups__quizzes_groups_groups_id_fk", QuizzesGroups.QUIZZES_GROUPS.GROUP_ID);
-        public static final ForeignKey<UsrsGroupsRecord, UsrRecord> USRS_GROUPS__USRS_GROUPS_USR_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USR_PKEY, UsrsGroups.USRS_GROUPS, "usrs_groups__usrs_groups_usr_id_fk", UsrsGroups.USRS_GROUPS.USER_ID);
-        public static final ForeignKey<UsrsGroupsRecord, GroupsRecord> USRS_GROUPS__USRS_GROUPS_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, UsrsGroups.USRS_GROUPS, "usrs_groups__usrs_groups_groups_id_fk", UsrsGroups.USRS_GROUPS.GROUP_ID);
+        public static final ForeignKey<AnswersRecord, QuestionsRecord> ANSWERS__ANSWERS_QUESTIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUESTIONS_PK, Answers.ANSWERS, "answers__answers_questions_id_fk", Answers.ANSWERS.QUESTION_ID);
+        public static final ForeignKey<GroupsQuizzesRecord, GroupsRecord> GROUPS_QUIZZES__GROUPS_QUIZZES_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, GroupsQuizzes.GROUPS_QUIZZES, "groups_quizzes__groups_quizzes_groups_id_fk", GroupsQuizzes.GROUPS_QUIZZES.GROUP_ID);
+        public static final ForeignKey<GroupsQuizzesRecord, QuizzesRecord> GROUPS_QUIZZES__GROUPS_QUIZZES_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.TABLE_NAME_PK, GroupsQuizzes.GROUPS_QUIZZES, "groups_quizzes__groups_quizzes_quizzes_id_fk", GroupsQuizzes.GROUPS_QUIZZES.QUIZ_ID);
+        public static final ForeignKey<GroupsUsersRecord, GroupsRecord> GROUPS_USERS__GROUPS_USERS_GROUPS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.GROUPS_PK, GroupsUsers.GROUPS_USERS, "groups_users__groups_users_groups_id_fk", GroupsUsers.GROUPS_USERS.GROUP_ID);
+        public static final ForeignKey<GroupsUsersRecord, UsersRecord> GROUPS_USERS__GROUPS_USERS_USERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USERS_PK, GroupsUsers.GROUPS_USERS, "groups_users__groups_users_users_id_fk", GroupsUsers.GROUPS_USERS.USER_ID);
+        public static final ForeignKey<QuestionsRecord, QuizzesRecord> QUESTIONS__QUESTIONS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.TABLE_NAME_PK, Questions.QUESTIONS, "questions__questions_quizzes_id_fk", Questions.QUESTIONS.QUIZ_ID);
+        public static final ForeignKey<QuizAnswersRecord, QuestionsRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_QUESTIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUESTIONS_PK, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_answers_questions_id_fk", QuizAnswers.QUIZ_ANSWERS.QUESTION_ID);
+        public static final ForeignKey<QuizAnswersRecord, QuizSessionsRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_QUIZ_SESSIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZ_SESSIONS_PK, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_answers_quiz_sessions_id_fk", QuizAnswers.QUIZ_ANSWERS.SESSION_ID);
+        public static final ForeignKey<QuizAnswersRecord, AnswersRecord> QUIZ_ANSWERS__QUIZ_ANSWERS_ANSWERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.ANSWERS_PK, QuizAnswers.QUIZ_ANSWERS, "quiz_answers__quiz_answers_answers_id_fk", QuizAnswers.QUIZ_ANSWERS.ANSWER_ID);
+        public static final ForeignKey<QuizHistoriesRecord, QuizSessionsRecord> QUIZ_HISTORIES__QUIZ_HISTORY_QUIZ_SESSIONS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.QUIZ_SESSIONS_PK, QuizHistories.QUIZ_HISTORIES, "quiz_histories__quiz_history_quiz_sessions_id_fk", QuizHistories.QUIZ_HISTORIES.SESSION_ID);
+        public static final ForeignKey<QuizHistoriesRecord, UsersRecord> QUIZ_HISTORIES__QUIZ_HISTORY_USERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USERS_PK, QuizHistories.QUIZ_HISTORIES, "quiz_histories__quiz_history_users_id_fk", QuizHistories.QUIZ_HISTORIES.USER_ID);
+        public static final ForeignKey<QuizSessionsRecord, QuizzesRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.TABLE_NAME_PK, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_quizzes_id_fk", QuizSessions.QUIZ_SESSIONS.QUIZ_ID);
+        public static final ForeignKey<QuizSessionsRecord, UsersRecord> QUIZ_SESSIONS__QUIZ_SESSIONS_USERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USERS_PK, QuizSessions.QUIZ_SESSIONS, "quiz_sessions__quiz_sessions_users_id_fk", QuizSessions.QUIZ_SESSIONS.USER_ID);
+        public static final ForeignKey<QuizzesRecord, UsersRecord> QUIZZES__TABLE_NAME_USERS_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.USERS_PK, Quizzes.QUIZZES, "quizzes__table_name_users_id_fk", Quizzes.QUIZZES.AUTHOR_ID);
+        public static final ForeignKey<StepsRecord, QuizzesRecord> STEPS__STEPS_QUIZZES_ID_FK = Internal.createForeignKey(com.kopivad.quizzes.domain.db.Keys.TABLE_NAME_PK, Steps.STEPS, "steps__steps_quizzes_id_fk", Steps.STEPS.QUIZ_ID);
     }
 }

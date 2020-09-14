@@ -1,50 +1,37 @@
 package com.kopivad.quizzes.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
 
 @Value
-public class User implements UserDetails {
+public class User {
     Long id;
     String name;
     String email;
+    @JsonIgnore
     String password;
     Role role;
     LocalDateTime creationDate;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(role);
-    }
-
-    @Override
-    public String getUsername() {
-        return getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    @JsonCreator
+    public User(
+            @JsonProperty("id") Long id,
+            @JsonProperty("name") String name,
+            @JsonProperty("email") String email,
+            @JsonProperty("password") String password,
+            @JsonProperty("role") Role role,
+            @JsonProperty("creationDate") LocalDateTime creationDate
+    ) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.creationDate = creationDate;
     }
 }
 

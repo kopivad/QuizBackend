@@ -8,25 +8,14 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.QuizzesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.processing.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.processing.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -42,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Quizzes extends TableImpl<QuizzesRecord> {
 
-    private static final long serialVersionUID = -2136429809;
+    private static final long serialVersionUID = -99533048;
 
     /**
      * The reference instance of <code>public.quizzes</code>
@@ -60,7 +49,22 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
     /**
      * The column <code>public.quizzes.id</code>.
      */
-    public final TableField<QuizzesRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<QuizzesRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("nextval('table_name_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.quizzes.title</code>.
+     */
+    public final TableField<QuizzesRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quizzes.description</code>.
+     */
+    public final TableField<QuizzesRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quizzes.total</code>.
+     */
+    public final TableField<QuizzesRecord, Integer> TOTAL = createField(DSL.name("total"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.quizzes.active</code>.
@@ -73,24 +77,9 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
     public final TableField<QuizzesRecord, Timestamp> CREATION_DATE = createField(DSL.name("creation_date"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
     /**
-     * The column <code>public.quizzes.description</code>.
-     */
-    public final TableField<QuizzesRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
-     * The column <code>public.quizzes.title</code>.
-     */
-    public final TableField<QuizzesRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
      * The column <code>public.quizzes.author_id</code>.
      */
-    public final TableField<QuizzesRecord, Long> AUTHOR_ID = createField(DSL.name("author_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.quizzes.total</code>.
-     */
-    public final TableField<QuizzesRecord, Integer> TOTAL = createField(DSL.name("total"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("100", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<QuizzesRecord, Long> AUTHOR_ID = createField(DSL.name("author_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>public.quizzes</code> table reference
@@ -132,26 +121,31 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.QUIZZES_PKEY);
+        return Arrays.<Index>asList(Indexes.TABLE_NAME_PK);
+    }
+
+    @Override
+    public Identity<QuizzesRecord, Long> getIdentity() {
+        return Keys.IDENTITY_QUIZZES;
     }
 
     @Override
     public UniqueKey<QuizzesRecord> getPrimaryKey() {
-        return Keys.QUIZZES_PKEY;
+        return Keys.TABLE_NAME_PK;
     }
 
     @Override
     public List<UniqueKey<QuizzesRecord>> getKeys() {
-        return Arrays.<UniqueKey<QuizzesRecord>>asList(Keys.QUIZZES_PKEY);
+        return Arrays.<UniqueKey<QuizzesRecord>>asList(Keys.TABLE_NAME_PK);
     }
 
     @Override
     public List<ForeignKey<QuizzesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<QuizzesRecord, ?>>asList(Keys.QUIZZES__QUIZZES_USR_FK);
+        return Arrays.<ForeignKey<QuizzesRecord, ?>>asList(Keys.QUIZZES__TABLE_NAME_USERS_ID_FK);
     }
 
-    public Usr usr() {
-        return new Usr(this, Keys.QUIZZES__QUIZZES_USR_FK);
+    public Users users() {
+        return new Users(this, Keys.QUIZZES__TABLE_NAME_USERS_ID_FK);
     }
 
     @Override
@@ -185,7 +179,7 @@ public class Quizzes extends TableImpl<QuizzesRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Boolean, Timestamp, String, String, Long, Integer> fieldsRow() {
+    public Row7<Long, String, String, Integer, Boolean, Timestamp, Long> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

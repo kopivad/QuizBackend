@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,31 +47,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
-
-                .antMatchers(HttpMethod.GET, "/api/v1/user/all").hasAuthority("ADMINISTRATOR")
-                .antMatchers(HttpMethod.POST,"/api/v1/user").hasAuthority("ADMINISTRATOR")
-                .antMatchers(HttpMethod.PUT,"/api/v1/user").hasAuthority("ADMINISTRATOR")
-                .antMatchers(HttpMethod.DELETE,"/api/v1/user/*").hasAuthority("ADMINISTRATOR")
-
-                .antMatchers(HttpMethod.POST,"/api/v1/group").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.PUT,"/api/v1/group").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.DELETE,"/api/v1/group/*").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-
-                .antMatchers(HttpMethod.POST,"/api/v1/quiz").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.PUT,"/api/v1/quiz").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.DELETE,"/api/v1/quiz/*").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-
-                .antMatchers(HttpMethod.POST,"/api/v1/question").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.PUT,"/api/v1/question").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.DELETE,"/api/v1/question/*").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-
-                .antMatchers(HttpMethod.POST,"/api/v1/answer").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.PUT,"/api/v1/answer").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-                .antMatchers(HttpMethod.DELETE,"/api/v1/answer/*").hasAnyAuthority("ADMINISTRATOR", "MODERATOR")
-
+                .antMatchers(HttpMethod.GET, "/api/v1/user/all").hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.POST, "/api/v1/user", "/api/v1/group", "/api/v1/quiz", "/api/v1/question", "/api/v1/answer").hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.PATCH, "/api/v1/user", "/api/v1/group", "/api/v1/quiz", "/api/v1/question", "/api/v1/answer", "/api/v1/user/password").hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/user/*", "/api/v1/group/*", "/api/v1/quiz/*", "/api/v1/question/*", "/api/v1/answer/*").hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.POST, "/api/v1/group", "/api/v1/quiz", "/api/v1/question", "/api/v1/answer").hasAnyRole( "MODERATOR")
+                .antMatchers(HttpMethod.PATCH,"/api/v1/group", "/api/v1/quiz", "/api/v1/question", "/api/v1/answer").hasAnyRole( "MODERATOR")
+                .antMatchers(HttpMethod.DELETE,"/api/v1/group/*", "/api/v1/quiz/*", "/api/v1/question/*", "/api/v1/answer/*").hasAnyRole("MODERATOR")
                 .anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }

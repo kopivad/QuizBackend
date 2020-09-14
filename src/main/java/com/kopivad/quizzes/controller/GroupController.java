@@ -1,13 +1,14 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.dto.GroupDto;
+import com.kopivad.quizzes.dto.SaveGroupDto;
 import com.kopivad.quizzes.service.GroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/group")
@@ -16,25 +17,35 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public long save(@RequestBody GroupDto dto) {
-        return groupService.save(dto);
+    public ResponseEntity<Void> save(@RequestBody SaveGroupDto dto) {
+        if (groupService.save(dto)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @PutMapping
-    public boolean update(@RequestBody GroupDto dto) {
-        return groupService.update(dto);
+    @PatchMapping
+    public ResponseEntity<Void> update(@RequestBody Group group) {
+        if (groupService.update(group)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("all")
-    public List<GroupDto> getAll(@RequestParam("userId") Optional<Long> userId) {
-        if (userId.isPresent())
-            return groupService.getAllByUserId(userId.get());
+    public ResponseEntity<List<Group>> getAll() {
+        return ResponseEntity.ok(groupService.getAll());
+    }
 
-        return groupService.getAll();
+    @GetMapping("all/{userId}")
+    public ResponseEntity<List<Group>> getAllByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(groupService.getAllByUserId(userId));
     }
 
     @GetMapping("{id}")
-    public Group getById(@PathVariable("id") long id) {
-        return groupService.getById(id);
+    public ResponseEntity<Group> getById(@PathVariable("id") long id) {
+        return ResponseEntity.of(groupService.getById(id));
     }
 }

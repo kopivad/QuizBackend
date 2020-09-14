@@ -5,16 +5,14 @@ package com.kopivad.quizzes.domain.db.tables.records;
 
 
 import com.kopivad.quizzes.domain.db.tables.QuizSessions;
-
-import java.sql.Timestamp;
-
-import javax.annotation.processing.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.processing.Generated;
+import java.sql.Timestamp;
 
 
 /**
@@ -30,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> implements Record4<Long, Long, Long, Timestamp> {
 
-    private static final long serialVersionUID = 409931198;
+    private static final long serialVersionUID = -479656755;
 
     /**
      * Setter for <code>public.quiz_sessions.id</code>.
@@ -75,16 +73,16 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
     }
 
     /**
-     * Setter for <code>public.quiz_sessions.date</code>.
+     * Setter for <code>public.quiz_sessions.creation_date</code>.
      */
-    public void setDate(Timestamp value) {
+    public void setCreationDate(Timestamp value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.quiz_sessions.date</code>.
+     * Getter for <code>public.quiz_sessions.creation_date</code>.
      */
-    public Timestamp getDate() {
+    public Timestamp getCreationDate() {
         return (Timestamp) get(3);
     }
 
@@ -128,7 +126,7 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
 
     @Override
     public Field<Timestamp> field4() {
-        return QuizSessions.QUIZ_SESSIONS.DATE;
+        return QuizSessions.QUIZ_SESSIONS.CREATION_DATE;
     }
 
     @Override
@@ -148,7 +146,7 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
 
     @Override
     public Timestamp component4() {
-        return getDate();
+        return getCreationDate();
     }
 
     @Override
@@ -168,7 +166,7 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
 
     @Override
     public Timestamp value4() {
-        return getDate();
+        return getCreationDate();
     }
 
     @Override
@@ -191,7 +189,7 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
 
     @Override
     public QuizSessionsRecord value4(Timestamp value) {
-        setDate(value);
+        setCreationDate(value);
         return this;
     }
 
@@ -218,12 +216,12 @@ public class QuizSessionsRecord extends UpdatableRecordImpl<QuizSessionsRecord> 
     /**
      * Create a detached, initialised QuizSessionsRecord
      */
-    public QuizSessionsRecord(Long id, Long quizId, Long userId, Timestamp date) {
+    public QuizSessionsRecord(Long id, Long quizId, Long userId, Timestamp creationDate) {
         super(QuizSessions.QUIZ_SESSIONS);
 
         set(0, id);
         set(1, quizId);
         set(2, userId);
-        set(3, date);
+        set(3, creationDate);
     }
 }

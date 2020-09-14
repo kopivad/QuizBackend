@@ -7,9 +7,9 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizSessions.QUIZ_SESSIONS;
-import static com.kopivad.quizzes.repository.jooq.RecordMappers.getRecordQuizSessionRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -21,9 +21,9 @@ public class QuizSessionRepositoryImpl implements QuizSessionRepository {
     public long save(QuizSession quizSession) {
         return dslContext
                 .insertInto(QUIZ_SESSIONS)
-                .set(QUIZ_SESSIONS.USER_ID, quizSession.getUser().getId())
-                .set(QUIZ_SESSIONS.QUIZ_ID, quizSession.getQuiz().getId())
-                .set(QUIZ_SESSIONS.DATE, Timestamp.valueOf(quizSession.getDate()))
+                .set(QUIZ_SESSIONS.USER_ID, quizSession.getUserId())
+                .set(QUIZ_SESSIONS.QUIZ_ID, quizSession.getQuizId())
+                .set(QUIZ_SESSIONS.CREATION_DATE, Timestamp.valueOf(quizSession.getDate()))
                 .returning(QUIZ_SESSIONS.ID)
                 .fetchOne()
                 .getId();
@@ -33,20 +33,20 @@ public class QuizSessionRepositoryImpl implements QuizSessionRepository {
     public boolean update(QuizSession quizSession) {
         int affectedRows = dslContext
                 .update(QUIZ_SESSIONS)
-                .set(QUIZ_SESSIONS.USER_ID, quizSession.getUser().getId())
-                .set(QUIZ_SESSIONS.QUIZ_ID, quizSession.getQuiz().getId())
-                .set(QUIZ_SESSIONS.DATE, Timestamp.valueOf(quizSession.getDate()))
+                .set(QUIZ_SESSIONS.USER_ID, quizSession.getUserId())
+                .set(QUIZ_SESSIONS.QUIZ_ID, quizSession.getQuizId())
+                .set(QUIZ_SESSIONS.CREATION_DATE, Timestamp.valueOf(quizSession.getDate()))
                 .where(QUIZ_SESSIONS.ID.eq(quizSession.getId()))
                 .execute();
+
         return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public QuizSession findById(long sessionId) {
+    public Optional<QuizSession> findById(long sessionId) {
         return dslContext
                 .selectFrom(QUIZ_SESSIONS)
                 .where(QUIZ_SESSIONS.ID.eq(sessionId))
-                .fetchOne()
-                .map(getRecordQuizSessionRecordMapper());
+                .fetchOptionalInto(QuizSession.class);
     }
 }

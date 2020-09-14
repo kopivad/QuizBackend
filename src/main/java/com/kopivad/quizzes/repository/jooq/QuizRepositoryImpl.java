@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.db.tables.records.QuizzesGroupsRecord;
+import com.kopivad.quizzes.domain.db.tables.records.GroupsQuizzesRecord;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.kopivad.quizzes.domain.db.tables.GroupsQuizzes.GROUPS_QUIZZES;
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
-import static com.kopivad.quizzes.domain.db.tables.QuizzesGroups.QUIZZES_GROUPS;
-import static com.kopivad.quizzes.repository.jooq.RecordMappers.getQuizFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -25,17 +25,15 @@ public class QuizRepositoryImpl implements QuizRepository {
     public List<Quiz> findAll() {
         return dslContext
                 .selectFrom(QUIZZES)
-                .fetch()
-                .map(getQuizFromRecordMapper());
+                .fetchInto(Quiz.class);
     }
 
     @Override
-    public Quiz findById(Long id) {
+    public Optional<Quiz> findById(Long id) {
         return dslContext
                 .selectFrom(QUIZZES)
                 .where(QUIZZES.ID.eq(id))
-                .fetchOne()
-                .map(getQuizFromRecordMapper());
+                .fetchOptionalInto(Quiz.class);
     }
 
     @Override
@@ -46,7 +44,7 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
-                .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
+                .set(QUIZZES.AUTHOR_ID, quiz.getAuthorId())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
                 .returning(QUIZZES.ID)
                 .fetchOne()
@@ -61,7 +59,6 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.ACTIVE, quiz.isActive())
                 .set(QUIZZES.TOTAL, quiz.getTotal())
-                .set(QUIZZES.AUTHOR_ID, quiz.getAuthor().getId())
                 .where(QUIZZES.ID.eq(quiz.getId()))
                 .execute();
 
@@ -80,19 +77,22 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     public List<Quiz> findByGroupId(long id) {
-        List<Long> ids = dslContext
-                .selectFrom(QUIZZES_GROUPS)
-                .where(QUIZZES_GROUPS.GROUP_ID.eq(id))
-                .fetch()
-                .stream()
-                .map(QuizzesGroupsRecord::getQuizId)
-                .collect(Collectors.toUnmodifiableList());
+        List<Long> ids = getQuizGroupsIds(id);
 
         return dslContext
                 .selectFrom(QUIZZES)
                 .where(QUIZZES.ID.in(ids))
+                .fetchInto(Quiz.class);
+    }
+
+    private List<Long> getQuizGroupsIds(long id) {
+        return dslContext
+                .selectFrom(GROUPS_QUIZZES)
+                .where(GROUPS_QUIZZES.GROUP_ID.eq(id))
                 .fetch()
-                .map(getQuizFromRecordMapper());
+                .stream()
+                .map(GroupsQuizzesRecord::getQuizId)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
@@ -100,7 +100,6 @@ public class QuizRepositoryImpl implements QuizRepository {
         return dslContext
                 .selectFrom(QUIZZES)
                 .where(QUIZZES.TITLE.startsWithIgnoreCase(title))
-                .fetch()
-                .map(getQuizFromRecordMapper());
+                .fetchInto(Quiz.class);
     }
 }

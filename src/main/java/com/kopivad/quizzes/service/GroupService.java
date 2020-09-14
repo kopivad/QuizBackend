@@ -1,18 +1,19 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.dto.GroupDto;
+import com.kopivad.quizzes.dto.SaveGroupDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupService {
-    long save(GroupDto dto);
+    boolean save(SaveGroupDto dto);
 
-    boolean update(GroupDto dto);
+    boolean update(Group group);
 
-    List<GroupDto> getAll();
+    List<Group> getAll();
 
-    Group getById(long id);
+    Optional<Group> getById(long id);
 
-    List<GroupDto> getAllByUserId(long id);
+    List<Group> getAllByUserId(long id);
 }

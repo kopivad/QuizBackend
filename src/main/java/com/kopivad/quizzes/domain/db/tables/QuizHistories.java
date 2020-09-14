@@ -8,24 +8,13 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.QuizHistoriesRecord;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.processing.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.processing.Generated;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -41,7 +30,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
 
-    private static final long serialVersionUID = -598172013;
+    private static final long serialVersionUID = 1459359192;
 
     /**
      * The reference instance of <code>public.quiz_histories</code>
@@ -59,22 +48,12 @@ public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
     /**
      * The column <code>public.quiz_histories.id</code>.
      */
-    public final TableField<QuizHistoriesRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.quiz_histories.user_id</code>.
-     */
-    public final TableField<QuizHistoriesRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<QuizHistoriesRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("nextval('quiz_history_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.quiz_histories.total</code>.
      */
-    public final TableField<QuizHistoriesRecord, Integer> TOTAL = createField(DSL.name("total"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.quiz_histories.session_id</code>.
-     */
-    public final TableField<QuizHistoriesRecord, Long> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<QuizHistoriesRecord, Integer> TOTAL = createField(DSL.name("total"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.quiz_histories.rating</code>.
@@ -82,14 +61,24 @@ public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
     public final TableField<QuizHistoriesRecord, String> RATING = createField(DSL.name("rating"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
-     * The column <code>public.quiz_histories.pdf_filename</code>.
+     * The column <code>public.quiz_histories.session_id</code>.
      */
-    public final TableField<QuizHistoriesRecord, String> PDF_FILENAME = createField(DSL.name("pdf_filename"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<QuizHistoriesRecord, Long> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.quiz_histories.csv_filename</code>.
+     * The column <code>public.quiz_histories.user_id</code>.
      */
-    public final TableField<QuizHistoriesRecord, String> CSV_FILENAME = createField(DSL.name("csv_filename"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<QuizHistoriesRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quiz_histories.pdf_file_name</code>.
+     */
+    public final TableField<QuizHistoriesRecord, String> PDF_FILE_NAME = createField(DSL.name("pdf_file_name"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quiz_histories.csv_file_name</code>.
+     */
+    public final TableField<QuizHistoriesRecord, String> CSV_FILE_NAME = createField(DSL.name("csv_file_name"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * Create a <code>public.quiz_histories</code> table reference
@@ -131,30 +120,35 @@ public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.QUIZ_HISTORIES_PK);
+        return Arrays.<Index>asList(Indexes.QUIZ_HISTORY_PK);
+    }
+
+    @Override
+    public Identity<QuizHistoriesRecord, Long> getIdentity() {
+        return Keys.IDENTITY_QUIZ_HISTORIES;
     }
 
     @Override
     public UniqueKey<QuizHistoriesRecord> getPrimaryKey() {
-        return Keys.QUIZ_HISTORIES_PK;
+        return Keys.QUIZ_HISTORY_PK;
     }
 
     @Override
     public List<UniqueKey<QuizHistoriesRecord>> getKeys() {
-        return Arrays.<UniqueKey<QuizHistoriesRecord>>asList(Keys.QUIZ_HISTORIES_PK);
+        return Arrays.<UniqueKey<QuizHistoriesRecord>>asList(Keys.QUIZ_HISTORY_PK);
     }
 
     @Override
     public List<ForeignKey<QuizHistoriesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<QuizHistoriesRecord, ?>>asList(Keys.QUIZ_HISTORIES__QUIZ_HISTORIES_USR_ID_FK, Keys.QUIZ_HISTORIES__QUIZ_HISTORIES_QUIZ_SESSIONS_ID_FK);
-    }
-
-    public Usr usr() {
-        return new Usr(this, Keys.QUIZ_HISTORIES__QUIZ_HISTORIES_USR_ID_FK);
+        return Arrays.<ForeignKey<QuizHistoriesRecord, ?>>asList(Keys.QUIZ_HISTORIES__QUIZ_HISTORY_QUIZ_SESSIONS_ID_FK, Keys.QUIZ_HISTORIES__QUIZ_HISTORY_USERS_ID_FK);
     }
 
     public QuizSessions quizSessions() {
-        return new QuizSessions(this, Keys.QUIZ_HISTORIES__QUIZ_HISTORIES_QUIZ_SESSIONS_ID_FK);
+        return new QuizSessions(this, Keys.QUIZ_HISTORIES__QUIZ_HISTORY_QUIZ_SESSIONS_ID_FK);
+    }
+
+    public Users users() {
+        return new Users(this, Keys.QUIZ_HISTORIES__QUIZ_HISTORY_USERS_ID_FK);
     }
 
     @Override
@@ -188,7 +182,7 @@ public class QuizHistories extends TableImpl<QuizHistoriesRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, Integer, Long, String, String, String> fieldsRow() {
+    public Row7<Long, Integer, String, Long, Long, String, String> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

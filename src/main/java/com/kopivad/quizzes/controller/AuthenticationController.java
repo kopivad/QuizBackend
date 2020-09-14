@@ -1,8 +1,8 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.dto.LoginDto;
-import com.kopivad.quizzes.dto.RegisterDto;
-import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.dto.LoginUserDto;
+import com.kopivad.quizzes.dto.RegisterUserDto;
+import com.kopivad.quizzes.dto.UserTokenDto;
 import com.kopivad.quizzes.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
@@ -19,13 +21,19 @@ public class AuthenticationController {
     private final AuthService authService;
 
     @PostMapping("login")
-    public UserDto login(@RequestBody LoginDto dto) {
-        return authService.login(dto);
+    public ResponseEntity<UserTokenDto> login(@RequestBody LoginUserDto dto) {
+        Optional<UserTokenDto> userTokenDto = authService.login(dto);
+        return userTokenDto
+                .map(tokenDto -> ResponseEntity.status(HttpStatus.OK).body(tokenDto))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
     @PostMapping("register")
-    public ResponseEntity<Void> register(@RequestBody RegisterDto dto) {
-        if (authService.register(dto)) return ResponseEntity.status(HttpStatus.OK).build();
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<Void> register(@RequestBody RegisterUserDto dto) {
+        if (authService.register(dto)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }

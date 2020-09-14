@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
-import static com.kopivad.quizzes.repository.jooq.RecordMappers.getEvaluationStepsRecordEvaluationStepRecordMapper;
+import static com.kopivad.quizzes.domain.db.tables.Steps.STEPS;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,24 +17,23 @@ public class EvaluationStepRepositoryImpl implements EvaluationStepRepository {
     private final DSLContext dslContext;
 
     @Override
-    public long save(EvaluationStep step) {
-        return dslContext
-                .insertInto(EVALUATION_STEPS)
-                .set(EVALUATION_STEPS.MINTOTAL, step.getMinTotal())
-                .set(EVALUATION_STEPS.MAXTOTAL, step.getMaxTotal())
-                .set(EVALUATION_STEPS.RATING, step.getRating())
-                .set(EVALUATION_STEPS.QUIZ_ID, step.getQuiz().getId())
-                .returning(EVALUATION_STEPS.ID)
-                .fetchOne()
-                .getId();
+    public boolean save(EvaluationStep step) {
+        int affectedRows = dslContext
+                .insertInto(STEPS)
+                .set(STEPS.MIN_TOTAL, step.getMinTotal())
+                .set(STEPS.MAX_TOTAL, step.getMaxTotal())
+                .set(STEPS.RATING, step.getRating())
+                .set(STEPS.QUIZ_ID, step.getQuizId())
+                .execute();
+
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
     public List<EvaluationStep> findByQuizId(Long id) {
         return dslContext
-                .selectFrom(EVALUATION_STEPS)
-                .where(EVALUATION_STEPS.QUIZ_ID.eq(id))
-                .fetch()
-                .map(getEvaluationStepsRecordEvaluationStepRecordMapper());
+                .selectFrom(STEPS)
+                .where(STEPS.QUIZ_ID.eq(id))
+                .fetchInto(EvaluationStep.class);
     }
 }

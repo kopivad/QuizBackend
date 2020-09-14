@@ -1,14 +1,7 @@
 package com.kopivad.quizzes.domain;
 
-import org.springframework.security.core.GrantedAuthority;
-
-public enum Role implements GrantedAuthority {
+public enum Role {
     USER,
     MODERATOR,
-    ADMINISTRATOR;
-
-    @Override
-    public String getAuthority() {
-        return name();
-    }
+    ADMINISTRATOR
 }

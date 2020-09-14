@@ -4,28 +4,16 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
-import com.kopivad.quizzes.domain.db.tables.Groups;
-import com.kopivad.quizzes.domain.db.tables.Questions;
-import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
-import com.kopivad.quizzes.domain.db.tables.QuizHistories;
-import com.kopivad.quizzes.domain.db.tables.QuizSessions;
-import com.kopivad.quizzes.domain.db.tables.Quizzes;
-import com.kopivad.quizzes.domain.db.tables.QuizzesGroups;
-import com.kopivad.quizzes.domain.db.tables.Usr;
-import com.kopivad.quizzes.domain.db.tables.UsrsGroups;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.processing.Generated;
-
+import com.kopivad.quizzes.domain.db.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.processing.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -41,7 +29,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1936402347;
+    private static final long serialVersionUID = 143536560;
 
     /**
      * The reference instance of <code>public</code>
@@ -54,14 +42,19 @@ public class Public extends SchemaImpl {
     public final Answers ANSWERS = com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
 
     /**
-     * The table <code>public.evaluation_steps</code>.
-     */
-    public final EvaluationSteps EVALUATION_STEPS = com.kopivad.quizzes.domain.db.tables.EvaluationSteps.EVALUATION_STEPS;
-
-    /**
      * The table <code>public.groups</code>.
      */
     public final Groups GROUPS = com.kopivad.quizzes.domain.db.tables.Groups.GROUPS;
+
+    /**
+     * The table <code>public.groups_quizzes</code>.
+     */
+    public final GroupsQuizzes GROUPS_QUIZZES = com.kopivad.quizzes.domain.db.tables.GroupsQuizzes.GROUPS_QUIZZES;
+
+    /**
+     * The table <code>public.groups_users</code>.
+     */
+    public final GroupsUsers GROUPS_USERS = com.kopivad.quizzes.domain.db.tables.GroupsUsers.GROUPS_USERS;
 
     /**
      * The table <code>public.questions</code>.
@@ -89,19 +82,14 @@ public class Public extends SchemaImpl {
     public final Quizzes QUIZZES = com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
 
     /**
-     * The table <code>public.quizzes_groups</code>.
+     * The table <code>public.steps</code>.
      */
-    public final QuizzesGroups QUIZZES_GROUPS = com.kopivad.quizzes.domain.db.tables.QuizzesGroups.QUIZZES_GROUPS;
+    public final Steps STEPS = com.kopivad.quizzes.domain.db.tables.Steps.STEPS;
 
     /**
-     * The table <code>public.usr</code>.
+     * The table <code>public.users</code>.
      */
-    public final Usr USR = com.kopivad.quizzes.domain.db.tables.Usr.USR;
-
-    /**
-     * The table <code>public.usrs_groups</code>.
-     */
-    public final UsrsGroups USRS_GROUPS = com.kopivad.quizzes.domain.db.tables.UsrsGroups.USRS_GROUPS;
+    public final Users USERS = com.kopivad.quizzes.domain.db.tables.Users.USERS;
 
     /**
      * No further instances allowed
@@ -125,7 +113,15 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.GROUPS_ID_SEQ);
+            Sequences.ANSWERS_ID_SEQ,
+            Sequences.GROUPS_ID_SEQ,
+            Sequences.QUESTIONS_ID_SEQ,
+            Sequences.QUIZ_ANSWERS_ID_SEQ,
+            Sequences.QUIZ_HISTORY_ID_SEQ,
+            Sequences.QUIZ_SESSIONS_ID_SEQ,
+            Sequences.STEPS_ID_SEQ,
+            Sequences.TABLE_NAME_ID_SEQ,
+            Sequences.USERS_ID_SEQ);
     }
 
     @Override
@@ -138,15 +134,15 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Answers.ANSWERS,
-            EvaluationSteps.EVALUATION_STEPS,
             Groups.GROUPS,
+            GroupsQuizzes.GROUPS_QUIZZES,
+            GroupsUsers.GROUPS_USERS,
             Questions.QUESTIONS,
             QuizAnswers.QUIZ_ANSWERS,
             QuizHistories.QUIZ_HISTORIES,
             QuizSessions.QUIZ_SESSIONS,
             Quizzes.QUIZZES,
-            QuizzesGroups.QUIZZES_GROUPS,
-            Usr.USR,
-            UsrsGroups.USRS_GROUPS);
+            Steps.STEPS,
+            Users.USERS);
     }
 }

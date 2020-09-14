@@ -5,14 +5,13 @@ package com.kopivad.quizzes.domain.db.tables.records;
 
 
 import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
-
-import javax.annotation.processing.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.processing.Generated;
 
 
 /**
@@ -28,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> implements Record4<Long, Long, Long, Long> {
 
-    private static final long serialVersionUID = -74590019;
+    private static final long serialVersionUID = -729819721;
 
     /**
      * Setter for <code>public.quiz_answers.id</code>.
@@ -45,44 +44,44 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
     }
 
     /**
-     * Setter for <code>public.quiz_answers.answer_id</code>.
-     */
-    public void setAnswerId(Long value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.quiz_answers.answer_id</code>.
-     */
-    public Long getAnswerId() {
-        return (Long) get(1);
-    }
-
-    /**
      * Setter for <code>public.quiz_answers.question_id</code>.
      */
     public void setQuestionId(Long value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.quiz_answers.question_id</code>.
      */
     public Long getQuestionId() {
-        return (Long) get(2);
+        return (Long) get(1);
     }
 
     /**
      * Setter for <code>public.quiz_answers.session_id</code>.
      */
     public void setSessionId(Long value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.quiz_answers.session_id</code>.
      */
     public Long getSessionId() {
+        return (Long) get(2);
+    }
+
+    /**
+     * Setter for <code>public.quiz_answers.answer_id</code>.
+     */
+    public void setAnswerId(Long value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.quiz_answers.answer_id</code>.
+     */
+    public Long getAnswerId() {
         return (Long) get(3);
     }
 
@@ -116,17 +115,17 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
 
     @Override
     public Field<Long> field2() {
-        return QuizAnswers.QUIZ_ANSWERS.ANSWER_ID;
-    }
-
-    @Override
-    public Field<Long> field3() {
         return QuizAnswers.QUIZ_ANSWERS.QUESTION_ID;
     }
 
     @Override
-    public Field<Long> field4() {
+    public Field<Long> field3() {
         return QuizAnswers.QUIZ_ANSWERS.SESSION_ID;
+    }
+
+    @Override
+    public Field<Long> field4() {
+        return QuizAnswers.QUIZ_ANSWERS.ANSWER_ID;
     }
 
     @Override
@@ -136,17 +135,17 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
 
     @Override
     public Long component2() {
-        return getAnswerId();
-    }
-
-    @Override
-    public Long component3() {
         return getQuestionId();
     }
 
     @Override
-    public Long component4() {
+    public Long component3() {
         return getSessionId();
+    }
+
+    @Override
+    public Long component4() {
+        return getAnswerId();
     }
 
     @Override
@@ -156,17 +155,17 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
 
     @Override
     public Long value2() {
-        return getAnswerId();
-    }
-
-    @Override
-    public Long value3() {
         return getQuestionId();
     }
 
     @Override
-    public Long value4() {
+    public Long value3() {
         return getSessionId();
+    }
+
+    @Override
+    public Long value4() {
+        return getAnswerId();
     }
 
     @Override
@@ -177,19 +176,19 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
 
     @Override
     public QuizAnswersRecord value2(Long value) {
-        setAnswerId(value);
-        return this;
-    }
-
-    @Override
-    public QuizAnswersRecord value3(Long value) {
         setQuestionId(value);
         return this;
     }
 
     @Override
-    public QuizAnswersRecord value4(Long value) {
+    public QuizAnswersRecord value3(Long value) {
         setSessionId(value);
+        return this;
+    }
+
+    @Override
+    public QuizAnswersRecord value4(Long value) {
+        setAnswerId(value);
         return this;
     }
 
@@ -216,12 +215,12 @@ public class QuizAnswersRecord extends UpdatableRecordImpl<QuizAnswersRecord> im
     /**
      * Create a detached, initialised QuizAnswersRecord
      */
-    public QuizAnswersRecord(Long id, Long answerId, Long questionId, Long sessionId) {
+    public QuizAnswersRecord(Long id, Long questionId, Long sessionId, Long answerId) {
         super(QuizAnswers.QUIZ_ANSWERS);
 
         set(0, id);
-        set(1, answerId);
-        set(2, questionId);
-        set(3, sessionId);
+        set(1, questionId);
+        set(2, sessionId);
+        set(3, answerId);
     }
 }

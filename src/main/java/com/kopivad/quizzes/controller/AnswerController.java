@@ -1,9 +1,11 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.dto.AnswerDto;
+import com.kopivad.quizzes.dto.SaveAnswerDto;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,28 +17,39 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @GetMapping("all")
-    public List<AnswerDto> getAll() {
-        return answerService.getAll();
+    public ResponseEntity<List<Answer>> getAll() {
+        return ResponseEntity.ok(answerService.getAll());
     }
 
     @GetMapping("{id}")
-    public Answer getById(@PathVariable(name = "id") Long id) {
-        return answerService.getById(id);
+    public ResponseEntity<Answer> getById(@PathVariable Long id) {
+        return ResponseEntity.of(answerService.getById(id));
     }
 
     @PostMapping
-    public long save(@RequestBody AnswerDto answerDto) {
-        return answerService.save(answerDto);
+    public ResponseEntity<Void> save(@RequestBody SaveAnswerDto dto) {
+        if (answerService.save(dto)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @PutMapping("{id}")
-    public boolean update(@RequestBody AnswerDto answerDto) {
-        return answerService.update(answerDto);
+    @PatchMapping
+    public ResponseEntity<Void> update(@RequestBody Answer answer) {
+        if (answerService.update(answer)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping("{id}")
-    public boolean delete(@PathVariable Long id) {
-        return answerService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (answerService.delete(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
-
 }

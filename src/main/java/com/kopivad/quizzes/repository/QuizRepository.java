@@ -3,11 +3,12 @@ package com.kopivad.quizzes.repository;
 import com.kopivad.quizzes.domain.Quiz;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QuizRepository {
     List<Quiz> findAll();
 
-    Quiz findById(Long id);
+    Optional<Quiz> findById(Long id);
 
     long save(Quiz quiz);
 

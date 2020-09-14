@@ -7,9 +7,9 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.kopivad.quizzes.domain.db.tables.Answers.ANSWERS;
-import static com.kopivad.quizzes.repository.jooq.RecordMappers.getAnswerFromRecordMapper;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
@@ -21,29 +21,27 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     public List<Answer> findAll() {
         return dslContext
                 .selectFrom(ANSWERS)
-                .fetch()
-                .map(getAnswerFromRecordMapper());
+                .fetchInto(Answer.class);
     }
 
     @Override
-    public Answer findById(Long id) {
+    public Optional<Answer> findById(Long id) {
         return dslContext
                 .selectFrom(ANSWERS)
                 .where(ANSWERS.ID.eq(id))
-                .fetchOne()
-                .map(getAnswerFromRecordMapper());
+                .fetchOptionalInto(Answer.class);
     }
 
     @Override
-    public long save(Answer answer) {
-        return dslContext
+    public boolean save(Answer answer) {
+        int affectedRows = dslContext
                 .insertInto(ANSWERS)
                 .set(ANSWERS.BODY, answer.getBody())
-                .set(ANSWERS.IS_RIGHT, answer.isRight())
-                .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
-                .returning(ANSWERS.ID)
-                .fetchOne()
-                .getId();
+                .set(ANSWERS.RIGHT, answer.isRight())
+                .set(ANSWERS.QUESTION_ID, answer.getQuestionId())
+                .execute();
+
+        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -51,10 +49,10 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         int affectedRows = dslContext
                 .update(ANSWERS)
                 .set(ANSWERS.BODY, answer.getBody())
-                .set(ANSWERS.IS_RIGHT, answer.isRight())
-                .set(ANSWERS.QUESTION_ID, answer.getQuestion().getId())
+                .set(ANSWERS.RIGHT, answer.isRight())
                 .where(ANSWERS.ID.eq(answer.getId()))
                 .execute();
+
         return affectedRows > INTEGER_ZERO;
     }
 
@@ -64,6 +62,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
                 .deleteFrom(ANSWERS)
                 .where(ANSWERS.ID.eq(id))
                 .execute();
+
         return affectedRows > INTEGER_ZERO;
     }
 
@@ -72,7 +71,6 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         return dslContext
                 .selectFrom(ANSWERS)
                 .where(ANSWERS.QUESTION_ID.eq(id))
-                .fetch()
-                .map(getAnswerFromRecordMapper());
+                .fetchInto(Answer.class);
     }
 }

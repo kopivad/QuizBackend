@@ -4,10 +4,10 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import javax.annotation.processing.Generated;
-
 import org.jooq.Sequence;
 import org.jooq.impl.SequenceImpl;
+
+import javax.annotation.processing.Generated;
 
 
 /**
@@ -24,7 +24,47 @@ import org.jooq.impl.SequenceImpl;
 public class Sequences {
 
     /**
+     * The sequence <code>public.answers_id_seq</code>
+     */
+    public static final Sequence<Long> ANSWERS_ID_SEQ = new SequenceImpl<Long>("answers_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.groups_id_seq</code>
      */
     public static final Sequence<Long> GROUPS_ID_SEQ = new SequenceImpl<Long>("groups_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.questions_id_seq</code>
+     */
+    public static final Sequence<Long> QUESTIONS_ID_SEQ = new SequenceImpl<Long>("questions_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.quiz_answers_id_seq</code>
+     */
+    public static final Sequence<Long> QUIZ_ANSWERS_ID_SEQ = new SequenceImpl<Long>("quiz_answers_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.quiz_history_id_seq</code>
+     */
+    public static final Sequence<Long> QUIZ_HISTORY_ID_SEQ = new SequenceImpl<Long>("quiz_history_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.quiz_sessions_id_seq</code>
+     */
+    public static final Sequence<Long> QUIZ_SESSIONS_ID_SEQ = new SequenceImpl<Long>("quiz_sessions_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.steps_id_seq</code>
+     */
+    public static final Sequence<Long> STEPS_ID_SEQ = new SequenceImpl<Long>("steps_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.table_name_id_seq</code>
+     */
+    public static final Sequence<Long> TABLE_NAME_ID_SEQ = new SequenceImpl<Long>("table_name_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.users_id_seq</code>
+     */
+    public static final Sequence<Long> USERS_ID_SEQ = new SequenceImpl<Long>("users_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

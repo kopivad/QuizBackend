@@ -1,11 +1,13 @@
 package com.kopivad.quizzes.service;
 
-import com.kopivad.quizzes.dto.LoginDto;
-import com.kopivad.quizzes.dto.RegisterDto;
-import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.dto.LoginUserDto;
+import com.kopivad.quizzes.dto.RegisterUserDto;
+import com.kopivad.quizzes.dto.UserTokenDto;
+
+import java.util.Optional;
 
 public interface AuthService {
-    UserDto login(LoginDto dto);
+    Optional<UserTokenDto> login(LoginUserDto dto);
 
-    boolean register(RegisterDto dto);
+    boolean register(RegisterUserDto dto);
 }
