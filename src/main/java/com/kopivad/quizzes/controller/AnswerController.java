@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.dto.SaveAnswerDto;
+import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody SaveAnswerDto dto) {
+    public ResponseEntity<Void> save(@RequestBody AnswerDto dto) {
         if (answerService.save(dto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {

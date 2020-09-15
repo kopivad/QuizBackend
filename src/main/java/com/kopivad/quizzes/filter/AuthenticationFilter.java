@@ -24,11 +24,12 @@ import java.io.IOException;
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final static String authTokenPrefix = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        String authTokenPrefix = "Bearer ";
+
         if (StringUtils.isNotBlank(authHeader) && StringUtils.startsWith(authHeader, authTokenPrefix)) {
             String token = StringUtils.replace(authHeader, authTokenPrefix, "");
             if (ObjectUtils.isNotEmpty(token) && jwtService.validateToken(token)) {
@@ -37,7 +38,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

@@ -1,20 +1,19 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.domain.db.tables.records.GroupsQuizzesRecord;
+import com.kopivad.quizzes.dto.QuizDto;
 import com.kopivad.quizzes.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.kopivad.quizzes.domain.db.tables.GroupsQuizzes.GROUPS_QUIZZES;
 import static com.kopivad.quizzes.domain.db.tables.Quizzes.QUIZZES;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,23 +36,23 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public long save(Quiz quiz) {
+    public long save(QuizDto quiz) {
         return dslContext
                 .insertInto(QUIZZES)
                 .set(QUIZZES.TITLE, quiz.getTitle())
-                .set(QUIZZES.ACTIVE, quiz.isActive())
+                .set(QUIZZES.ACTIVE, true)
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
                 .set(QUIZZES.AUTHOR_ID, quiz.getAuthorId())
-                .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(quiz.getCreationDate()))
+                .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
                 .returning(QUIZZES.ID)
                 .fetchOne()
                 .getId();
     }
 
     @Override
-    public boolean update(Quiz quiz) {
-        int affectedRows = dslContext
+    public int update(Quiz quiz) {
+        return dslContext
                 .update(QUIZZES)
                 .set(QUIZZES.TITLE, quiz.getTitle())
                 .set(QUIZZES.DESCRIPTION, quiz.getDescription())
@@ -61,18 +60,14 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .set(QUIZZES.TOTAL, quiz.getTotal())
                 .where(QUIZZES.ID.eq(quiz.getId()))
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public boolean delete(Long id) {
-        int affectedRows = dslContext
+    public int delete(Long id) {
+        return dslContext
                 .deleteFrom(QUIZZES)
                 .where(QUIZZES.ID.eq(id))
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -87,12 +82,10 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     private List<Long> getQuizGroupsIds(long id) {
         return dslContext
-                .selectFrom(GROUPS_QUIZZES)
+                .select(GROUPS_QUIZZES.QUIZ_ID)
+                .from(GROUPS_QUIZZES)
                 .where(GROUPS_QUIZZES.GROUP_ID.eq(id))
-                .fetch()
-                .stream()
-                .map(GroupsQuizzesRecord::getQuizId)
-                .collect(Collectors.toUnmodifiableList());
+                .fetchInto(Long.class);
     }
 
     @Override

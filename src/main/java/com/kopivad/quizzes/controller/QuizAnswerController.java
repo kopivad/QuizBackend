@@ -1,6 +1,6 @@
 package com.kopivad.quizzes.controller;
 
-import com.kopivad.quizzes.dto.SaveQuizAnswerDto;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 import com.kopivad.quizzes.service.QuizAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,8 @@ public class QuizAnswerController {
     private final QuizAnswerService quizAnswerService;
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody SaveQuizAnswerDto saveQuizAnswerDto) {
-        if (quizAnswerService.save(saveQuizAnswerDto)) {
+    public ResponseEntity<Void> save(@RequestBody QuizAnswerDto quizAnswerDto) {
+        if (quizAnswerService.save(quizAnswerDto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

@@ -1,18 +1,14 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.dto.SaveGroupDto;
+import com.kopivad.quizzes.dto.GroupDto;
 import com.kopivad.quizzes.repository.GroupRepository;
 import com.kopivad.quizzes.service.GroupService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Service
 @RequiredArgsConstructor
@@ -20,20 +16,12 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
 
     @Override
-    public boolean save(SaveGroupDto dto) {
-        String defaultJoinCode = UUID.randomUUID().toString();
-        Group group = new Group(1L, dto.getName(), defaultJoinCode);
-        long id = groupRepository.save(group);
+    public boolean save(GroupDto dto) {
+        long id = groupRepository.save(dto);
+        int affectedQuizzesRows = groupRepository.saveGroupForQuizzes(id, dto.getQuizzesIds());
+        int affectedUsersRows = groupRepository.saveGroupForUsers(id, dto.getUsersIds());
 
-        if (ObjectUtils.isNotEmpty(dto.getUsersIds()))
-            dto.getUsersIds()
-                    .forEach(u -> saveGroupForUser(id, u));
-
-        if (ObjectUtils.isNotEmpty(dto.getQuizzesIds()))
-            dto.getQuizzesIds()
-                    .forEach(q -> saveGroupForQuiz(id, q));
-
-        return id > INTEGER_ZERO;
+        return affectedQuizzesRows == dto.getQuizzesIds().size() && affectedUsersRows == dto.getUsersIds().size();
     }
 
     @Override
@@ -54,13 +42,5 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllByUserId(long id) {
         return groupRepository.findAllByUserId(id);
-    }
-
-    public boolean saveGroupForUser(long id, long userId) {
-        return groupRepository.saveGroupForUser(id, userId);
-    }
-
-    public boolean saveGroupForQuiz(long id, long quizId) {
-        return groupRepository.saveGroupForQuiz(id, quizId);
     }
 }

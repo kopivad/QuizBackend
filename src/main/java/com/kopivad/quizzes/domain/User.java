@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
@@ -12,7 +12,6 @@ public class User {
     Long id;
     String name;
     String email;
-    @JsonIgnore
     String password;
     Role role;
     LocalDateTime creationDate;

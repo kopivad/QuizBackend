@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.EvaluationStep;
-import com.kopivad.quizzes.dto.SaveEvaluationStepDto;
+import com.kopivad.quizzes.dto.EvaluationStepDto;
 import com.kopivad.quizzes.repository.EvaluationStepRepository;
 import com.kopivad.quizzes.service.EvaluationStepService;
 import lombok.RequiredArgsConstructor;
@@ -9,15 +9,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 @Service
 @RequiredArgsConstructor
 public class EvaluationStepServiceImpl implements EvaluationStepService {
     private final EvaluationStepRepository evaluationStepRepository;
 
     @Override
-    public boolean save(SaveEvaluationStepDto dto) {
-        EvaluationStep evaluationStep = new EvaluationStep(1L, dto.getMinTotal(), dto.getMaxTotal(), dto.getRating(), dto.getQuizId());
-        return evaluationStepRepository.save(evaluationStep);
+    public boolean save(EvaluationStepDto dto) {
+        int affectedRows = evaluationStepRepository.save(dto);
+        return affectedRows == INTEGER_ZERO;
     }
 
     @Override
@@ -26,8 +28,8 @@ public class EvaluationStepServiceImpl implements EvaluationStepService {
     }
 
     @Override
-    public boolean saveAll(List<SaveEvaluationStepDto> dtos) {
-        dtos.forEach(this::save);
-        return true; // Looking for better solution, will better to check if all was saved
+    public boolean saveAll(List<EvaluationStepDto> dtos) {
+        int affectedRows = evaluationStepRepository.saveAll(dtos);
+        return affectedRows == dtos.size();
     }
 }

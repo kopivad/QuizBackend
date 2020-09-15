@@ -2,7 +2,7 @@ package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Quiz;
 import com.kopivad.quizzes.dto.FullQuizDto;
-import com.kopivad.quizzes.dto.SaveQuizDto;
+import com.kopivad.quizzes.dto.QuizDto;
 import com.kopivad.quizzes.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,12 +28,12 @@ public class QuizController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Quiz>> getByTitleStartWith(@RequestParam String title) {
+    public ResponseEntity<List<Quiz>> getByTitleStartWith(String title) {
         return ResponseEntity.ok(quizService.getByTitleStartsWith(title));
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody SaveQuizDto dto) {
+    public ResponseEntity<Void> save(@RequestBody QuizDto dto) {
         if (quizService.save(dto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {

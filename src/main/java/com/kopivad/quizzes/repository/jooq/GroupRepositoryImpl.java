@@ -1,10 +1,13 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.Group;
+import com.kopivad.quizzes.domain.db.tables.records.GroupsQuizzesRecord;
 import com.kopivad.quizzes.domain.db.tables.records.GroupsUsersRecord;
+import com.kopivad.quizzes.dto.GroupDto;
 import com.kopivad.quizzes.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.InsertValuesStep2;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,7 +25,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     private final DSLContext dslContext;
 
     @Override
-    public long save(Group group) {
+    public long save(GroupDto group) {
         return dslContext
                 .insertInto(GROUPS)
                 .set(GROUPS.NAME, group.getName())
@@ -79,24 +82,28 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    public boolean saveGroupForUser(long id, long userId) {
-        int affectedRows = dslContext
-                .insertInto(GROUPS_USERS)
-                .set(GROUPS_USERS.USER_ID, userId)
-                .set(GROUPS_USERS.GROUP_ID, id)
-                .execute();
-
-        return affectedRows > INTEGER_ZERO;
+    public int saveGroupForQuizzes(long id, List<Long> quizzesIds) {
+        return dslContext.batch(getInsertQuizzesValues(id, quizzesIds)).execute().length;
     }
 
     @Override
-    public boolean saveGroupForQuiz(long id, long quizId) {
-        int affectedRows = dslContext
-                .insertInto(GROUPS_QUIZZES)
-                .set(GROUPS_QUIZZES.QUIZ_ID, quizId)
-                .set(GROUPS_QUIZZES.GROUP_ID, id)
-                .execute();
+    public int saveGroupForUsers(long id, List<Long> usersIds) {
+        return dslContext.batch(getInsertUsersValues(id, usersIds)).execute().length;
+    }
 
-        return affectedRows > INTEGER_ZERO;
+    private List<InsertValuesStep2<GroupsQuizzesRecord, Long, Long>> getInsertQuizzesValues(long id, List<Long> quizzesIds) {
+        return quizzesIds.stream()
+        .map(quizId -> dslContext
+                .insertInto(GROUPS_QUIZZES, GROUPS_QUIZZES.GROUP_ID,GROUPS_QUIZZES.QUIZ_ID)
+                .values(id, quizId))
+        .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<InsertValuesStep2<GroupsUsersRecord, Long, Long>> getInsertUsersValues(long id, List<Long> usersIds) {
+        return usersIds.stream()
+                .map(userId -> dslContext
+                        .insertInto(GROUPS_USERS, GROUPS_USERS.GROUP_ID,GROUPS_USERS.USER_ID)
+                        .values(id, userId))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

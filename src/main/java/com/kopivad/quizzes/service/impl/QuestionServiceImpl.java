@@ -1,10 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Answer;
 import com.kopivad.quizzes.domain.Question;
+import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.dto.FullQuestionDto;
-import com.kopivad.quizzes.dto.SaveAnswerDto;
-import com.kopivad.quizzes.dto.SaveQuestionDto;
+import com.kopivad.quizzes.dto.QuestionDto;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import com.kopivad.quizzes.service.QuestionService;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 @Service
 @RequiredArgsConstructor
@@ -29,37 +30,33 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Optional<FullQuestionDto> getById(Long id) {
         Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            List<Answer> answers = answerService.getByQuestionId(id);
-            FullQuestionDto fullQuestionDto = new FullQuestionDto(question.get(), answers);
-            return Optional.of(fullQuestionDto);
-        }
-        return Optional.empty();
+        return question.map(resultQuestion -> new FullQuestionDto(resultQuestion, answerService.getByQuestionId(id)));
     }
 
     @Override
-    public boolean save(SaveQuestionDto dto) {
-        Question question = new Question(1L, dto.getTitle(), dto.getValue(), dto.getType(), dto.getQuizId());
-        long id = questionRepository.save(question);
-        List<Answer> answers = fillQuestionIdForAllAnswerDtos(dto.getAnswers(), id);
+    public boolean save(QuestionDto dto) {
+        long id = questionRepository.save(dto);
+        List<AnswerDto> answers = fillQuestionIdForAllAnswerDtos(dto.getAnswers(), id);
         return answerService.saveAll(answers);
     }
 
-    private List<Answer> fillQuestionIdForAllAnswerDtos(List<SaveAnswerDto> dto, Long id) {
-        return dto
+    private List<AnswerDto> fillQuestionIdForAllAnswerDtos(List<AnswerDto> dtos, Long id) {
+        return dtos
                 .stream()
-                .map(d -> new Answer(1L, d.getBody(), d.isRight(), id))
+                .map(dto -> new AnswerDto(dto.getBody(), dto.isRight(), id))
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public boolean update(Question question) {
-        return questionRepository.update(question);
+        int affectedRows = questionRepository.update(question);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
     public boolean delete(Long id) {
-        return questionRepository.delete(id);
+        int affectedRows = questionRepository.delete(id);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
@@ -67,15 +64,12 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = questionRepository.findByQuizId(id);
         return questions
                 .stream()
-                .map(q -> {
-                    List<Answer> answers = answerService.getByQuestionId(q.getId());
-                    return new FullQuestionDto(q, answers);
-                }).collect(Collectors.toUnmodifiableList());
+                .map(question -> new FullQuestionDto(question, answerService.getByQuestionId(question.getId())))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public boolean saveAll(List<SaveQuestionDto> dtos) {
-        dtos.forEach(this::save);
-        return true;
+    public boolean saveAll(List<QuestionDto> dtos) {
+        return questionRepository.saveAll(dtos) == dtos.size();
     }
 }

@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.QuizAnswer;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 import com.kopivad.quizzes.repository.QuizAnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizAnswers.QUIZ_ANSWERS;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 
 @Repository
@@ -18,15 +18,13 @@ public class QuizAnswerRepositoryImpl implements QuizAnswerRepository {
     private final DSLContext dslContext;
 
     @Override
-    public boolean save(QuizAnswer quizAnswer) {
-        int affectedRows = dslContext
+    public int save(QuizAnswerDto dto) {
+        return dslContext
                 .insertInto(QUIZ_ANSWERS)
-                .set(QUIZ_ANSWERS.QUESTION_ID, quizAnswer.getQuestionId())
-                .set(QUIZ_ANSWERS.SESSION_ID, quizAnswer.getSessionId())
-                .set(QUIZ_ANSWERS.ANSWER_ID, quizAnswer.getAnswerId())
+                .set(QUIZ_ANSWERS.QUESTION_ID, dto.getQuestionId())
+                .set(QUIZ_ANSWERS.SESSION_ID, dto.getSessionId())
+                .set(QUIZ_ANSWERS.ANSWER_ID, dto.getAnswerId())
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override

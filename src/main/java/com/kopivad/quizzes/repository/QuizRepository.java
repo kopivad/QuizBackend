@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.Quiz;
+import com.kopivad.quizzes.dto.QuizDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +11,11 @@ public interface QuizRepository {
 
     Optional<Quiz> findById(Long id);
 
-    long save(Quiz quiz);
+    long save(QuizDto quiz);
 
-    boolean update(Quiz quiz);
+    int update(Quiz quiz);
 
-    boolean delete(Long id);
+    int delete(Long id);
 
     List<Quiz> findByGroupId(long id);
 

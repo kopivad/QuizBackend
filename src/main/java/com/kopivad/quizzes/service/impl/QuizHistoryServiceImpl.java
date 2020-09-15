@@ -1,39 +1,31 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.EvaluationStep;
-import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.domain.QuizHistory;
-import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.domain.*;
+import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.*;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
-
 
 @Service
-@RequiredArgsConstructor
 public class QuizHistoryServiceImpl implements QuizHistoryService {
-    @Value("#{environment.FILE_DIR}")
-    private String FILE_DIR;
+    private final String FILE_DIR;
     private final QuizHistoryRepository quizHistoryRepository;
     private final QuizSessionService quizSessionService;
     private final QuizAnswerService quizAnswerService;
@@ -41,36 +33,54 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private final QuestionService questionService;
     private final EvaluationStepService stepService;
 
-
-    @Override
-    public long save(QuizHistory quizHistory) {
-        return quizHistoryRepository.save(quizHistory);
+    @Autowired
+    public QuizHistoryServiceImpl(
+            @Value("#{environment.FILE_DIR}") String FILE_DIR,
+            QuizHistoryRepository quizHistoryRepository,
+            QuizSessionService quizSessionService,
+            QuizAnswerService quizAnswerService,
+            AnswerService answerService,
+            QuestionService questionService,
+            EvaluationStepService stepService
+    ) {
+        this.FILE_DIR = FILE_DIR;
+        this.quizHistoryRepository = quizHistoryRepository;
+        this.quizSessionService = quizSessionService;
+        this.quizAnswerService = quizAnswerService;
+        this.answerService = answerService;
+        this.questionService = questionService;
+        this.stepService = stepService;
     }
 
     @Override
-    @SneakyThrows
-    public Optional<Resource> getPDF(long id) {
+    public long save(QuizHistoryDto dto) {
+        return quizHistoryRepository.save(dto);
+    }
+
+    @Override
+    public Optional<byte[]> getPDF(long id) {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
-        if (history.isPresent()) {
+        return history.map(resultHistory -> {
             String pdfFilename = history.get().getPdfFilename();
-            Path path = Path.of(FILE_DIR + pdfFilename);
-            Resource resource = new UrlResource(path.toUri());
-            return Optional.of(resource);
-        }
-        return Optional.empty();
+            try(InputStream inputStream = getClass().getResourceAsStream(FILE_DIR + pdfFilename);) {
+                return IOUtils.toByteArray(inputStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    @SneakyThrows
-    public Optional<Resource> getCSV(long id) {
+    public Optional<byte[]> getCSV(long id) {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
-        if (history.isPresent()) {
+        return history.map(resultHistory -> {
             String csvFilename = history.get().getCsvFilename();
-            Path path = Path.of(FILE_DIR + csvFilename);
-            Resource resource = new UrlResource(path.toUri());
-            return Optional.of(resource);
-        }
-        return Optional.empty();
+            try(InputStream inputStream = getClass().getResourceAsStream(FILE_DIR + csvFilename)) {
+                return IOUtils.toByteArray(inputStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void createPDF(String filename, long id) {
@@ -86,7 +96,6 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
             document.save(FILE_DIR + filename);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -106,20 +115,19 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     @Override
-    public long createHistory(long sessionId) {
+    public Optional<Long> createHistory(long sessionId) {
         Optional<QuizSession> session = quizSessionService.getById(sessionId);
-        if (session.isPresent()) {
+        return session.map(resultSession -> {
             int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
             String rating = calculateRating(total, session.get().getQuizId());
             String pdfFilename = UUID.randomUUID().toString() + ".pdf";
             String csvFilename = UUID.randomUUID().toString() + ".csv";
-            QuizHistory quizHistory = new QuizHistory(1L, total, rating, sessionId, session.get().getUserId(), pdfFilename, csvFilename);
-            long id = save(quizHistory);
+            QuizHistoryDto dto = new QuizHistoryDto(total, rating, sessionId, session.get().getUserId(), pdfFilename, csvFilename);
+            long id = save(dto);
             createPDF(pdfFilename, id);
             createCSV(csvFilename, id);
             return id;
-        }
-        return INTEGER_ZERO;
+        });
     }
 
     @Override
@@ -130,11 +138,6 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     @Override
     public List<QuizHistory> getAll() {
         return quizHistoryRepository.findAll();
-    }
-
-    @Override
-    public List<QuizHistory> getAllBySessionId(long sessionId) {
-        return quizHistoryRepository.findAllBySessionId(sessionId);
     }
 
     private String calculateRating(int total, long quizId) {
@@ -150,9 +153,13 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private int calculateTotal(List<QuizAnswer> quizAnswers) {
         return quizAnswers
                 .stream()
-                .map(a -> answerService.getById(a.getAnswerId()))
-                .filter(a -> a.get().isRight())
-                .map(a -> questionService.getById(a.get().getQuestionId()).get().getQuestion().getValue())
+                .map(answer -> answerService.getById(answer.getAnswerId()).orElseThrow())
+                .filter(Answer::isRight)
+                .map(answer ->
+                        questionService.getById(answer.getQuestionId())
+                        .map(
+                                question -> question.getQuestion().getValue()
+                        ).orElseThrow())
                 .mapToInt(value -> value).sum();
     }
 }

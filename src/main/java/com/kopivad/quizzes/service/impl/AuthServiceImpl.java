@@ -2,7 +2,7 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.LoginUserDto;
-import com.kopivad.quizzes.dto.RegisterUserDto;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.dto.UserTokenDto;
 import com.kopivad.quizzes.service.AuthService;
 import com.kopivad.quizzes.service.JwtService;
@@ -36,9 +36,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean register(RegisterUserDto dto) {
+    public boolean register(UserDto dto) {
         if (userService.getByEmail(dto.getEmail()).isEmpty()) {
-            return userService.register(dto);
+            return userService.save(dto);
         }
         return false;
     }

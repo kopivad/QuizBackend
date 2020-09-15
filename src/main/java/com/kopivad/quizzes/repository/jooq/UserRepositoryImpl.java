@@ -1,20 +1,20 @@
 package com.kopivad.quizzes.repository.jooq;
 
+import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.domain.db.tables.records.GroupsUsersRecord;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.kopivad.quizzes.domain.db.tables.GroupsUsers.GROUPS_USERS;
 import static com.kopivad.quizzes.domain.db.tables.Users.USERS;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,40 +37,34 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean save(User user) {
-        int affectedRows = dslContext
+    public int save(UserDto user) {
+        return dslContext
                 .insertInto(USERS)
                 .set(USERS.NAME, user.getName())
                 .set(USERS.EMAIL, user.getEmail())
                 .set(USERS.PASSWORD, user.getPassword())
-                .set(USERS.CREATION_DATE, Timestamp.valueOf(user.getCreationDate()))
-                .set(USERS.ROLE, user.getRole().name())
+                .set(USERS.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
+                .set(USERS.ROLE, Role.USER.name())
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public boolean update(User user) {
-        int affectedRows = dslContext
+    public int update(User user) {
+        return dslContext
                 .update(USERS)
                 .set(USERS.NAME, user.getName())
                 .set(USERS.EMAIL, user.getEmail())
                 .set(USERS.ROLE, user.getRole().name())
                 .where(USERS.ID.eq(user.getId()))
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
-    public boolean delete(Long id) {
-        int affectedRows = dslContext
+    public int delete(Long id) {
+        return dslContext
                 .delete(USERS)
                 .where(USERS.ID.eq(id))
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -85,12 +79,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     private List<Long> getUserGroupsIds(long id) {
         return dslContext
-                .selectFrom(GROUPS_USERS)
+                .select(GROUPS_USERS.USER_ID)
+                .from(GROUPS_USERS)
                 .where(GROUPS_USERS.GROUP_ID.eq(id))
-                .fetch()
-                .stream()
-                .map(GroupsUsersRecord::getUserId)
-                .collect(Collectors.toUnmodifiableList());
+                .fetchInto(Long.class);
     }
 
     @Override
@@ -110,13 +102,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean updatePassword(long id, String password) {
-        int affectedRows = dslContext
+    public int updatePassword(long id, String password) {
+        return dslContext
                 .update(USERS)
                 .set(USERS.PASSWORD, password)
                 .where(USERS.ID.eq(id))
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 }

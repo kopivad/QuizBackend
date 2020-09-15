@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.dto.SaveAnswerDto;
+import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 @Service
 @RequiredArgsConstructor
@@ -26,19 +28,21 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public boolean save(SaveAnswerDto dto) {
-        Answer answer = new Answer(1L, dto.getBody(), dto.isRight(), dto.getQuestionId());
-        return answerRepository.save(answer);
+    public boolean save(AnswerDto dto) {
+        int affectedRows = answerRepository.save(dto);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
     public boolean update(Answer answer) {
-        return answerRepository.update(answer);
+        int affectedRows = answerRepository.update(answer);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
     public boolean delete(Long id) {
-        return answerRepository.delete(id);
+        int affectedRows = answerRepository.delete(id);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
@@ -47,8 +51,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public boolean saveAll(List<Answer> answers) {
-        answers.forEach(answerRepository::save);
-        return false;  // Looking for better solution, will better to check if all was saved
+    public boolean saveAll(List<AnswerDto> answers) {
+        int affectedRows = answerRepository.saveAll(answers);
+        return affectedRows == answers.size();
     }
 }

@@ -1,24 +1,22 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.QuizHistory;
-import org.springframework.core.io.Resource;
+import com.kopivad.quizzes.dto.QuizHistoryDto;
 
 import java.util.List;
 import java.util.Optional;
 
 
 public interface QuizHistoryService {
-    long save(QuizHistory quizHistory);
+    long save(QuizHistoryDto dto);
 
-    Optional<Resource> getPDF(long id);
+    Optional<byte[]> getPDF(long id);
 
-    Optional<Resource> getCSV(long id);
+    Optional<byte[]> getCSV(long id);
 
-    long createHistory(long sessionId);
+    Optional<Long> createHistory(long sessionId);
 
     Optional<QuizHistory> getById(long id);
 
     List<QuizHistory> getAll();
-
-    List<QuizHistory> getAllBySessionId(long sessionId);
 }
