@@ -1,8 +1,9 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.*;
-import com.kopivad.quizzes.dto.*;
-import com.kopivad.quizzes.mapper.QuizHistoryMapper;
+import com.kopivad.quizzes.domain.EvaluationStep;
+import com.kopivad.quizzes.domain.QuizAnswer;
+import com.kopivad.quizzes.domain.QuizHistory;
+import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.*;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +23,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 
 @Service
 @RequiredArgsConstructor
 public class QuizHistoryServiceImpl implements QuizHistoryService {
-    @Value("${file.dir}")
+    @Value("#{environment.FILE_DIR}")
     private String FILE_DIR;
     private final QuizHistoryRepository quizHistoryRepository;
     private final QuizSessionService quizSessionService;
@@ -39,7 +40,6 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private final AnswerService answerService;
     private final QuestionService questionService;
     private final EvaluationStepService stepService;
-    private final QuizHistoryMapper quizHistoryMapper;
 
 
     @Override
@@ -49,26 +49,32 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
 
     @Override
     @SneakyThrows
-    public Resource getPDF(long id) {
-        String pdfFilename = quizHistoryRepository.findById(id).getPdfFilename();
-        Path path = Path.of(FILE_DIR + pdfFilename);
-        Resource resource = new UrlResource(path.toUri());
-        if (resource.exists()) return resource;
-        else throw new RuntimeException("File not found");
+    public Optional<Resource> getPDF(long id) {
+        Optional<QuizHistory> history = quizHistoryRepository.findById(id);
+        if (history.isPresent()) {
+            String pdfFilename = history.get().getPdfFilename();
+            Path path = Path.of(FILE_DIR + pdfFilename);
+            Resource resource = new UrlResource(path.toUri());
+            return Optional.of(resource);
+        }
+        return Optional.empty();
     }
 
     @Override
     @SneakyThrows
-    public Resource getCSV(long id) {
-        String csvFilename = quizHistoryRepository.findById(id).getCsvFilename();
-        Path path = Path.of(FILE_DIR + csvFilename);
-        Resource resource = new UrlResource(path.toUri());
-        if (resource.exists()) return resource;
-        else throw new RuntimeException("File not found");
+    public Optional<Resource> getCSV(long id) {
+        Optional<QuizHistory> history = quizHistoryRepository.findById(id);
+        if (history.isPresent()) {
+            String csvFilename = history.get().getCsvFilename();
+            Path path = Path.of(FILE_DIR + csvFilename);
+            Resource resource = new UrlResource(path.toUri());
+            return Optional.of(resource);
+        }
+        return Optional.empty();
     }
 
     private void createPDF(String filename, long id) {
-        QuizHistory history = quizHistoryRepository.findById(id);
+        Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
             document.addPage(page);
@@ -88,7 +94,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     private void createCSV(String filename, long id) {
-        QuizHistory history = quizHistoryRepository.findById(id);
+        Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         try (
                 FileWriter out = new FileWriter(FILE_DIR + filename);
                 CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)
@@ -101,40 +107,34 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
 
     @Override
     public long createHistory(long sessionId) {
-        QuizSessionDto session = quizSessionService.getById(sessionId);
-        int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
-        String rating = calculateRating(total, session.getQuizId());
-        String pdfFilename = UUID.randomUUID().toString() + ".pdf";
-        String csvFilename = UUID.randomUUID().toString() + ".csv";
-
-        QuizHistory quizHistory =
-                QuizHistory
-                        .builder()
-                        .total(total)
-                        .rating(rating)
-                        .csvFilename(csvFilename)
-                        .pdfFilename(pdfFilename)
-                        .user(User.builder().id(session.getUserId()).build())
-                        .session(QuizSession.builder().id(sessionId).build())
-                        .build();
-        long id = save(quizHistory);
-        createPDF(pdfFilename, id);
-        createCSV(csvFilename, id);
-        return id;
+        Optional<QuizSession> session = quizSessionService.getById(sessionId);
+        if (session.isPresent()) {
+            int total = calculateTotal(quizAnswerService.getAllBySessionId(sessionId));
+            String rating = calculateRating(total, session.get().getQuizId());
+            String pdfFilename = UUID.randomUUID().toString() + ".pdf";
+            String csvFilename = UUID.randomUUID().toString() + ".csv";
+            QuizHistory quizHistory = new QuizHistory(1L, total, rating, sessionId, session.get().getUserId(), pdfFilename, csvFilename);
+            long id = save(quizHistory);
+            createPDF(pdfFilename, id);
+            createCSV(csvFilename, id);
+            return id;
+        }
+        return INTEGER_ZERO;
     }
 
     @Override
-    public QuizHistory getById(long id) {
+    public Optional<QuizHistory> getById(long id) {
         return quizHistoryRepository.findById(id);
     }
 
     @Override
-    public List<QuizHistoryDto> getAll() {
-        List<QuizHistory> quizHistories = quizHistoryRepository.findAll();
-        return quizHistories
-                .stream()
-                .map(quizHistoryMapper::toDto)
-                .collect(Collectors.toUnmodifiableList());
+    public List<QuizHistory> getAll() {
+        return quizHistoryRepository.findAll();
+    }
+
+    @Override
+    public List<QuizHistory> getAllBySessionId(long sessionId) {
+        return quizHistoryRepository.findAllBySessionId(sessionId);
     }
 
     private String calculateRating(int total, long quizId) {
@@ -147,12 +147,12 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
                 .orElse("Lowest rating");
     }
 
-    private int calculateTotal(List<QuizAnswerDto> quizAnswers) {
+    private int calculateTotal(List<QuizAnswer> quizAnswers) {
         return quizAnswers
                 .stream()
                 .map(a -> answerService.getById(a.getAnswerId()))
-                .filter(Answer::isRight)
-                .map(a -> questionService.getById(a.getQuestion().getId()).getValue())
+                .filter(a -> a.get().isRight())
+                .map(a -> questionService.getById(a.get().getQuestionId()).get().getQuestion().getValue())
                 .mapToInt(value -> value).sum();
     }
 }

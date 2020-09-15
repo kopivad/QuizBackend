@@ -1,26 +1,28 @@
 package com.kopivad.quizzes.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.*;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Value;
 
 @Value
-@EqualsAndHashCode(of = {"id"})
-@Builder(toBuilder = true)
-@JsonDeserialize(builder = Question.QuestionBuilder.class)
 public class Question {
     Long id;
     String title;
     int value;
     QuestionType type;
-    List<Answer> answers;
-    List<QuizAnswer> quizAnswers;
-    Quiz quiz;
+    Long quizId;
 
-    @JsonPOJOBuilder(withPrefix = "")
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class QuestionBuilder { }
+    @JsonCreator
+    public Question(
+            @JsonProperty("id") Long id,
+            @JsonProperty("title") String title,
+            @JsonProperty("value") int value,
+            @JsonProperty("type") QuestionType type,
+            @JsonProperty("quizId") Long quizId) {
+        this.id = id;
+        this.title = title;
+        this.value = value;
+        this.type = type;
+        this.quizId = quizId;
+    }
 }

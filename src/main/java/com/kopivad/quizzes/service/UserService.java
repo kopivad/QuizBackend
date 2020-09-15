@@ -1,24 +1,30 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.dto.RegisterUserDto;
+import com.kopivad.quizzes.dto.SaveUserDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-    List<UserDto> getAll();
+    List<User> getAll();
 
-    User getById(Long id);
+    Optional<User> getById(Long id);
 
-    long save(UserDto userDto);
+    Optional<User> getByEmail(String email);
 
-    boolean update(UserDto userDto);
+    boolean save(SaveUserDto dto);
+
+    boolean register(RegisterUserDto dto);
+
+    boolean update(User user);
 
     boolean delete(Long id);
 
-    boolean addGroup(long userId, long groupId);
-
     List<User> getByGroupId(long id);
 
-    List<UserDto> getByEmailStartsWith(String email);
+    List<User> getByEmailStartsWith(String email);
+
+    boolean updatePassword(long userId, String password);
 }

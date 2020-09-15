@@ -3,13 +3,14 @@ package com.kopivad.quizzes.repository;
 import com.kopivad.quizzes.domain.Answer;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnswerRepository {
     List<Answer> findAll();
 
-    Answer findById(Long id);
+    Optional<Answer> findById(Long id);
 
-    long save(Answer answer);
+    boolean save(Answer answer);
 
     boolean update(Answer answer);
 

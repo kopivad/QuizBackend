@@ -11,19 +11,18 @@ import com.kopivad.quizzes.utils.QuizSessionUtils;
 import com.kopivad.quizzes.utils.QuizUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 class QuizSessionServiceImplTest {
     @InjectMocks
     private QuizSessionServiceImpl quizSessionService;
@@ -60,8 +59,8 @@ class QuizSessionServiceImplTest {
         QuizSession expected = QuizSessionUtils.generateQuizSession();
         when(quizSessionRepository.findById(anyLong())).thenReturn(QuizSessionUtils.generateQuizSession());
         when(quizService.getById(anyLong())).thenReturn(QuizUtils.generateQuiz());
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswers(count));
-        QuizSession actual = quizSessionService.getById(expected.getId());
+        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
+        QuizSessionDto actual = quizSessionService.getById(expected.getId());
 
         assertThat(actual, is(expected));
 

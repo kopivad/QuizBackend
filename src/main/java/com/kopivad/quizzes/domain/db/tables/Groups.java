@@ -8,25 +8,13 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.GroupsRecord;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.processing.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row2;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.processing.Generated;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -42,7 +30,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Groups extends TableImpl<GroupsRecord> {
 
-    private static final long serialVersionUID = -1767794191;
+    private static final long serialVersionUID = 1880580281;
 
     /**
      * The reference instance of <code>public.groups</code>
@@ -60,12 +48,17 @@ public class Groups extends TableImpl<GroupsRecord> {
     /**
      * The column <code>public.groups.id</code>.
      */
-    public final TableField<GroupsRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('groups_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<GroupsRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("nextval('groups_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.groups.name</code>.
      */
     public final TableField<GroupsRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.groups.join_code</code>.
+     */
+    public final TableField<GroupsRecord, String> JOIN_CODE = createField(DSL.name("join_code"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * Create a <code>public.groups</code> table reference
@@ -152,11 +145,11 @@ public class Groups extends TableImpl<GroupsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Long, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

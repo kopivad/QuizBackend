@@ -1,9 +1,12 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Question;
-import com.kopivad.quizzes.dto.QuestionDto;
+import com.kopivad.quizzes.dto.FullQuestionDto;
+import com.kopivad.quizzes.dto.SaveQuestionDto;
 import com.kopivad.quizzes.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,27 +18,39 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("all")
-    public List<QuestionDto> getAll() {
-        return questionService.getAll();
+    public ResponseEntity<List<Question>> getAll() {
+        return ResponseEntity.ok(questionService.getAll());
     }
 
     @GetMapping("{id}")
-    public Question getById(@PathVariable(name = "id") Long id) {
-        return questionService.getById(id);
+    public ResponseEntity<FullQuestionDto> getById(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.of(questionService.getById(id));
     }
 
     @PostMapping
-    public long save(@RequestBody QuestionDto questionDto) {
-        return questionService.save(questionDto);
+    public ResponseEntity<Void> save(@RequestBody SaveQuestionDto dto) {
+        if (questionService.save(dto)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @PutMapping
-    public boolean update(@RequestBody QuestionDto questionDto) {
-        return questionService.update(questionDto);
+    @PatchMapping
+    public ResponseEntity<Void> update(@RequestBody Question question) {
+        if (questionService.update(question)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping("{id}")
-    public boolean delete(@PathVariable Long id) {
-        return questionService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (questionService.delete(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }

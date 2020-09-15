@@ -1,12 +1,15 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.UserDto;
+import com.kopivad.quizzes.dto.SaveUserDto;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @RequestMapping(path = "api/v1/user")
@@ -15,32 +18,50 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("all")
-    public List<UserDto> getAll() {
-        return userService.getAll();
+    public ResponseEntity<List<User>> getAll() {
+        return ResponseEntity.ok(userService.getAll());
     }
 
     @GetMapping("{id}")
-    public User getById(@PathVariable("id") Long id) {
-        return userService.getById(id);
+    public ResponseEntity<User> getById(@PathVariable Long id) {
+        Optional<User> user = userService.getById(id);
+        return ResponseEntity.of(user);
     }
 
     @GetMapping
-    public List<UserDto> getByEmailStartsWith(@RequestParam("email") String email) {
-        return userService.getByEmailStartsWith(email);
+    public ResponseEntity<List<User>> getByEmailStartsWith(@RequestParam String email) {
+        return ResponseEntity.ok(userService.getByEmailStartsWith(email));
     }
 
     @PostMapping
-    public long save(@RequestBody UserDto userDto) {
-        return userService.save(userDto);
+    public ResponseEntity<Void> save(@RequestBody SaveUserDto dto) {
+        if (userService.save(dto)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping
-    public boolean update(@RequestBody UserDto userDto) {
-        return userService.update(userDto);
+    @PatchMapping
+    public ResponseEntity<Void> update(@RequestBody User user) {
+        if (userService.update(user)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @DeleteMapping("{id}")
-    public boolean delete(@PathVariable("id") Long id) {
-        return userService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        if (userService.delete(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @PatchMapping("password")
+    public ResponseEntity<Void> updatePassword(@RequestParam long userId, @RequestParam String password) {
+        if (userService.updatePassword(userId, password)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

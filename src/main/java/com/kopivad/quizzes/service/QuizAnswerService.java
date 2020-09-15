@@ -1,11 +1,12 @@
 package com.kopivad.quizzes.service;
 
-import com.kopivad.quizzes.dto.QuizAnswerDto;
+import com.kopivad.quizzes.domain.QuizAnswer;
+import com.kopivad.quizzes.dto.SaveQuizAnswerDto;
 
 import java.util.List;
 
 public interface QuizAnswerService {
-    long save(QuizAnswerDto quizAnswerDto);
+    boolean save(SaveQuizAnswerDto saveQuizAnswerDto);
 
-    List<QuizAnswerDto> getAllBySessionId(long sessionId);
+    List<QuizAnswer> getAllBySessionId(long sessionId);
 }

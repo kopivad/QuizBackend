@@ -1,25 +1,23 @@
 package com.kopivad.quizzes.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
-@EqualsAndHashCode(of = {"id"})
-@Builder(toBuilder = true)
-@JsonDeserialize(builder = Group.GroupBuilder.class)
 public class Group {
     long id;
     String name;
-    List<Quiz> quizzes;
-    List<User> users;
+    String joinCode;
 
-    @JsonPOJOBuilder(withPrefix = "")
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class GroupBuilder { }
+    @JsonCreator
+    public Group(
+            @JsonProperty("id") long id,
+            @JsonProperty("name") String name,
+            @JsonProperty("joinCode") String joinCode
+    ) {
+        this.id = id;
+        this.name = name;
+        this.joinCode = joinCode;
+    }
 }

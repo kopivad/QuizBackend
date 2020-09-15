@@ -1,8 +1,8 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.QuizHistory;
-import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
+import com.kopivad.quizzes.dto.QuizSessionDto;
 import com.kopivad.quizzes.mapper.QuizHistoryMapper;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.QuizAnswerService;
@@ -12,23 +12,22 @@ import com.kopivad.quizzes.utils.QuizHistoryUtils;
 import com.kopivad.quizzes.utils.QuizSessionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 class QuizHistoryServiceImplTest {
     @InjectMocks
     private QuizHistoryServiceImpl quizHistoryService;
@@ -85,11 +84,11 @@ class QuizHistoryServiceImplTest {
     void testCreateHistory() {
         int count = 4;
         QuizHistory history = QuizHistoryUtils.generateHistory();
-        QuizSession session = QuizSessionUtils.generateQuizSession();
+        QuizSessionDto session = QuizSessionUtils.generateQuizSessionDto();
         when(quizSessionService.getById(anyLong())).thenReturn(session);
         when(quizHistoryRepository.save(any(QuizHistory.class))).thenReturn(history.getId());
         when(quizHistoryRepository.findById(anyLong())).thenReturn(history);
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswers(count));
+        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
         long actual = quizHistoryService.createHistory(session.getId());
 
         assertThat(actual, notNullValue());

@@ -4,22 +4,12 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
-import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
-import com.kopivad.quizzes.domain.db.tables.Groups;
-import com.kopivad.quizzes.domain.db.tables.Questions;
-import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
-import com.kopivad.quizzes.domain.db.tables.QuizHistories;
-import com.kopivad.quizzes.domain.db.tables.QuizSessions;
-import com.kopivad.quizzes.domain.db.tables.Quizzes;
-import com.kopivad.quizzes.domain.db.tables.Usr;
-
-import javax.annotation.processing.Generated;
-
+import com.kopivad.quizzes.domain.db.tables.*;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
+
+import javax.annotation.processing.Generated;
 
 
 /**
@@ -39,31 +29,31 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index ANSWERS_PKEY = Indexes0.ANSWERS_PKEY;
-    public static final Index API_CLIENTS_PKEY = Indexes0.API_CLIENTS_PKEY;
-    public static final Index EVALUATION_STEPS_PK = Indexes0.EVALUATION_STEPS_PK;
+    public static final Index ANSWERS_PK = Indexes0.ANSWERS_PK;
     public static final Index GROUPS_PK = Indexes0.GROUPS_PK;
-    public static final Index QUESTIONS_PKEY = Indexes0.QUESTIONS_PKEY;
-    public static final Index QUIZ_RESULTS_PK = Indexes0.QUIZ_RESULTS_PK;
-    public static final Index QUIZ_HISTORIES_PK = Indexes0.QUIZ_HISTORIES_PK;
+    public static final Index QUESTIONS_PK = Indexes0.QUESTIONS_PK;
+    public static final Index QUIZ_ANSWERS_PK = Indexes0.QUIZ_ANSWERS_PK;
+    public static final Index QUIZ_HISTORY_PK = Indexes0.QUIZ_HISTORY_PK;
     public static final Index QUIZ_SESSIONS_PK = Indexes0.QUIZ_SESSIONS_PK;
-    public static final Index QUIZZES_PKEY = Indexes0.QUIZZES_PKEY;
-    public static final Index USR_PKEY = Indexes0.USR_PKEY;
+    public static final Index TABLE_NAME_PK = Indexes0.TABLE_NAME_PK;
+    public static final Index STEPS_PK = Indexes0.STEPS_PK;
+    public static final Index USERS_EMAIL_UINDEX = Indexes0.USERS_EMAIL_UINDEX;
+    public static final Index USERS_PK = Indexes0.USERS_PK;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index ANSWERS_PKEY = Internal.createIndex("answers_pkey", Answers.ANSWERS, new OrderField[] { Answers.ANSWERS.ID }, true);
-        public static Index API_CLIENTS_PKEY = Internal.createIndex("api_clients_pkey", ApiClients.API_CLIENTS, new OrderField[] { ApiClients.API_CLIENTS.ID }, true);
-        public static Index EVALUATION_STEPS_PK = Internal.createIndex("evaluation_steps_pk", EvaluationSteps.EVALUATION_STEPS, new OrderField[] { EvaluationSteps.EVALUATION_STEPS.ID }, true);
+        public static Index ANSWERS_PK = Internal.createIndex("answers_pk", Answers.ANSWERS, new OrderField[] { Answers.ANSWERS.ID }, true);
         public static Index GROUPS_PK = Internal.createIndex("groups_pk", Groups.GROUPS, new OrderField[] { Groups.GROUPS.ID }, true);
-        public static Index QUESTIONS_PKEY = Internal.createIndex("questions_pkey", Questions.QUESTIONS, new OrderField[] { Questions.QUESTIONS.ID }, true);
-        public static Index QUIZ_RESULTS_PK = Internal.createIndex("quiz_results_pk", QuizAnswers.QUIZ_ANSWERS, new OrderField[] { QuizAnswers.QUIZ_ANSWERS.ID }, true);
-        public static Index QUIZ_HISTORIES_PK = Internal.createIndex("quiz_histories_pk", QuizHistories.QUIZ_HISTORIES, new OrderField[] { QuizHistories.QUIZ_HISTORIES.ID }, true);
+        public static Index QUESTIONS_PK = Internal.createIndex("questions_pk", Questions.QUESTIONS, new OrderField[] { Questions.QUESTIONS.ID }, true);
+        public static Index QUIZ_ANSWERS_PK = Internal.createIndex("quiz_answers_pk", QuizAnswers.QUIZ_ANSWERS, new OrderField[] { QuizAnswers.QUIZ_ANSWERS.ID }, true);
+        public static Index QUIZ_HISTORY_PK = Internal.createIndex("quiz_history_pk", QuizHistories.QUIZ_HISTORIES, new OrderField[] { QuizHistories.QUIZ_HISTORIES.ID }, true);
         public static Index QUIZ_SESSIONS_PK = Internal.createIndex("quiz_sessions_pk", QuizSessions.QUIZ_SESSIONS, new OrderField[] { QuizSessions.QUIZ_SESSIONS.ID }, true);
-        public static Index QUIZZES_PKEY = Internal.createIndex("quizzes_pkey", Quizzes.QUIZZES, new OrderField[] { Quizzes.QUIZZES.ID }, true);
-        public static Index USR_PKEY = Internal.createIndex("usr_pkey", Usr.USR, new OrderField[] { Usr.USR.ID }, true);
+        public static Index TABLE_NAME_PK = Internal.createIndex("table_name_pk", Quizzes.QUIZZES, new OrderField[] { Quizzes.QUIZZES.ID }, true);
+        public static Index STEPS_PK = Internal.createIndex("steps_pk", Steps.STEPS, new OrderField[] { Steps.STEPS.ID }, true);
+        public static Index USERS_EMAIL_UINDEX = Internal.createIndex("users_email_uindex", Users.USERS, new OrderField[] { Users.USERS.EMAIL }, true);
+        public static Index USERS_PK = Internal.createIndex("users_pk", Users.USERS, new OrderField[] { Users.USERS.ID }, true);
     }
 }

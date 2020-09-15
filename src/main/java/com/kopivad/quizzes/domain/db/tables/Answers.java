@@ -8,24 +8,13 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.AnswersRecord;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.processing.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.processing.Generated;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -41,7 +30,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Answers extends TableImpl<AnswersRecord> {
 
-    private static final long serialVersionUID = -1565629505;
+    private static final long serialVersionUID = -953367270;
 
     /**
      * The reference instance of <code>public.answers</code>
@@ -59,22 +48,22 @@ public class Answers extends TableImpl<AnswersRecord> {
     /**
      * The column <code>public.answers.id</code>.
      */
-    public final TableField<AnswersRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.answers.is_right</code>.
-     */
-    public final TableField<AnswersRecord, Boolean> IS_RIGHT = createField(DSL.name("is_right"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<AnswersRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("nextval('answers_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.answers.body</code>.
      */
-    public final TableField<AnswersRecord, String> BODY = createField(DSL.name("body"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<AnswersRecord, String> BODY = createField(DSL.name("body"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>public.answers.right</code>.
+     */
+    public final TableField<AnswersRecord, Boolean> RIGHT = createField(DSL.name("right"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.answers.question_id</code>.
      */
-    public final TableField<AnswersRecord, Long> QUESTION_ID = createField(DSL.name("question_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<AnswersRecord, Long> QUESTION_ID = createField(DSL.name("question_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>public.answers</code> table reference
@@ -116,26 +105,31 @@ public class Answers extends TableImpl<AnswersRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.ANSWERS_PKEY);
+        return Arrays.<Index>asList(Indexes.ANSWERS_PK);
+    }
+
+    @Override
+    public Identity<AnswersRecord, Long> getIdentity() {
+        return Keys.IDENTITY_ANSWERS;
     }
 
     @Override
     public UniqueKey<AnswersRecord> getPrimaryKey() {
-        return Keys.ANSWERS_PKEY;
+        return Keys.ANSWERS_PK;
     }
 
     @Override
     public List<UniqueKey<AnswersRecord>> getKeys() {
-        return Arrays.<UniqueKey<AnswersRecord>>asList(Keys.ANSWERS_PKEY);
+        return Arrays.<UniqueKey<AnswersRecord>>asList(Keys.ANSWERS_PK);
     }
 
     @Override
     public List<ForeignKey<AnswersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<AnswersRecord, ?>>asList(Keys.ANSWERS__ANSWERS_QUESTIONS_FK);
+        return Arrays.<ForeignKey<AnswersRecord, ?>>asList(Keys.ANSWERS__ANSWERS_QUESTIONS_ID_FK);
     }
 
     public Questions questions() {
-        return new Questions(this, Keys.ANSWERS__ANSWERS_QUESTIONS_FK);
+        return new Questions(this, Keys.ANSWERS__ANSWERS_QUESTIONS_ID_FK);
     }
 
     @Override
@@ -169,7 +163,7 @@ public class Answers extends TableImpl<AnswersRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Boolean, String, Long> fieldsRow() {
+    public Row4<Long, String, Boolean, Long> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

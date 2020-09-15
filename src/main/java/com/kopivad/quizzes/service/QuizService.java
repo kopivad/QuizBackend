@@ -1,24 +1,24 @@
 package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Quiz;
-import com.kopivad.quizzes.dto.QuizDto;
+import com.kopivad.quizzes.dto.FullQuizDto;
+import com.kopivad.quizzes.dto.SaveQuizDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface QuizService {
-    List<QuizDto> getAll();
+    List<Quiz> getAll();
 
-    Quiz getById(Long id);
+    Optional<FullQuizDto> getById(Long id);
 
-    long save(QuizDto quizDto);
+    boolean save(SaveQuizDto dto);
 
-    boolean update(QuizDto quizDto);
+    boolean update(Quiz quiz);
 
     boolean delete(Long id);
 
-    boolean addGroup(long quizId, long groupId);
-
     List<Quiz> getByGroupId(long id);
 
-    List<QuizDto> getByTitleStartsWith(String title);
+    List<Quiz> getByTitleStartsWith(String title);
 }

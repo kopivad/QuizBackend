@@ -1,19 +1,14 @@
 package com.kopivad.quizzes.service;
 
+import com.kopivad.quizzes.domain.User;
 import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Date;
-import java.util.function.Function;
 
 public interface JwtService {
-    String generateToken(UserDetails userDetails);
+    String extractSubject(String authToken);
 
-    Boolean validateToken(String token, UserDetails userDetails);
+    Claims getClaimsFromToken(String authToken);
 
-    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
+    boolean validateToken(String authToken);
 
-    Date extractExpiration(String token);
-
-    String extractUsername(String token);
+    String generateToken(User user);
 }

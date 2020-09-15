@@ -1,34 +1,37 @@
 package com.kopivad.quizzes.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Value
-@Builder(toBuilder = true)
-@EqualsAndHashCode(of = "id")
-@JsonDeserialize(builder = User.UserBuilder.class)
 public class User {
     Long id;
     String name;
     String email;
+    @JsonIgnore
     String password;
     Role role;
     LocalDateTime creationDate;
-    List<Quiz> quizzes;
-    List<QuizHistory> histories;
-    List<QuizSession> sessions;
-    Group group;
 
-    @JsonPOJOBuilder(withPrefix = "")
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class UserBuilder { }
-
+    @JsonCreator
+    public User(
+            @JsonProperty("id") Long id,
+            @JsonProperty("name") String name,
+            @JsonProperty("email") String email,
+            @JsonProperty("password") String password,
+            @JsonProperty("role") Role role,
+            @JsonProperty("creationDate") LocalDateTime creationDate
+    ) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.creationDate = creationDate;
+    }
 }
 

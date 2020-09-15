@@ -52,4 +52,14 @@ public class QuizAnswerUtils {
                         .build())
                 .collect(Collectors.toUnmodifiableList());
     }
+
+    public static List<QuizAnswerDto> generateAnswerDtos(int count) {
+        return IntStream
+                .range(INTEGER_ZERO, count)
+                .mapToObj(i -> generateAnswerDto()
+                        .toBuilder()
+                        .id(i + LONG_ONE)
+                        .build())
+                .collect(Collectors.toUnmodifiableList());
+    }
 }

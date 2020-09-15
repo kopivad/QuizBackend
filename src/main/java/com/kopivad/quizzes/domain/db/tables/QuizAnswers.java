@@ -8,24 +8,13 @@ import com.kopivad.quizzes.domain.db.Indexes;
 import com.kopivad.quizzes.domain.db.Keys;
 import com.kopivad.quizzes.domain.db.Public;
 import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.processing.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.processing.Generated;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -41,7 +30,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class QuizAnswers extends TableImpl<QuizAnswersRecord> {
 
-    private static final long serialVersionUID = -1818105398;
+    private static final long serialVersionUID = -1362419190;
 
     /**
      * The reference instance of <code>public.quiz_answers</code>
@@ -59,12 +48,7 @@ public class QuizAnswers extends TableImpl<QuizAnswersRecord> {
     /**
      * The column <code>public.quiz_answers.id</code>.
      */
-    public final TableField<QuizAnswersRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.quiz_answers.answer_id</code>.
-     */
-    public final TableField<QuizAnswersRecord, Long> ANSWER_ID = createField(DSL.name("answer_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<QuizAnswersRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("nextval('quiz_answers_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.quiz_answers.question_id</code>.
@@ -75,6 +59,11 @@ public class QuizAnswers extends TableImpl<QuizAnswersRecord> {
      * The column <code>public.quiz_answers.session_id</code>.
      */
     public final TableField<QuizAnswersRecord, Long> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quiz_answers.answer_id</code>.
+     */
+    public final TableField<QuizAnswersRecord, Long> ANSWER_ID = createField(DSL.name("answer_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>public.quiz_answers</code> table reference
@@ -116,34 +105,39 @@ public class QuizAnswers extends TableImpl<QuizAnswersRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.QUIZ_RESULTS_PK);
+        return Arrays.<Index>asList(Indexes.QUIZ_ANSWERS_PK);
+    }
+
+    @Override
+    public Identity<QuizAnswersRecord, Long> getIdentity() {
+        return Keys.IDENTITY_QUIZ_ANSWERS;
     }
 
     @Override
     public UniqueKey<QuizAnswersRecord> getPrimaryKey() {
-        return Keys.QUIZ_RESULTS_PK;
+        return Keys.QUIZ_ANSWERS_PK;
     }
 
     @Override
     public List<UniqueKey<QuizAnswersRecord>> getKeys() {
-        return Arrays.<UniqueKey<QuizAnswersRecord>>asList(Keys.QUIZ_RESULTS_PK);
+        return Arrays.<UniqueKey<QuizAnswersRecord>>asList(Keys.QUIZ_ANSWERS_PK);
     }
 
     @Override
     public List<ForeignKey<QuizAnswersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<QuizAnswersRecord, ?>>asList(Keys.QUIZ_ANSWERS__QUIZ_RESULTS_ANSWERS_ID_FK, Keys.QUIZ_ANSWERS__QUIZ_RESULTS_QUESTIONS_ID_FK, Keys.QUIZ_ANSWERS__QUIZ_RESULTS_QUIZ_SESSIONS_ID_FK);
-    }
-
-    public Answers answers() {
-        return new Answers(this, Keys.QUIZ_ANSWERS__QUIZ_RESULTS_ANSWERS_ID_FK);
+        return Arrays.<ForeignKey<QuizAnswersRecord, ?>>asList(Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_QUESTIONS_ID_FK, Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_QUIZ_SESSIONS_ID_FK, Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_ANSWERS_ID_FK);
     }
 
     public Questions questions() {
-        return new Questions(this, Keys.QUIZ_ANSWERS__QUIZ_RESULTS_QUESTIONS_ID_FK);
+        return new Questions(this, Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_QUESTIONS_ID_FK);
     }
 
     public QuizSessions quizSessions() {
-        return new QuizSessions(this, Keys.QUIZ_ANSWERS__QUIZ_RESULTS_QUIZ_SESSIONS_ID_FK);
+        return new QuizSessions(this, Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_QUIZ_SESSIONS_ID_FK);
+    }
+
+    public Answers answers() {
+        return new Answers(this, Keys.QUIZ_ANSWERS__QUIZ_ANSWERS_ANSWERS_ID_FK);
     }
 
     @Override

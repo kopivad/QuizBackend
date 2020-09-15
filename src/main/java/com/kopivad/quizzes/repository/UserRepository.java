@@ -3,13 +3,14 @@ package com.kopivad.quizzes.repository;
 import com.kopivad.quizzes.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
     List<User> findAll();
 
-    User findById(Long id);
+    Optional<User> findById(Long id);
 
-    long save(User user);
+    boolean save(User user);
 
     boolean update(User user);
 
@@ -18,4 +19,8 @@ public interface UserRepository {
     List<User> findByGroupId(long id);
 
     List<User> findByEmailStartsWith(String email);
+
+    Optional<User> findByEmail(String email);
+
+    boolean updatePassword(long id, String password);
 }

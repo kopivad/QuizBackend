@@ -1,10 +1,16 @@
 package com.kopivad.quizzes.service;
 
-import com.kopivad.quizzes.dto.QuizSessionDto;
+import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.dto.FullQuizSessionDto;
+import com.kopivad.quizzes.dto.SaveQuizSessionDto;
+
+import java.util.Optional;
 
 public interface QuizSessionService {
 
-    long startSession(QuizSessionDto quizSessionDto);
+    long save(SaveQuizSessionDto saveQuizSessionDto);
 
-    QuizSessionDto getById(long sessionId);
+    Optional<FullQuizSessionDto> getFullById(long id);
+
+    Optional<QuizSession> getById(long sessionId);
 }

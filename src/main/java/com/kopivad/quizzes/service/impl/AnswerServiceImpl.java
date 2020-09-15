@@ -1,45 +1,38 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.Answer;
-import com.kopivad.quizzes.dto.AnswerDto;
-import com.kopivad.quizzes.mapper.AnswerMapper;
+import com.kopivad.quizzes.dto.SaveAnswerDto;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import com.kopivad.quizzes.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
-    private final AnswerMapper answerMapper;
 
     @Override
-    public List<AnswerDto> getAll() {
-        List<Answer> answers = answerRepository.findAll();
-        return answers
-                .stream()
-                .map(answerMapper::toDto)
-                .collect(Collectors.toUnmodifiableList());
+    public List<Answer> getAll() {
+        return answerRepository.findAll();
     }
 
     @Override
-    public Answer getById(Long id) {
+    public Optional<Answer> getById(Long id) {
         return answerRepository.findById(id);
     }
 
     @Override
-    public long save(AnswerDto answerDto) {
-        Answer answer = answerMapper.toEntity(answerDto);
+    public boolean save(SaveAnswerDto dto) {
+        Answer answer = new Answer(1L, dto.getBody(), dto.isRight(), dto.getQuestionId());
         return answerRepository.save(answer);
     }
 
     @Override
-    public boolean update(AnswerDto answerDto) {
-        Answer answer = answerMapper.toEntity(answerDto);
+    public boolean update(Answer answer) {
         return answerRepository.update(answer);
     }
 
@@ -54,7 +47,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void saveAll(List<Answer> answers) {
+    public boolean saveAll(List<Answer> answers) {
         answers.forEach(answerRepository::save);
+        return false;  // Looking for better solution, will better to check if all was saved
     }
 }

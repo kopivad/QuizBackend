@@ -1,8 +1,7 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.EvaluationStep;
-import com.kopivad.quizzes.dto.EvaluationStepDto;
-import com.kopivad.quizzes.mapper.EvaluationStepMapper;
+import com.kopivad.quizzes.dto.SaveEvaluationStepDto;
 import com.kopivad.quizzes.repository.EvaluationStepRepository;
 import com.kopivad.quizzes.service.EvaluationStepService;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EvaluationStepServiceImpl implements EvaluationStepService {
     private final EvaluationStepRepository evaluationStepRepository;
-    private final EvaluationStepMapper stepMapper;
 
     @Override
-    public long save(EvaluationStepDto step) {
-        EvaluationStep evaluationStep = stepMapper.toEntity(step);
+    public boolean save(SaveEvaluationStepDto dto) {
+        EvaluationStep evaluationStep = new EvaluationStep(1L, dto.getMinTotal(), dto.getMaxTotal(), dto.getRating(), dto.getQuizId());
         return evaluationStepRepository.save(evaluationStep);
     }
 
@@ -28,7 +26,8 @@ public class EvaluationStepServiceImpl implements EvaluationStepService {
     }
 
     @Override
-    public void saveAll(List<EvaluationStepDto> dtos) {
+    public boolean saveAll(List<SaveEvaluationStepDto> dtos) {
         dtos.forEach(this::save);
+        return true; // Looking for better solution, will better to check if all was saved
     }
 }

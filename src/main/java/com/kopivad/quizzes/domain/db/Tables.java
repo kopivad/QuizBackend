@@ -4,16 +4,7 @@
 package com.kopivad.quizzes.domain.db;
 
 
-import com.kopivad.quizzes.domain.db.tables.Answers;
-import com.kopivad.quizzes.domain.db.tables.ApiClients;
-import com.kopivad.quizzes.domain.db.tables.EvaluationSteps;
-import com.kopivad.quizzes.domain.db.tables.Groups;
-import com.kopivad.quizzes.domain.db.tables.Questions;
-import com.kopivad.quizzes.domain.db.tables.QuizAnswers;
-import com.kopivad.quizzes.domain.db.tables.QuizHistories;
-import com.kopivad.quizzes.domain.db.tables.QuizSessions;
-import com.kopivad.quizzes.domain.db.tables.Quizzes;
-import com.kopivad.quizzes.domain.db.tables.Usr;
+import com.kopivad.quizzes.domain.db.tables.*;
 
 import javax.annotation.processing.Generated;
 
@@ -37,19 +28,19 @@ public class Tables {
     public static final Answers ANSWERS = Answers.ANSWERS;
 
     /**
-     * The table <code>public.api_clients</code>.
-     */
-    public static final ApiClients API_CLIENTS = ApiClients.API_CLIENTS;
-
-    /**
-     * The table <code>public.evaluation_steps</code>.
-     */
-    public static final EvaluationSteps EVALUATION_STEPS = EvaluationSteps.EVALUATION_STEPS;
-
-    /**
      * The table <code>public.groups</code>.
      */
     public static final Groups GROUPS = Groups.GROUPS;
+
+    /**
+     * The table <code>public.groups_quizzes</code>.
+     */
+    public static final GroupsQuizzes GROUPS_QUIZZES = GroupsQuizzes.GROUPS_QUIZZES;
+
+    /**
+     * The table <code>public.groups_users</code>.
+     */
+    public static final GroupsUsers GROUPS_USERS = GroupsUsers.GROUPS_USERS;
 
     /**
      * The table <code>public.questions</code>.
@@ -77,7 +68,12 @@ public class Tables {
     public static final Quizzes QUIZZES = Quizzes.QUIZZES;
 
     /**
-     * The table <code>public.usr</code>.
+     * The table <code>public.steps</code>.
      */
-    public static final Usr USR = Usr.USR;
+    public static final Steps STEPS = Steps.STEPS;
+
+    /**
+     * The table <code>public.users</code>.
+     */
+    public static final Users USERS = Users.USERS;
 }

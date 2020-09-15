@@ -1,60 +1,67 @@
 package com.kopivad.quizzes.service.impl;
 
+
+import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.userdetails.UserDetails;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.Set;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    private String SECRET_KEY = "secret";
+    private final String secret;
+    private final String expirationTime;
 
-    @Override
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public JwtServiceImpl(
+            @Value("#{environment.JWT_SECRET}") String secret,
+            @Value("#{environment.JWT_EXPIRATION}") String expirationTime
+    ) {
+        this.secret = secret;
+        this.expirationTime = expirationTime;
     }
 
-    @Override
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public String extractSubject(String authToken) {
+        return getClaimsFromToken(authToken)
+                .getSubject();
     }
 
-    @Override
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public Claims getClaimsFromToken(String authToken) {
+        String key = Base64.getEncoder().encodeToString(secret.getBytes());
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(authToken)
+                .getBody();
     }
 
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+    public boolean validateToken(String authToken) {
+        return getClaimsFromToken(authToken)
+                .getExpiration()
+                .after(new Date());
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    public String generateToken(User user) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", Set.of(user.getRole()));
 
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
+        long expirationHours = Long.parseLong(expirationTime);
+        Date creationDate = new Date();
+        Date expirationDate = new Date(creationDate.getTime() + expirationHours * 3600000);
 
-    @Override
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(creationDate)
+                .setExpiration(expirationDate)
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .compact();
     }
 }

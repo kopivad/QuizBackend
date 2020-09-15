@@ -11,22 +11,20 @@ import com.kopivad.quizzes.utils.QuestionUtils;
 import com.kopivad.quizzes.utils.QuizAnswerUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 class QuizAnswerServiceImplTest {
     @InjectMocks
     private QuizAnswerServiceImpl quizAnswerService;
@@ -64,7 +62,7 @@ class QuizAnswerServiceImplTest {
         when(quizAnswerRepository.findAllBySessionId(anyLong())).thenReturn(expected);
         when(questionService.getById(anyLong())).thenReturn(QuestionUtils.generateQuestion());
         when(answerService.getById(anyLong())).thenReturn(AnswerUtils.generateAnswer());
-        List<QuizAnswer> actual = quizAnswerService.getAllBySessionId(LONG_ONE);
+        List<QuizAnswerDto> actual = quizAnswerService.getAllBySessionId(LONG_ONE);
 
         assertThat(count, is(actual.size()));
 
