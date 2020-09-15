@@ -8,20 +8,20 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-public class SaveQuestionDto {
+public class QuestionDto {
     String title;
     Integer value;
     QuestionType type;
     Long quizId;
-    List<SaveAnswerDto> answers;
+    List<AnswerDto> answers;
 
     @JsonCreator
-    public SaveQuestionDto(
+    public QuestionDto(
             @JsonProperty("title") String title,
             @JsonProperty("value") Integer value,
             @JsonProperty("type") QuestionType type,
             @JsonProperty("quizId") Long quizId,
-            @JsonProperty("answers") List<SaveAnswerDto> answers
+            @JsonProperty("answers") List<AnswerDto> answers
     ) {
         this.title = title;
         this.value = value;

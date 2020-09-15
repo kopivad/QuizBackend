@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +11,11 @@ public interface UserRepository {
 
     Optional<User> findById(Long id);
 
-    boolean save(User user);
+    int save(UserDto user);
 
-    boolean update(User user);
+    int update(User user);
 
-    boolean delete(Long id);
+    int delete(Long id);
 
     List<User> findByGroupId(long id);
 
@@ -22,5 +23,5 @@ public interface UserRepository {
 
     Optional<User> findByEmail(String email);
 
-    boolean updatePassword(long id, String password);
+    int updatePassword(long id, String password);
 }

@@ -54,7 +54,8 @@ public class JwtServiceImpl implements JwtService {
 
         long expirationHours = Long.parseLong(expirationTime);
         Date creationDate = new Date();
-        Date expirationDate = new Date(creationDate.getTime() + expirationHours * 3600000);
+        long time = expirationHours * 3600000;
+        Date expirationDate = new Date(creationDate.getTime() + time);
 
         return Jwts.builder()
                 .setClaims(claims)

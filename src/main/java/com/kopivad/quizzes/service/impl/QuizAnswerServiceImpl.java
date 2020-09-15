@@ -1,13 +1,15 @@
 package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.dto.SaveQuizAnswerDto;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 import com.kopivad.quizzes.repository.QuizAnswerRepository;
 import com.kopivad.quizzes.service.QuizAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 
 @Service
@@ -16,9 +18,9 @@ public class QuizAnswerServiceImpl implements QuizAnswerService {
     private final QuizAnswerRepository quizAnswerRepository;
 
     @Override
-    public boolean save(SaveQuizAnswerDto dto) {
-        QuizAnswer quizAnswer = new QuizAnswer(1L, dto.getQuestionId(), dto.getSessionId(), dto.getAnswerId());
-        return quizAnswerRepository.save(quizAnswer);
+    public boolean save(QuizAnswerDto dto) {
+        int affectedRows = quizAnswerRepository.save(dto);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.Group;
+import com.kopivad.quizzes.dto.GroupDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository {
-    long save(Group group);
+    long save(GroupDto group);
 
     boolean update(Group group);
 
@@ -16,7 +17,7 @@ public interface GroupRepository {
 
     List<Group> findAllByUserId(long id);
 
-    boolean saveGroupForUser(long id, long userId);
+    int saveGroupForQuizzes(long id, List<Long> quizzesIds);
 
-    boolean saveGroupForQuiz(long id, long quizId);
+    int saveGroupForUsers(long id, List<Long> usersIds);
 }

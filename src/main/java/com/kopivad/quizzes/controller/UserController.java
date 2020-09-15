@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.SaveUserDto;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController()
 @RequestMapping(path = "api/v1/user")
@@ -24,17 +23,16 @@ public class UserController {
 
     @GetMapping("{id}")
     public ResponseEntity<User> getById(@PathVariable Long id) {
-        Optional<User> user = userService.getById(id);
-        return ResponseEntity.of(user);
+        return ResponseEntity.of(userService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getByEmailStartsWith(@RequestParam String email) {
+    public ResponseEntity<List<User>> getByEmailStartsWith(String email) {
         return ResponseEntity.ok(userService.getByEmailStartsWith(email));
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody SaveUserDto dto) {
+    public ResponseEntity<Void> save(@RequestBody UserDto dto) {
         if (userService.save(dto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
@@ -50,7 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (userService.delete(id)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -58,7 +56,7 @@ public class UserController {
     }
 
     @PatchMapping("password")
-    public ResponseEntity<Void> updatePassword(@RequestParam long userId, @RequestParam String password) {
+    public ResponseEntity<Void> updatePassword(long userId, String password) {
         if (userService.updatePassword(userId, password)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }

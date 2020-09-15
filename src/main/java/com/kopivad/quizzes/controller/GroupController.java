@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.domain.Group;
-import com.kopivad.quizzes.dto.SaveGroupDto;
+import com.kopivad.quizzes.dto.GroupDto;
 import com.kopivad.quizzes.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody SaveGroupDto dto) {
+    public ResponseEntity<Void> save(@RequestBody GroupDto dto) {
         if (groupService.save(dto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
@@ -45,7 +45,7 @@ public class GroupController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Group> getById(@PathVariable("id") long id) {
+    public ResponseEntity<Group> getById(@PathVariable long id) {
         return ResponseEntity.of(groupService.getById(id));
     }
 }

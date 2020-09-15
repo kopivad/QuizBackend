@@ -9,18 +9,19 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-public class SaveQuizSessionDto {
+public class QuizSessionDto {
     long quizId;
     long userId;
     List<QuizAnswer> results;
     List<QuizHistory> histories;
 
     @JsonCreator
-    public SaveQuizSessionDto(
+    public QuizSessionDto(
             @JsonProperty("quizId") long quizId,
             @JsonProperty("userId") long userId,
             @JsonProperty("results") List<QuizAnswer> results,
-            @JsonProperty("histories") List<QuizHistory> histories) {
+            @JsonProperty("histories") List<QuizHistory> histories
+    ) {
         this.quizId = quizId;
         this.userId = userId;
         this.results = results;

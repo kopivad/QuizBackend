@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository;
 
 import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.dto.AnswerDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +11,13 @@ public interface AnswerRepository {
 
     Optional<Answer> findById(Long id);
 
-    boolean save(Answer answer);
+    int save(AnswerDto answer);
 
-    boolean update(Answer answer);
+    int update(Answer answer);
 
-    boolean delete(Long id);
+    int delete(Long id);
 
     List<Answer> findByQuestionId(Long id);
+
+    int saveAll(List<AnswerDto> answers);
 }

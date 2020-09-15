@@ -1,6 +1,7 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.QuizHistory;
+import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -17,7 +18,7 @@ public class QuizHistoryRepositoryImpl implements QuizHistoryRepository {
     private final DSLContext dslContext;
 
     @Override
-    public long save(QuizHistory quizHistory) {
+    public long save(QuizHistoryDto quizHistory) {
         return dslContext
                 .insertInto(QUIZ_HISTORIES)
                 .set(QUIZ_HISTORIES.RATING, quizHistory.getRating())

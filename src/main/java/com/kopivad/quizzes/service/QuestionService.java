@@ -2,7 +2,7 @@ package com.kopivad.quizzes.service;
 
 import com.kopivad.quizzes.domain.Question;
 import com.kopivad.quizzes.dto.FullQuestionDto;
-import com.kopivad.quizzes.dto.SaveQuestionDto;
+import com.kopivad.quizzes.dto.QuestionDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +12,7 @@ public interface QuestionService {
 
     Optional<FullQuestionDto> getById(Long id);
 
-    boolean save(SaveQuestionDto dto);
+    boolean save(QuestionDto dto);
 
     boolean update(Question question);
 
@@ -20,5 +20,5 @@ public interface QuestionService {
 
     List<FullQuestionDto> getFullByQuizId(Long id);
 
-    boolean saveAll(List<SaveQuestionDto> questions);
+    boolean saveAll(List<QuestionDto> questions);
 }

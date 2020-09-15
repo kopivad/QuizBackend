@@ -3,7 +3,7 @@ package com.kopivad.quizzes.dto;
 import lombok.Value;
 
 @Value
-public class SaveEvaluationStepDto {
+public class EvaluationStepDto {
     Integer minTotal;
     Integer maxTotal;
     String rating;

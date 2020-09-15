@@ -1,7 +1,7 @@
 package com.kopivad.quizzes.controller;
 
 import com.kopivad.quizzes.dto.LoginUserDto;
-import com.kopivad.quizzes.dto.RegisterUserDto;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.dto.UserTokenDto;
 import com.kopivad.quizzes.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<Void> register(@RequestBody RegisterUserDto dto) {
+    public ResponseEntity<Void> register(@RequestBody UserDto dto) {
         if (authService.register(dto)) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

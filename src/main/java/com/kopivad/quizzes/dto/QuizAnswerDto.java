@@ -5,16 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
 @Value
-public class SaveQuizAnswerDto {
+public class QuizAnswerDto {
     long questionId;
     long sessionId;
     long answerId;
 
     @JsonCreator
-    public SaveQuizAnswerDto(
+    public QuizAnswerDto(
             @JsonProperty("questionId") long questionId,
             @JsonProperty("sessionId") long sessionId,
-            @JsonProperty("answerId") long answerId) {
+            @JsonProperty("answerId") long answerId
+    ) {
         this.questionId = questionId;
         this.sessionId = sessionId;
         this.answerId = answerId;

@@ -1,18 +1,17 @@
 package com.kopivad.quizzes.service.impl;
 
-import com.kopivad.quizzes.domain.Role;
 import com.kopivad.quizzes.domain.User;
-import com.kopivad.quizzes.dto.RegisterUserDto;
-import com.kopivad.quizzes.dto.SaveUserDto;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 @Service
 @RequiredArgsConstructor
@@ -36,44 +35,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean save(SaveUserDto dto) {
-        User user = new User(
-                1L,
-                dto.getName(),
-                dto.getEmail(),
-                passwordEncoder.encode(dto.getPassword()),
-                dto.getRole(),
-                LocalDateTime.now()
-        );
-        return userRepository.save(user);
+    public boolean save(UserDto dto) {
+        int affectedRows = userRepository.save(getEncryptedPasswordUserDto(dto));
+        return affectedRows == INTEGER_ONE;
     }
 
-    @Override
-    public boolean register(RegisterUserDto dto) {
-        User user = new User(
-                1L,
-                dto.getName(),
+    private UserDto getEncryptedPasswordUserDto(UserDto dto) {
+        return new UserDto(
                 dto.getEmail(),
-                passwordEncoder.encode(dto.getPassword()),
-                Role.USER,
-                LocalDateTime.now()
+                dto.getName(),
+                passwordEncoder.encode(dto.getPassword())
         );
-        return userRepository.save(user);
     }
 
     @Override
     public boolean update(User user) {
-        return userRepository.update(user);
+        int affectedRows = userRepository.update(user);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
     public boolean delete(Long id) {
-        return userRepository.delete(id);
-    }
-
-    @Override
-    public List<User> getByGroupId(long id) {
-        return userRepository.findByGroupId(id);
+        int affectedRows = userRepository.delete(id);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
@@ -83,6 +67,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updatePassword(long userId, String password) {
-        return userRepository.updatePassword(userId, password);
+        int affectedRows = userRepository.updatePassword(userId, password);
+        return affectedRows == INTEGER_ONE;
     }
 }
