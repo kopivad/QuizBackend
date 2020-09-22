@@ -11,7 +11,7 @@ public class LoginUserDto {
 
     @JsonCreator
     public LoginUserDto(
-            @JsonProperty("name") String email,
+            @JsonProperty("email") String email,
             @JsonProperty("password") String password
     ) {
         this.email = email;

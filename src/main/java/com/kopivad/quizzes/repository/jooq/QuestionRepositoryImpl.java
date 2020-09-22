@@ -6,7 +6,7 @@ import com.kopivad.quizzes.dto.QuestionDto;
 import com.kopivad.quizzes.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep4;
+import org.jooq.InsertReturningStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -80,11 +80,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         return dslContext.batch(getInsertValues(dtos)).execute().length;
     }
 
-    private List<InsertValuesStep4<QuestionsRecord, String, String, Integer, Long>> getInsertValues(List<QuestionDto> dtos) {
+    private List<InsertReturningStep<QuestionsRecord>> getInsertValues(List<QuestionDto> dtos) {
         return dtos.stream()
-        .map(dto -> dslContext
-                .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.VALUE, QUESTIONS.QUIZ_ID)
-                .values(dto.getTitle(), dto.getType().name(), dto.getValue(), dto.getQuizId()))
-        .collect(Collectors.toUnmodifiableList());
+                .map(dto -> dslContext
+                        .insertInto(QUESTIONS, QUESTIONS.TITLE, QUESTIONS.TYPE, QUESTIONS.VALUE, QUESTIONS.QUIZ_ID)
+                        .values(dto.getTitle(), dto.getType().name(), dto.getValue(), dto.getQuizId()))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

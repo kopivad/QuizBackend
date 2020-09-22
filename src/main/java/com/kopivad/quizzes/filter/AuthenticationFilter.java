@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,7 +28,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
         if (StringUtils.isNotBlank(authHeader) && StringUtils.startsWith(authHeader, authTokenPrefix)) {
             String token = StringUtils.replace(authHeader, authTokenPrefix, "");
             if (ObjectUtils.isNotEmpty(token) && jwtService.validateToken(token)) {
@@ -37,8 +35,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

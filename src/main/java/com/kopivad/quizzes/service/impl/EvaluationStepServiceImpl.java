@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class EvaluationStepServiceImpl implements EvaluationStepService {
     @Override
     public boolean save(EvaluationStepDto dto) {
         int affectedRows = evaluationStepRepository.save(dto);
-        return affectedRows == INTEGER_ZERO;
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override

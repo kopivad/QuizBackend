@@ -6,7 +6,7 @@ import com.kopivad.quizzes.dto.AnswerDto;
 import com.kopivad.quizzes.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep3;
+import org.jooq.InsertReturningStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public class AnswerRepositoryImpl implements AnswerRepository {
         return dslContext.batch(getInsertValues(answers)).execute().length;
     }
 
-    private List<InsertValuesStep3<AnswersRecord, String, Boolean, Long>> getInsertValues(List<AnswerDto> answers) {
+    private List<InsertReturningStep<AnswersRecord>> getInsertValues(List<AnswerDto> answers) {
         return answers.stream()
                 .map(answer -> dslContext
                         .insertInto(ANSWERS, ANSWERS.BODY, ANSWERS.RIGHT, ANSWERS.QUESTION_ID)

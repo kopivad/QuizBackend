@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
+
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
@@ -26,7 +28,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public boolean update(Group group) {
-        return groupRepository.update(group);
+        int affectedRows = groupRepository.update(group);
+        return affectedRows == INTEGER_ONE;
     }
 
     @Override
