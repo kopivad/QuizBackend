@@ -1,76 +1,100 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.User;
+import com.kopivad.quizzes.dto.UserDto;
 import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.utils.TestUtils;
 import com.kopivad.quizzes.utils.UserUtils;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserRepositoryImplTest {
-    private static UserRepository userRepository;
+    private final DSLContext dslContext = TestUtils.createTestDefaultDSLContext();
+    private final UserRepository userRepository = new UserRepositoryImpl(dslContext);
 
-    @BeforeAll
-    public static void init() {
-        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
-        userRepository = new UserRepositoryImpl(dslContext);
+    @BeforeEach
+    void setUp() {
+        UserUtils.deleteAll();
     }
 
     @Test
-    public void findAllTest() {
-        List<User> generatedAccounts = UserUtils.generateUsers(5);
-        List<User> expected = generatedAccounts
-                .stream()
-                .map(user -> user.toBuilder().id(userRepository.save(user)).build())
-                .collect(Collectors.toUnmodifiableList());
+    void findAllTest() {
+        int expected = 10;
+        UserUtils.insertRandomUsersInDb(expected);
         List<User> actual = userRepository.findAll();
 
-        assertTrue(actual.containsAll(expected));
+        assertThat(actual.size(), is(expected));
     }
 
     @Test
-    public void findByIdTest() {
-        User generatedUser = UserUtils.generateUser();
-        long expected = userRepository.save(generatedUser);
-        User actual = userRepository.findById(expected);
+    void findByIdTest() {
+        long id = UserUtils.insertRandomUserInDb();
+        Optional<User> actual = userRepository.findById(id);
 
-        assertThat(actual.getId(), is(expected));
+        assertThat(actual.isPresent(), is(true));
     }
 
     @Test
-    public void saveTest() {
-        User generatedUser = UserUtils.generateUser();
-        long actual = userRepository.save(generatedUser);
+    void saveTest() {
+        UserDto dto = UserUtils.generateUserDto();
+        int expected = 1;
+        int actual = userRepository.save(dto);
 
-        assertThat(actual, notNullValue());
+        assertThat(actual, is(expected));
     }
 
     @Test
-    public void updateTest() {
-        User generatedUser = UserUtils.generateUser();
-        User expectedResult = generatedUser.toBuilder().id(userRepository.save(generatedUser)).build();
-        boolean actual = userRepository.update(expectedResult);
+    void updateTest() {
+        long id = UserUtils.insertRandomUserInDb();
+        User user = UserUtils.generateUser(id);
+        int expected = 1;
+        int actual = userRepository.update(user);
 
-        assertTrue(actual);
+        assertThat(actual, is(expected));
     }
 
     @Test
-    public void deleteTest() {
-        User generatedUser = UserUtils.generateUser();
-        long id = userRepository.save(generatedUser);
-        boolean actual = userRepository.delete(id);
+    void deleteTest() {
+        long id = UserUtils.insertRandomUserInDb();
+        int expected = 1;
+        int actual = userRepository.delete(id);
 
-        assertTrue(actual);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    void findByEmailStartsWithTest() {
+        String emailPrefix = "test";
+        int expected = 10;
+        UserUtils.insertRandomUsersInDbWithSimilarEmail(emailPrefix, expected);
+        List<User> actual = userRepository.findByEmailStartsWith(emailPrefix);
+
+        assertThat(actual.size(), is(expected));
+    }
+
+    @Test
+    void findByEmailTest() {
+        String expected = UserUtils.insertRandomUserInDbWithEmail();
+        Optional<User> actual = userRepository.findByEmail(expected);
+
+        assertThat(actual.isPresent(), is(true));
+    }
+
+    @Test
+    void updatePassword() {
+        long id = UserUtils.insertRandomUserInDb();
+        String password = UUID.randomUUID().toString();
+        int expected = 1;
+        int actual = userRepository.updatePassword(id, password);
+
+        assertThat(actual, is(expected));
     }
 }
