@@ -6,7 +6,7 @@ import com.kopivad.quizzes.dto.EvaluationStepDto;
 import com.kopivad.quizzes.repository.EvaluationStepRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep4;
+import org.jooq.InsertReturningStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class EvaluationStepRepositoryImpl implements EvaluationStepRepository {
         return dslContext.batch(getInsertValues(dtos)).execute().length;
     }
 
-    private List<InsertValuesStep4<StepsRecord, Integer, Integer, String, Long>> getInsertValues(List<EvaluationStepDto> dtos) {
+    private List<InsertReturningStep<StepsRecord>> getInsertValues(List<EvaluationStepDto> dtos) {
         return dtos.stream()
                 .map(dto -> dslContext
                         .insertInto(STEPS, STEPS.MIN_TOTAL, STEPS.MAX_TOTAL, STEPS.RATING, STEPS.QUIZ_ID)

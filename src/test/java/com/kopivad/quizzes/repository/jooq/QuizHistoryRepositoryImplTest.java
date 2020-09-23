@@ -1,58 +1,61 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.QuizHistory;
+import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.utils.QuizHistoryUtils;
+import com.kopivad.quizzes.utils.QuizSessionUtils;
+import com.kopivad.quizzes.utils.QuizUtils;
 import com.kopivad.quizzes.utils.TestUtils;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class QuizHistoryRepositoryImplTest {
-    private static QuizHistoryRepository quizHistoryRepository;
+    private final DSLContext dslContext = TestUtils.createTestDefaultDSLContext();
+    private final QuizHistoryRepository quizHistoryRepository = new QuizHistoryRepositoryImpl(dslContext);
 
     @BeforeAll
-    public static void init() {
-        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
-        quizHistoryRepository = new QuizHistoryRepositoryImpl(dslContext);
+    static void init() {
+        QuizUtils.insertDefaultQuiz();
+        QuizSessionUtils.insertDefaultQuizSession();
+    }
+
+    @BeforeEach
+    void setUp() {
+        QuizHistoryUtils.deleteAll();
     }
 
     @Test
-    public void saveTest() {
-        QuizHistory history = QuizHistoryUtils.generateHistory();
+    void saveTest() {
+        QuizHistoryDto history = QuizHistoryUtils.generateHistoryDto();
         long actual = quizHistoryRepository.save(history);
 
         assertThat(actual, notNullValue());
     }
 
     @Test
-    public void findByIdTest() {
-        QuizHistory history = QuizHistoryUtils.generateHistory();
-        long expected = quizHistoryRepository.save(history);
-        QuizHistory actual = quizHistoryRepository.findById(expected);
+    void findByIdTest() {
+        long id = QuizHistoryUtils.insertRandomHistory();
+        Optional<QuizHistory> actual = quizHistoryRepository.findById(id);
 
-        assertThat(actual.getId(), is(expected));
+        assertThat(actual.isPresent(), is(true));
     }
 
     @Test
-    public void findAllTest() {
-        List<QuizHistory> histories = QuizHistoryUtils.generateHistories(5);
-        List<QuizHistory> expected = histories
-                .stream()
-                .map(h -> h.toBuilder().id(quizHistoryRepository.save(h)).build())
-                .collect(Collectors.toUnmodifiableList());
+    void findAllTest() {
+        int expected = 10;
+        QuizHistoryUtils.insertRandomHistories(expected);
         List<QuizHistory> actual = quizHistoryRepository.findAll();
 
-        assertTrue(actual.containsAll(expected));
+        assertThat(actual.size(), is(expected));
     }
 }

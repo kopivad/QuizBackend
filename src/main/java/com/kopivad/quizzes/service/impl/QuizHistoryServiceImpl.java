@@ -2,8 +2,10 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.*;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
+import com.kopivad.quizzes.exception.FileNotFoundException;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.pdfbox.io.IOUtils;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +27,9 @@ import java.util.UUID;
 
 
 @Service
+@Slf4j
 public class QuizHistoryServiceImpl implements QuizHistoryService {
-    private final String FILE_DIR;
+    private final String fileDir;
     private final QuizHistoryRepository quizHistoryRepository;
     private final QuizSessionService quizSessionService;
     private final QuizAnswerService quizAnswerService;
@@ -35,7 +39,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
 
     @Autowired
     public QuizHistoryServiceImpl(
-            @Value("#{environment.FILE_DIR}") String FILE_DIR,
+            @Value("#{environment.FILE_DIR}") String fileDir,
             QuizHistoryRepository quizHistoryRepository,
             QuizSessionService quizSessionService,
             QuizAnswerService quizAnswerService,
@@ -43,7 +47,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
             QuestionService questionService,
             EvaluationStepService stepService
     ) {
-        this.FILE_DIR = FILE_DIR;
+        this.fileDir = fileDir;
         this.quizHistoryRepository = quizHistoryRepository;
         this.quizSessionService = quizSessionService;
         this.quizAnswerService = quizAnswerService;
@@ -58,27 +62,29 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     @Override
-    public Optional<byte[]> getPDF(long id) {
+    public Optional<byte[]> getPDF(long id) throws FileNotFoundException {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         return history.map(resultHistory -> {
-            String pdfFilename = history.get().getPdfFilename();
-            try(InputStream inputStream = getClass().getResourceAsStream(FILE_DIR + pdfFilename);) {
+            String pdfFilename = resultHistory.getPdfFilename();
+            try (InputStream inputStream = new FileInputStream(fileDir + pdfFilename)) {
                 return IOUtils.toByteArray(inputStream);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.warn(String.format("Pdf file with name %s not found", resultHistory.getPdfFilename()));
+                throw new FileNotFoundException(String.format("Pdf file with name %s not found", resultHistory.getPdfFilename()), e);
             }
         });
     }
 
     @Override
-    public Optional<byte[]> getCSV(long id) {
+    public Optional<byte[]> getCSV(long id) throws FileNotFoundException {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         return history.map(resultHistory -> {
-            String csvFilename = history.get().getCsvFilename();
-            try(InputStream inputStream = getClass().getResourceAsStream(FILE_DIR + csvFilename)) {
+            String csvFilename = resultHistory.getCsvFilename();
+            try (InputStream inputStream = new FileInputStream(fileDir + csvFilename)) {
                 return IOUtils.toByteArray(inputStream);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.warn(String.format("Csv file with name %s not found", resultHistory.getCsvFilename()));
+                throw new FileNotFoundException(String.format("Csv file with name %s not found", resultHistory.getCsvFilename()), e);
             }
         });
     }
@@ -96,7 +102,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            document.save(FILE_DIR + filename);
+            document.save(fileDir + filename);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -105,7 +111,7 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private void createCSV(String filename, long id) {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         try (
-                FileWriter out = new FileWriter(FILE_DIR + filename);
+                FileWriter out = new FileWriter(fileDir + filename);
                 CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)
         ) {
             printer.printRecord(history.toString());
@@ -157,9 +163,9 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
                 .filter(Answer::isRight)
                 .map(answer ->
                         questionService.getById(answer.getQuestionId())
-                        .map(
-                                question -> question.getQuestion().getValue()
-                        ).orElseThrow())
+                                .map(
+                                        question -> question.getQuestion().getValue()
+                                ).orElseThrow())
                 .mapToInt(value -> value).sum();
     }
 }

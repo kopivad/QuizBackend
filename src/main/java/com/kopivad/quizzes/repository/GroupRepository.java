@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface GroupRepository {
     long save(GroupDto group);
 
-    boolean update(Group group);
+    int update(Group group);
 
     List<Group> findAll();
 

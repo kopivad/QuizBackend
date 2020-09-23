@@ -1,65 +1,70 @@
 package com.kopivad.quizzes.utils;
 
 import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.domain.db.tables.records.QuizAnswersRecord;
 import com.kopivad.quizzes.dto.QuizAnswerDto;
+import org.jooq.DSLContext;
+import org.jooq.InsertReturningStep;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.kopivad.quizzes.domain.db.tables.QuizAnswers.QUIZ_ANSWERS;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class QuizAnswerUtils {
-    public static QuizAnswer generateAnswer() {
-        return QuizAnswer
-                .builder()
-                .id(LONG_ONE)
-                .session(QuizSessionUtils.generateQuizSession())
-                .answer(AnswerUtils.generateAnswer())
-                .question(QuestionUtils.generateQuestion())
-                .build();
-    }
+    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public final static Long TEST_QUIZ_ANSWER_ID = 1L;
+    public final static Random RANDOM = new Random();
 
-    public static List<QuizAnswer> generateAnswersWithSessionId(long sessionId, int size) {
-        return IntStream
-                .range(INTEGER_ZERO, size)
-                .mapToObj(i -> generateAnswer()
-                        .toBuilder()
-                        .id(i + LONG_ONE)
-                        .session(QuizSession.builder().id(sessionId).build())
-                        .build())
-                .collect(Collectors.toUnmodifiableList());
-    }
 
     public static QuizAnswerDto generateAnswerDto() {
-            return QuizAnswerDto
-                    .builder()
-                    .id(LONG_ONE)
-                    .sessionId(QuizSessionUtils.generateQuizSession().getId())
-                    .answerId(AnswerUtils.generateAnswer().getId())
-                    .questionId(QuestionUtils.generateQuestion().getId())
-                    .build();
+            return new QuizAnswerDto(
+                    QuestionUtils.TEST_QUESTION_ID,
+                    QuizSessionUtils.TEST_SESSION_ID,
+                    AnswerUtils.TEST_ANSWER_ID
+            );
     }
 
-    public static List<QuizAnswer> generateAnswers(int count) {
+    public static List<QuizAnswerDto> generateAnswerDtos(int size) {
         return IntStream
-                .range(INTEGER_ZERO, count)
-                .mapToObj(i -> generateAnswer()
-                        .toBuilder()
-                        .id(i + LONG_ONE)
-                        .build())
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateAnswerDto())
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public static List<QuizAnswerDto> generateAnswerDtos(int count) {
-        return IntStream
-                .range(INTEGER_ZERO, count)
-                .mapToObj(i -> generateAnswerDto()
-                        .toBuilder()
-                        .id(i + LONG_ONE)
-                        .build())
+    public static void deleteAll() {
+        DSL_CONTEXT.deleteFrom(QUIZ_ANSWERS).execute();
+    }
+
+    public static void insertRandomQuizAnswer(int size) {
+        List<QuizAnswerDto> dtos = generateAnswerDtos(size);
+        List<InsertReturningStep<QuizAnswersRecord>> values = dtos
+                .stream()
+                .map(dto -> DSL_CONTEXT
+                        .insertInto(QUIZ_ANSWERS, QUIZ_ANSWERS.ANSWER_ID, QUIZ_ANSWERS.QUESTION_ID, QUIZ_ANSWERS.SESSION_ID)
+                        .values(dto.getAnswerId(), dto.getQuestionId(), dto.getSessionId()))
                 .collect(Collectors.toUnmodifiableList());
+
+        DSL_CONTEXT.batch(values).execute();
+    }
+
+    public static List<QuizAnswer> generateQuizAnswers(int size) {
+        return IntStream
+                .range(INTEGER_ZERO, size)
+                .mapToObj(i -> generateQuizAnswer(i + LONG_ONE))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private static QuizAnswer generateQuizAnswer(long id) {
+        return new QuizAnswer(
+                id,
+                QuestionUtils.TEST_QUESTION_ID,
+                QuizSessionUtils.TEST_SESSION_ID,
+                AnswerUtils.TEST_ANSWER_ID
+        );
     }
 }

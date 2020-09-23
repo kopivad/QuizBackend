@@ -2,70 +2,42 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.QuizSession;
 import com.kopivad.quizzes.dto.QuizSessionDto;
-import com.kopivad.quizzes.mapper.QuizSessionMapper;
 import com.kopivad.quizzes.repository.QuizSessionRepository;
-import com.kopivad.quizzes.service.QuizAnswerService;
-import com.kopivad.quizzes.service.QuizService;
-import com.kopivad.quizzes.utils.QuizAnswerUtils;
 import com.kopivad.quizzes.utils.QuizSessionUtils;
-import com.kopivad.quizzes.utils.QuizUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 class QuizSessionServiceImplTest {
-    @InjectMocks
-    private QuizSessionServiceImpl quizSessionService;
-    @Mock
-    private QuizSessionRepository quizSessionRepository;
-    @Mock
-    private QuizSessionMapper mapper;
-    @Mock
-    private QuizAnswerService quizAnswerService;
-    @Mock
-    private QuizService quizService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    private final QuizSessionRepository quizSessionRepository = mock(QuizSessionRepository.class);
+    private final QuizSessionServiceImpl quizSessionService = new QuizSessionServiceImpl(quizSessionRepository);
 
     @Test
-    void testStartSession() {
+    void saveTest() {
         QuizSessionDto expected = QuizSessionUtils.generateQuizSessionDto();
-        when(quizSessionRepository.save(any(QuizSession.class))).thenReturn(LONG_ONE);
-        when(mapper.toEntity(any(QuizSessionDto.class))).thenReturn(QuizSessionUtils.generateQuizSession());
-        long actual = quizSessionService.startSession(expected);
+        when(quizSessionRepository.save(any(QuizSessionDto.class))).thenReturn(LONG_ONE);
+        long actual = quizSessionService.save(expected);
 
-        assertThat(actual, is(expected.getId()));
+        assertThat(actual, notNullValue());
 
-        verify(quizSessionRepository).save(any(QuizSession.class));
-        verify(mapper).toEntity(any(QuizSessionDto.class));
+        verify(quizSessionRepository).save(any(QuizSessionDto.class));
     }
 
     @Test
-    void testGetById() {
-        int count = 10;
-        QuizSession expected = QuizSessionUtils.generateQuizSession();
-        when(quizSessionRepository.findById(anyLong())).thenReturn(QuizSessionUtils.generateQuizSession());
-        when(quizService.getById(anyLong())).thenReturn(QuizUtils.generateQuiz());
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
-        QuizSessionDto actual = quizSessionService.getById(expected.getId());
+    void getByIdTest() {
+        QuizSession expected = QuizSessionUtils.generateQuizSession(QuizSessionUtils.TEST_SESSION_ID);
+        when(quizSessionRepository.findById(anyLong())).thenReturn(Optional.of(expected));
+        Optional<QuizSession> actual = quizSessionService.getById(expected.getId());
 
-        assertThat(actual, is(expected));
+        assertThat(actual.isPresent(), is(true));
 
         verify(quizSessionRepository).findById(anyLong());
-        verify(quizService).getById(anyLong());
-        verify(quizAnswerService).getAllBySessionId(anyLong());
     }
 }

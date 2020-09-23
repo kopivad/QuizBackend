@@ -2,104 +2,119 @@ package com.kopivad.quizzes.service.impl;
 
 import com.kopivad.quizzes.domain.User;
 import com.kopivad.quizzes.dto.UserDto;
-import com.kopivad.quizzes.mapper.UserMapper;
 import com.kopivad.quizzes.repository.UserRepository;
+import com.kopivad.quizzes.service.UserService;
 import com.kopivad.quizzes.utils.UserUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ONE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class UserServiceImplTest {
-    @InjectMocks
-    private UserServiceImpl userService;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private UserMapper mapper;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    private final PasswordEncoder passwordEncoder = mock(PasswordEncoder.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
+    private final UserService userService = new UserServiceImpl(userRepository, passwordEncoder);
 
     @Test
-    public void testGetAll() {
+    public void getAllTest() {
         int size = 10;
         List<User> expected = UserUtils.generateUsers(size);
         when(userRepository.findAll()).thenReturn(expected);
-        when(mapper.toDto(any(User.class))).thenReturn(UserUtils.generateUserDto());
-        List<UserDto> actual = userService.getAll();
+        List<User> actual = userService.getAll();
 
         assertThat(actual.size(), is(expected.size()));
 
         verify(userRepository).findAll();
-        verify(mapper, times(size)).toDto(any(User.class));
     }
 
     @Test
-    public void testGetById() {
-        User expectedResult = UserUtils.generateUser();
-        when(userRepository.findById(anyLong())).thenReturn(expectedResult);
-        User actualResult = userService.getById(expectedResult.getId());
+    public void getByIdTest() {
+        User expected = UserUtils.generateUser();
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(expected));
+        Optional<User> actual = userService.getById(expected.getId());
 
-        assertThat(actualResult, is(expectedResult));
+        assertThat(actual.isPresent(), is(true));
 
         verify(userRepository).findById(anyLong());
     }
 
     @Test
-    public void testSave() {
+    public void saveTest() {
         UserDto expected = UserUtils.generateUserDto();
-        when(mapper.toEntity(any(UserDto.class))).thenReturn(UserUtils.generateUser());
         when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.save(any())).thenReturn(expected.getId());
-        long actual = userService.save(expected);
+        when(userRepository.save(any(UserDto.class))).thenReturn(INTEGER_ONE);
+        boolean actual = userService.save(expected);
 
-        assertThat(actual, is(expected.getId()));
+        assertThat(actual, is(true));
 
         verify(passwordEncoder).encode(anyString());
-        verify(userRepository).save(any(User.class));
-        verify(mapper).toEntity(any(UserDto.class));
+        verify(userRepository).save(any(UserDto.class));
     }
 
     @Test
-    public void testUpdate() {
-        UserDto expected = UserUtils.generateUserDto();
-        when(mapper.toEntity(any(UserDto.class))).thenReturn(UserUtils.generateUser());
-        when(passwordEncoder.encode(anyString())).thenReturn(String.valueOf(UUID.randomUUID()));
-        when(userRepository.update(any(User.class))).thenReturn(true);
-        boolean actualResult = userService.update(expected);
+    public void updateTest() {
+        User expected = UserUtils.generateUser();
+        when(userRepository.update(any(User.class))).thenReturn(INTEGER_ONE);
+        boolean actual = userService.update(expected);
 
-        assertTrue(actualResult);
+        assertThat(actual, is(true));
 
-        verify(mapper).toEntity(any(UserDto.class));
-        verify(passwordEncoder).encode(anyString());
         verify(userRepository).update(any(User.class));
     }
 
     @Test
-    public void testDelete() {
-        long expected = UserUtils.generateUser().getId();
-        when(userRepository.delete(anyLong())).thenReturn(true);
-        boolean actual = userRepository.delete(expected);
+    public void deleteTest() {
+        long id = UserUtils.generateUser().getId();
+        when(userRepository.delete(anyLong())).thenReturn(INTEGER_ONE);
+        int expected = 1;
+        int actual = userRepository.delete(id);
 
-        assertTrue(actual);
+        assertThat(actual, is(expected));
 
         verify(userRepository).delete(anyLong());
+    }
+
+    @Test
+    public void getByEmailStartsWithTest() {
+        int size = 10;
+        List<User> expected = UserUtils.generateUsers(size);
+        when(userRepository.findByEmailStartsWith(anyString())).thenReturn(expected);
+
+        List<User> actual = userService.getByEmailStartsWith(UUID.randomUUID().toString());
+
+        assertThat(actual.size(), is(expected.size()));
+
+        verify(userRepository).findByEmailStartsWith(anyString());
+    }
+
+    @Test
+    public void updatePasswordTest() {
+        User expected = UserUtils.generateUser();
+        when(userRepository.updatePassword(anyLong(), anyString())).thenReturn(INTEGER_ONE);
+
+        boolean actual = userService.updatePassword(expected.getId(), UUID.randomUUID().toString());
+
+        assertThat(actual, is(true));
+
+        verify(userRepository).updatePassword(anyLong(), anyString());
+    }
+
+    @Test
+    public void getByEmailTest() {
+        User expected = UserUtils.generateUser();
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(expected));
+
+        Optional<User> actual = userService.getByEmail(UUID.randomUUID().toString());
+
+        assertThat(actual.isPresent(), is(true));
+
+        verify(userRepository).findByEmail(anyString());
     }
 }

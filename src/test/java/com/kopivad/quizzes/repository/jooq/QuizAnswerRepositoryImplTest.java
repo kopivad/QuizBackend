@@ -1,56 +1,52 @@
 package com.kopivad.quizzes.repository.jooq;
 
 import com.kopivad.quizzes.domain.QuizAnswer;
-import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.dto.QuizAnswerDto;
 import com.kopivad.quizzes.repository.QuizAnswerRepository;
-import com.kopivad.quizzes.repository.QuizSessionRepository;
-import com.kopivad.quizzes.utils.QuizAnswerUtils;
-import com.kopivad.quizzes.utils.QuizSessionUtils;
-import com.kopivad.quizzes.utils.TestUtils;
+import com.kopivad.quizzes.utils.*;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.is;
 
 public class QuizAnswerRepositoryImplTest {
-    private static QuizAnswerRepository quizAnswerRepository;
-    private static QuizSessionRepository quizSessionRepository;
+    private final DSLContext dslContext = TestUtils.createTestDefaultDSLContext();
+    private final QuizAnswerRepository quizAnswerRepository = new QuizAnswerRepositoryImpl(dslContext);
 
     @BeforeAll
-    public static void init() {
-        DSLContext dslContext = DSL.using(TestUtils.createTestDefaultPgDataSource(), SQLDialect.POSTGRES);
-        quizAnswerRepository = new QuizAnswerRepositoryImpl(dslContext);
-        quizSessionRepository = new QuizSessionRepositoryImpl(dslContext);
+    static void init() {
+        UserUtils.insertDefaultUser();
+        QuizUtils.insertDefaultQuiz();
+        QuestionUtils.insertDefaultQuestion();
+        AnswerUtils.insertDefaultAnswerInDb();
+        QuizSessionUtils.insertDefaultQuizSession();
+    }
+
+    @BeforeEach
+    void setUp() {
+        QuizAnswerUtils.deleteAll();
     }
 
     @Test
-    public void saveTest() {
-        QuizAnswer quizAnswer = QuizAnswerUtils.generateAnswer();
-        long actual = quizAnswerRepository.save(quizAnswer);
+    void saveTest() {
+        QuizAnswerDto dto = QuizAnswerUtils.generateAnswerDto();
+        int expected = 1;
+        int actual = quizAnswerRepository.save(dto);
 
-        assertThat(actual, notNullValue());
+        assertThat(actual, is(expected));
     }
 
     @Test
-    public void findAllBySessionIdTest() {
-        QuizSession session = QuizSessionUtils.generateQuizSession();
-        long sessionId = quizSessionRepository.save(session);
-        int size = 5;
-        List<QuizAnswer> expected = QuizAnswerUtils.generateAnswersWithSessionId(sessionId, size)
-                .stream()
-                .map(a -> a.toBuilder().id(quizAnswerRepository.save(a)).build())
-                .collect(Collectors.toUnmodifiableList());
+    void findAllBySessionIdTest() {
+        int expected = 10;
+        QuizAnswerUtils.insertRandomQuizAnswer(expected);
+        List<QuizAnswer> actual = quizAnswerRepository.findAllBySessionId(QuizSessionUtils.TEST_SESSION_ID);
 
-        List<QuizAnswer> actual = quizAnswerRepository.findAllBySessionId(sessionId);
-
-        assertTrue(actual.containsAll(expected));
+        assertThat(actual.size(), is(expected));
     }
 }

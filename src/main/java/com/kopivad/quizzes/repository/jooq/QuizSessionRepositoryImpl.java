@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.kopivad.quizzes.domain.db.tables.QuizSessions.QUIZ_SESSIONS;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor

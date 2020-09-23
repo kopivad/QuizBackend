@@ -7,7 +7,7 @@ import com.kopivad.quizzes.dto.GroupDto;
 import com.kopivad.quizzes.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep2;
+import org.jooq.InsertReturningStep;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import static com.kopivad.quizzes.domain.db.tables.Groups.GROUPS;
 import static com.kopivad.quizzes.domain.db.tables.GroupsQuizzes.GROUPS_QUIZZES;
 import static com.kopivad.quizzes.domain.db.tables.GroupsUsers.GROUPS_USERS;
-import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 @Repository
 @RequiredArgsConstructor
@@ -36,14 +35,12 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    public boolean update(Group group) {
-        int affectedRows = dslContext
+    public int update(Group group) {
+        return dslContext
                 .update(GROUPS)
                 .set(GROUPS.NAME, group.getName())
                 .set(GROUPS.JOIN_CODE, group.getJoinCode())
                 .execute();
-
-        return affectedRows > INTEGER_ZERO;
     }
 
     @Override
@@ -91,18 +88,18 @@ public class GroupRepositoryImpl implements GroupRepository {
         return dslContext.batch(getInsertUsersValues(id, usersIds)).execute().length;
     }
 
-    private List<InsertValuesStep2<GroupsQuizzesRecord, Long, Long>> getInsertQuizzesValues(long id, List<Long> quizzesIds) {
+    private List<InsertReturningStep<GroupsQuizzesRecord>> getInsertQuizzesValues(long id, List<Long> quizzesIds) {
         return quizzesIds.stream()
-        .map(quizId -> dslContext
-                .insertInto(GROUPS_QUIZZES, GROUPS_QUIZZES.GROUP_ID,GROUPS_QUIZZES.QUIZ_ID)
-                .values(id, quizId))
-        .collect(Collectors.toUnmodifiableList());
+                .map(quizId -> dslContext
+                        .insertInto(GROUPS_QUIZZES, GROUPS_QUIZZES.GROUP_ID, GROUPS_QUIZZES.QUIZ_ID)
+                        .values(id, quizId))
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<InsertValuesStep2<GroupsUsersRecord, Long, Long>> getInsertUsersValues(long id, List<Long> usersIds) {
+    private List<InsertReturningStep<GroupsUsersRecord>> getInsertUsersValues(long id, List<Long> usersIds) {
         return usersIds.stream()
                 .map(userId -> dslContext
-                        .insertInto(GROUPS_USERS, GROUPS_USERS.GROUP_ID,GROUPS_USERS.USER_ID)
+                        .insertInto(GROUPS_USERS, GROUPS_USERS.GROUP_ID, GROUPS_USERS.USER_ID)
                         .values(id, userId))
                 .collect(Collectors.toUnmodifiableList());
     }

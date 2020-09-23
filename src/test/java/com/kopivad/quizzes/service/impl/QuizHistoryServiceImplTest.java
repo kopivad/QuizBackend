@@ -1,24 +1,18 @@
 package com.kopivad.quizzes.service.impl;
 
+import com.kopivad.quizzes.domain.Answer;
+import com.kopivad.quizzes.domain.EvaluationStep;
 import com.kopivad.quizzes.domain.QuizHistory;
+import com.kopivad.quizzes.domain.QuizSession;
+import com.kopivad.quizzes.dto.FullQuestionDto;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
-import com.kopivad.quizzes.dto.QuizSessionDto;
-import com.kopivad.quizzes.mapper.QuizHistoryMapper;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
-import com.kopivad.quizzes.service.QuizAnswerService;
-import com.kopivad.quizzes.service.QuizSessionService;
-import com.kopivad.quizzes.utils.QuizAnswerUtils;
-import com.kopivad.quizzes.utils.QuizHistoryUtils;
-import com.kopivad.quizzes.utils.QuizSessionUtils;
-import org.junit.jupiter.api.BeforeEach;
+import com.kopivad.quizzes.service.*;
+import com.kopivad.quizzes.utils.*;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,101 +21,102 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 class QuizHistoryServiceImplTest {
-    @InjectMocks
-    private QuizHistoryServiceImpl quizHistoryService;
-    @Mock
-    private QuizHistoryRepository quizHistoryRepository;
-    @Mock
-    private QuizSessionService quizSessionService;
-    @Mock
-    private QuizAnswerService quizAnswerService;
-    @Mock
-    private QuizHistoryMapper quizHistoryMapper;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    private final String fileDir = "C:/Users/Vadym/Projects/QuizzesBackend/src/test/resources/static/media/";
+    private final QuizHistoryRepository quizHistoryRepository = mock(QuizHistoryRepository.class);
+    private final QuizSessionService quizSessionService = mock(QuizSessionService.class);
+    private final QuizAnswerService quizAnswerService = mock(QuizAnswerService.class);
+    private final AnswerService answerService = mock(AnswerService.class);
+    private final QuestionService questionService = mock(QuestionService.class);
+    private final EvaluationStepService stepService = mock(EvaluationStepService.class);
+    private final QuizHistoryServiceImpl quizHistoryService = new QuizHistoryServiceImpl(fileDir, quizHistoryRepository, quizSessionService, quizAnswerService, answerService, questionService, stepService);
 
     @Test
-    void testSave() {
-        QuizHistory expected = QuizHistoryUtils.generateHistory();
-        when(quizHistoryRepository.save(any(QuizHistory.class))).thenReturn(expected.getId());
-        long actual = quizHistoryService.save(expected);
-
-        assertThat(actual, is(expected.getId()));
-
-        verify(quizHistoryRepository).save(any(QuizHistory.class));
-    }
-
-    @Test
-    void testGetPDF() {
-        String exitingFilename = "test.pdf";
-        QuizHistory history = QuizHistoryUtils.generateHistory().toBuilder().pdfFilename(exitingFilename).build();
-        when(quizHistoryRepository.findById(anyLong())).thenReturn(history);
-        Resource actual = quizHistoryService.getPDF(history.getId());
+    void saveTest() {
+        QuizHistoryDto dto = QuizHistoryUtils.generateHistoryDto();
+        when(quizHistoryRepository.save(any(QuizHistoryDto.class))).thenReturn(QuizHistoryUtils.TEST_HISTORY_ID);
+        long actual = quizHistoryService.save(dto);
 
         assertThat(actual, notNullValue());
+
+        verify(quizHistoryRepository).save(any(QuizHistoryDto.class));
+    }
+
+    @Test
+    void getPdfTest() {
+        QuizHistory history = QuizHistoryUtils.generateHistory();
+        when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(history));
+
+        Optional<byte[]> actual = quizHistoryService.getPDF(history.getId());
+
+        assertThat(actual.isPresent(), is(true));
 
         verify(quizHistoryRepository).findById(anyLong());
     }
 
     @Test
-    void testGetCSV() {
-        String exitingFilename = "test.csv";
-        QuizHistory history = QuizHistoryUtils.generateHistory().toBuilder().csvFilename(exitingFilename).build();
-        when(quizHistoryRepository.findById(anyLong())).thenReturn(history);
-        Resource actual = quizHistoryService.getCSV(history.getId());
+    void getCsvTest() {
+        QuizHistory history = QuizHistoryUtils.generateHistory();
+        when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(history));
+        Optional<byte[]> actual = quizHistoryService.getCSV(history.getId());
 
-        assertThat(actual, notNullValue());
+        assertThat(actual.isPresent(), is(true));
 
         verify(quizHistoryRepository).findById(anyLong());
     }
 
     @Test
-    void testCreateHistory() {
+    void createHistoryTest() {
         int count = 4;
         QuizHistory history = QuizHistoryUtils.generateHistory();
-        QuizSessionDto session = QuizSessionUtils.generateQuizSessionDto();
-        when(quizSessionService.getById(anyLong())).thenReturn(session);
-        when(quizHistoryRepository.save(any(QuizHistory.class))).thenReturn(history.getId());
-        when(quizHistoryRepository.findById(anyLong())).thenReturn(history);
-        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateAnswerDtos(count));
-        long actual = quizHistoryService.createHistory(session.getId());
+        QuizSession session = QuizSessionUtils.generateQuizSession(QuizSessionUtils.TEST_SESSION_ID);
+        List<EvaluationStep> evaluationSteps = EvaluationStepUtils.generateSteps(4);
+        FullQuestionDto fullQuestionDto = QuestionUtils.generateFullQuestionDto();
+        Answer answer = AnswerUtils.generateAnswer();
+        when(quizSessionService.getById(anyLong())).thenReturn(Optional.of(session));
+        when(stepService.getByQuizId(anyLong())).thenReturn(evaluationSteps);
+        when(answerService.getById(anyLong())).thenReturn(Optional.of(answer));
+        when(questionService.getById(anyLong())).thenReturn(Optional.of(fullQuestionDto));
+        when(quizHistoryRepository.save(any(QuizHistoryDto.class))).thenReturn(QuizHistoryUtils.TEST_HISTORY_ID);
+        when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(history));
+        when(quizAnswerService.getAllBySessionId(anyLong())).thenReturn(QuizAnswerUtils.generateQuizAnswers(count));
 
-        assertThat(actual, notNullValue());
+        Optional<Long> actual = quizHistoryService.createHistory(session.getId());
+
+        assertThat(actual.isPresent(), is(true));
 
         verify(quizSessionService).getById(anyLong());
         verify(quizHistoryRepository, times(2)).findById(anyLong());
-        verify(quizHistoryRepository).save(any(QuizHistory.class));
+        verify(quizHistoryRepository).save(any(QuizHistoryDto.class));
         verify(quizAnswerService).getAllBySessionId(anyLong());
+        verify(stepService).getByQuizId(anyLong());
+        verify(answerService, times(count)).getById(anyLong());
+        verify(answerService, times(count)).getById(anyLong());
 
     }
 
     @Test
-    void testGetById() {
+    void getByIdTest() {
         QuizHistory expected = QuizHistoryUtils.generateHistory();
-        when(quizHistoryRepository.findById(anyLong())).thenReturn(expected);
-        QuizHistory actual = quizHistoryService.getById(expected.getId());
+        when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(expected));
 
-        assertThat(actual, is(expected));
+        Optional<QuizHistory> actual = quizHistoryService.getById(expected.getId());
+
+        assertThat(actual.isPresent(), is(true));
 
         verify(quizHistoryRepository).findById(anyLong());
     }
 
     @Test
-    void testGetAll() {
+    void getAllTest() {
         int size = 10;
         List<QuizHistory> expected = QuizHistoryUtils.generateHistories(size);
         when(quizHistoryRepository.findAll()).thenReturn(expected);
-        when(quizHistoryMapper.toDto(any(QuizHistory.class))).thenReturn(QuizHistoryUtils.generateHistoryDto());
-        List<QuizHistoryDto> actual = quizHistoryService.getAll();
+
+        List<QuizHistory> actual = quizHistoryService.getAll();
 
         assertThat(actual.size(), is(expected.size()));
 
         verify(quizHistoryRepository).findAll();
-        verify(quizHistoryMapper, times(size)).toDto(any(QuizHistory.class));
     }
 }
