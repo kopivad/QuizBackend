@@ -6,7 +6,7 @@ import com.kopivad.quizzes.repository.UserRepository;
 import com.kopivad.quizzes.utils.TestUtils;
 import com.kopivad.quizzes.utils.UserUtils;
 import org.jooq.DSLContext;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class UserRepositoryImplTest {
     private final DSLContext dslContext = TestUtils.createTestDefaultDSLContext();
     private final UserRepository userRepository = new UserRepositoryImpl(dslContext);
 
-    @BeforeEach
-    void setUp() {
+    @AfterEach
+    private void deleteUsers() {
         UserUtils.deleteAll();
     }
 
