@@ -18,9 +18,9 @@ import static com.kopivad.quizzes.domain.db.tables.Questions.QUESTIONS;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 public class QuestionUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_QUESTION_ID = 1L;
-    private final static Random RANDOM = new Random();
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_QUESTION_ID = 1L;
+    private static final Random RANDOM = new Random();
 
     public static List<Question> generateQuestions(int size) {
         return IntStream.range(INTEGER_ZERO, size)

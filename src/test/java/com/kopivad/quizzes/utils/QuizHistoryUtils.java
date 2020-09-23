@@ -17,11 +17,11 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class QuizHistoryUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_HISTORY_ID = 1L;
-    public final static String TEST_PDF_FILE_NAME = "test_pdf.pdf";
-    public final static String TEST_CSV_FILE_NAME = "test_csv.csv";
-    public final static Random RANDOM = new Random();
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_HISTORY_ID = 1L;
+    public static final String TEST_PDF_FILE_NAME = "test_pdf.pdf";
+    public static final String TEST_CSV_FILE_NAME = "test_csv.csv";
+    public static final Random RANDOM = new Random();
 
     public static QuizHistory generateHistory(long id) {
         return new QuizHistory(

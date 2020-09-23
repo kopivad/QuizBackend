@@ -20,8 +20,8 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class GroupUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_GROUP_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_GROUP_ID = 1L;
 
     public static long insertRandomGroup() {
         GroupDto dto = generateGroupDto();

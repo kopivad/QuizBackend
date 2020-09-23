@@ -18,8 +18,8 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class AnswerUtils {
     public static final long TEST_ANSWER_ID = 1L;
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    private final static Random RANDOM = new Random();
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    private static final Random RANDOM = new Random();
 
     public static void deleteAll() {
         DSL_CONTEXT.deleteFrom(ANSWERS).execute();

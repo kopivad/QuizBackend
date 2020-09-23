@@ -23,7 +23,7 @@ import java.io.IOException;
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
-    private final static String authTokenPrefix = "Bearer ";
+    private static final String authTokenPrefix = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

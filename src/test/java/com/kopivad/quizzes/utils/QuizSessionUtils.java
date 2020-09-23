@@ -11,8 +11,8 @@ import java.util.Collections;
 import static com.kopivad.quizzes.domain.db.tables.QuizSessions.QUIZ_SESSIONS;
 
 public class QuizSessionUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_SESSION_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_SESSION_ID = 1L;
 
     public static QuizSessionDto generateQuizSessionDto() {
         return new QuizSessionDto(

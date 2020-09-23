@@ -56,6 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, exception) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

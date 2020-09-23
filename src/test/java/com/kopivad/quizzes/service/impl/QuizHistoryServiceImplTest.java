@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 class QuizHistoryServiceImplTest {
-    private final String fileDir = "src/test/resources/static/media/";
+    private static final String fileDir = "src/test/resources/static/media/";
     private final QuizHistoryRepository quizHistoryRepository = mock(QuizHistoryRepository.class);
     private final QuizSessionService quizSessionService = mock(QuizSessionService.class);
     private final QuizAnswerService quizAnswerService = mock(QuizAnswerService.class);

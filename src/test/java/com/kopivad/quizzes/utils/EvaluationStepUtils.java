@@ -16,9 +16,9 @@ import static com.kopivad.quizzes.domain.db.tables.Steps.STEPS;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 public class EvaluationStepUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    private final static Random RANDOM = new Random();
-    public final static Long TEST_STEP_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    private static final Random RANDOM = new Random();
+    public static final Long TEST_STEP_ID = 1L;
 
     public static List<EvaluationStepDto> generateStepDtos(int size) {
         return IntStream

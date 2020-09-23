@@ -7,7 +7,6 @@ import org.jooq.DSLContext;
 import org.jooq.InsertReturningStep;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,9 +15,8 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class QuizAnswerUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_QUIZ_ANSWER_ID = 1L;
-    public final static Random RANDOM = new Random();
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_QUIZ_ANSWER_ID = 1L;
 
 
     public static QuizAnswerDto generateAnswerDto() {
