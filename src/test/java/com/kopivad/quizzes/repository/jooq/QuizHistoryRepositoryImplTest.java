@@ -3,14 +3,9 @@ package com.kopivad.quizzes.repository.jooq;
 import com.kopivad.quizzes.domain.QuizHistory;
 import com.kopivad.quizzes.dto.QuizHistoryDto;
 import com.kopivad.quizzes.repository.QuizHistoryRepository;
-import com.kopivad.quizzes.utils.QuizHistoryUtils;
-import com.kopivad.quizzes.utils.QuizSessionUtils;
-import com.kopivad.quizzes.utils.QuizUtils;
-import com.kopivad.quizzes.utils.TestUtils;
+import com.kopivad.quizzes.utils.*;
 import org.jooq.DSLContext;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +19,21 @@ public class QuizHistoryRepositoryImplTest {
     private final QuizHistoryRepository quizHistoryRepository = new QuizHistoryRepositoryImpl(dslContext);
 
     @BeforeAll
-    static void init() {
+    private static void insertData() {
+        UserUtils.insertDefaultUser();
         QuizUtils.insertDefaultQuiz();
         QuizSessionUtils.insertDefaultQuizSession();
     }
 
-    @BeforeEach
-    void setUp() {
+    @AfterAll
+    private static void deleteData() {
+        UserUtils.deleteDefaultUser();
+        QuizUtils.deleteDefaultQuiz();
+        QuizSessionUtils.deleteDefaultQuizSession();
+    }
+
+    @AfterEach
+    private void deleteQuizHistories() {
         QuizHistoryUtils.deleteAll();
     }
 

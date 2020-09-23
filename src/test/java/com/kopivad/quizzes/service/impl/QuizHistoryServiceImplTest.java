@@ -10,6 +10,7 @@ import com.kopivad.quizzes.repository.QuizHistoryRepository;
 import com.kopivad.quizzes.service.*;
 import com.kopivad.quizzes.utils.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 class QuizHistoryServiceImplTest {
-    private final String fileDir = "C:/Users/Vadym/Projects/QuizzesBackend/src/test/resources/static/media/";
+    private static final String fileDir = "src/test/resources/static/media/";
     private final QuizHistoryRepository quizHistoryRepository = mock(QuizHistoryRepository.class);
     private final QuizSessionService quizSessionService = mock(QuizSessionService.class);
     private final QuizAnswerService quizAnswerService = mock(QuizAnswerService.class);
@@ -43,11 +44,11 @@ class QuizHistoryServiceImplTest {
     }
 
     @Test
-    void getPdfTest() {
+    void getPdfResourceTest() {
         QuizHistory history = QuizHistoryUtils.generateHistory();
         when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(history));
 
-        Optional<byte[]> actual = quizHistoryService.getPDF(history.getId());
+        Optional<Resource> actual = quizHistoryService.getPdfResource(history.getId());
 
         assertThat(actual.isPresent(), is(true));
 
@@ -55,10 +56,10 @@ class QuizHistoryServiceImplTest {
     }
 
     @Test
-    void getCsvTest() {
+    void getCsvResourceTest() {
         QuizHistory history = QuizHistoryUtils.generateHistory();
         when(quizHistoryRepository.findById(anyLong())).thenReturn(Optional.of(history));
-        Optional<byte[]> actual = quizHistoryService.getCSV(history.getId());
+        Optional<Resource> actual = quizHistoryService.getCsvResource(history.getId());
 
         assertThat(actual.isPresent(), is(true));
 

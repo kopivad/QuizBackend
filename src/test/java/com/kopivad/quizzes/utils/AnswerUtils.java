@@ -18,8 +18,8 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class AnswerUtils {
     public static final long TEST_ANSWER_ID = 1L;
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    private final static Random RANDOM = new Random();
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    private static final Random RANDOM = new Random();
 
     public static void deleteAll() {
         DSL_CONTEXT.deleteFrom(ANSWERS).execute();
@@ -63,7 +63,6 @@ public class AnswerUtils {
     }
 
     public static long insertRandomAnswerInDb() {
-        QuestionUtils.insertDefaultQuestion();
         AnswerDto dto = generateAnswerDto();
         return DSL_CONTEXT
                 .insertInto(ANSWERS)
@@ -103,5 +102,9 @@ public class AnswerUtils {
                 .set(ANSWERS.QUESTION_ID, dto.getQuestionId())
                 .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public static void deleteDefaultAnswer() {
+        DSL_CONTEXT.deleteFrom(ANSWERS).where(ANSWERS.ID.eq(TEST_ANSWER_ID)).execute();
     }
 }

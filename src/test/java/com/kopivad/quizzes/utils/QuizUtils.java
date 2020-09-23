@@ -19,9 +19,9 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 
 public class QuizUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    private final static Random RANDOM = new Random();
-    public final static Long TEST_QUIZ_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    private static final Random RANDOM = new Random();
+    public static final Long TEST_QUIZ_ID = 1L;
 
     public static void insertDefaultQuiz() {
         QuizDto dto = generateQuizDto();
@@ -34,7 +34,6 @@ public class QuizUtils {
                 .set(QUIZZES.ACTIVE, RANDOM.nextBoolean())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
                 .set(QUIZZES.AUTHOR_ID, UserUtils.TEST_USER_ID)
-                .onDuplicateKeyIgnore()
                 .execute();
     }
 
@@ -147,5 +146,9 @@ public class QuizUtils {
                 .range(INTEGER_ZERO, size)
                 .mapToObj(i -> generateQuiz(i + LONG_ONE))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    public static void deleteDefaultQuiz() {
+        DSL_CONTEXT.deleteFrom(QUIZZES).where(QUIZZES.ID.eq(TEST_QUIZ_ID)).execute();
     }
 }

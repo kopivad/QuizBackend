@@ -11,8 +11,8 @@ import java.util.Collections;
 import static com.kopivad.quizzes.domain.db.tables.QuizSessions.QUIZ_SESSIONS;
 
 public class QuizSessionUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_SESSION_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_SESSION_ID = 1L;
 
     public static QuizSessionDto generateQuizSessionDto() {
         return new QuizSessionDto(
@@ -52,5 +52,9 @@ public class QuizSessionUtils {
                 .values(TEST_SESSION_ID, Timestamp.valueOf(LocalDateTime.now()), QuizUtils.TEST_QUIZ_ID, UserUtils.TEST_USER_ID)
                 .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public static void deleteDefaultQuizSession() {
+        DSL_CONTEXT.deleteFrom(QUIZ_SESSIONS).where(QUIZ_SESSIONS.ID.eq(TEST_SESSION_ID)).execute();
     }
 }

@@ -7,9 +7,7 @@ import com.kopivad.quizzes.utils.QuizUtils;
 import com.kopivad.quizzes.utils.TestUtils;
 import com.kopivad.quizzes.utils.UserUtils;
 import org.jooq.DSLContext;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +21,17 @@ public class QuizRepositoryImplTest {
     private final QuizRepository quizRepository = new QuizRepositoryImpl(dslContext);
 
     @BeforeAll
-    static void init() {
+    private static void insertData() {
         UserUtils.insertDefaultUser();
     }
 
-    @BeforeEach
-    void setUp() {
+    @AfterAll
+    private static void deleteData() {
+        UserUtils.deleteDefaultUser();
+    }
+
+    @AfterEach
+    private void deleteQuizzes() {
         QuizUtils.deleteAll();
     }
 

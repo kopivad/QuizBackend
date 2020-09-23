@@ -18,8 +18,8 @@ import static com.kopivad.quizzes.domain.db.tables.Users.USERS;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 public class UserUtils {
-    private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
-    public final static Long TEST_USER_ID = 1L;
+    private static final DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
+    public static final Long TEST_USER_ID = 1L;
 
 
     public static List<User> generateUsers(int size) {
@@ -130,7 +130,10 @@ public class UserUtils {
                 .set(USERS.PASSWORD, dto.getPassword())
                 .set(USERS.ROLE, Role.USER.name())
                 .set(USERS.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
-                .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public static void deleteDefaultUser() {
+        DSL_CONTEXT.deleteFrom(USERS).where(USERS.ID.eq(TEST_USER_ID)).execute();
     }
 }
