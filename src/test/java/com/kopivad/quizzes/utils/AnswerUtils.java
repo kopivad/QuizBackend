@@ -63,7 +63,6 @@ public class AnswerUtils {
     }
 
     public static long insertRandomAnswerInDb() {
-        QuestionUtils.insertDefaultQuestion();
         AnswerDto dto = generateAnswerDto();
         return DSL_CONTEXT
                 .insertInto(ANSWERS)
@@ -103,5 +102,9 @@ public class AnswerUtils {
                 .set(ANSWERS.QUESTION_ID, dto.getQuestionId())
                 .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public static void deleteDefaultAnswer() {
+        DSL_CONTEXT.deleteFrom(ANSWERS).where(ANSWERS.ID.eq(TEST_ANSWER_ID)).execute();
     }
 }

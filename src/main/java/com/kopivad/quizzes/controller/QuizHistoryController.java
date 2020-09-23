@@ -3,6 +3,8 @@ package com.kopivad.quizzes.controller;
 import com.kopivad.quizzes.domain.QuizHistory;
 import com.kopivad.quizzes.service.QuizHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,19 +29,33 @@ public class QuizHistoryController {
         return ResponseEntity.of(quizHistoryService.getById(id));
     }
 
-    @GetMapping(value = "pdf/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<byte[]> downloadPdf(@PathVariable long id) {
+    @GetMapping(value = "pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<Resource> downloadPdf(@PathVariable long id) {
         try {
-            return ResponseEntity.of(quizHistoryService.getPDF(id));
+            return quizHistoryService
+                    .getPdfResource(id)
+                    .map(resource -> ResponseEntity
+                            .ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=%s", resource.getFilename()))
+                            .body(resource))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
         } catch (FileNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @GetMapping(value = "csv/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<byte[]> downloadCsv(@PathVariable long id) {
+    @GetMapping(value = "csv/{id}", produces = "text/csv")
+    public ResponseEntity<Resource> downloadCsv(@PathVariable long id) {
         try {
-            return ResponseEntity.of(quizHistoryService.getCSV(id));
+            return quizHistoryService
+                    .getCsvResource(id)
+                    .map(resource -> ResponseEntity
+                            .ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=%s", resource.getFilename()))
+                            .body(resource))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
         } catch (FileNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

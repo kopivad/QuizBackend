@@ -80,15 +80,15 @@ public class GroupRepositoryImpl implements GroupRepository {
 
     @Override
     public int saveGroupForQuizzes(long id, List<Long> quizzesIds) {
-        return dslContext.batch(getInsertQuizzesValues(id, quizzesIds)).execute().length;
+        return dslContext.batch(prepareGroupsQuizzesInsertsForBatch(id, quizzesIds)).execute().length;
     }
 
     @Override
     public int saveGroupForUsers(long id, List<Long> usersIds) {
-        return dslContext.batch(getInsertUsersValues(id, usersIds)).execute().length;
+        return dslContext.batch(prepareGroupsUsersInsertsForBatch(id, usersIds)).execute().length;
     }
 
-    private List<InsertReturningStep<GroupsQuizzesRecord>> getInsertQuizzesValues(long id, List<Long> quizzesIds) {
+    private List<InsertReturningStep<GroupsQuizzesRecord>> prepareGroupsQuizzesInsertsForBatch(long id, List<Long> quizzesIds) {
         return quizzesIds.stream()
                 .map(quizId -> dslContext
                         .insertInto(GROUPS_QUIZZES, GROUPS_QUIZZES.GROUP_ID, GROUPS_QUIZZES.QUIZ_ID)
@@ -96,7 +96,7 @@ public class GroupRepositoryImpl implements GroupRepository {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<InsertReturningStep<GroupsUsersRecord>> getInsertUsersValues(long id, List<Long> usersIds) {
+    private List<InsertReturningStep<GroupsUsersRecord>> prepareGroupsUsersInsertsForBatch(long id, List<Long> usersIds) {
         return usersIds.stream()
                 .map(userId -> dslContext
                         .insertInto(GROUPS_USERS, GROUPS_USERS.GROUP_ID, GROUPS_USERS.USER_ID)

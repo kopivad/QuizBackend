@@ -53,4 +53,8 @@ public class QuizSessionUtils {
                 .onDuplicateKeyIgnore()
                 .execute();
     }
+
+    public static void deleteDefaultQuizSession() {
+        DSL_CONTEXT.deleteFrom(QUIZ_SESSIONS).where(QUIZ_SESSIONS.ID.eq(TEST_SESSION_ID)).execute();
+    }
 }

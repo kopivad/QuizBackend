@@ -130,7 +130,10 @@ public class UserUtils {
                 .set(USERS.PASSWORD, dto.getPassword())
                 .set(USERS.ROLE, Role.USER.name())
                 .set(USERS.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
-                .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public static void deleteDefaultUser() {
+        DSL_CONTEXT.deleteFrom(USERS).where(USERS.ID.eq(TEST_USER_ID)).execute();
     }
 }

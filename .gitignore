@@ -99,3 +99,8 @@ src/main/resources/static/ng-quizzes/node_modules
 # profiling files
 src/main/resources/static/ng-quizzes/chrome-profiler-events*.json
 src/main/resources/static/ng-quizzes/speed-measure-plugin*.json
+
+# test files
+src/test/resources/static/media/*
+src/java/resources/static/media/*
+!src/test/resources/static/media/test*.*

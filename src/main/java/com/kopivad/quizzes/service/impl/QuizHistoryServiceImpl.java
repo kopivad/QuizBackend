@@ -8,23 +8,21 @@ import com.kopivad.quizzes.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 
 @Service
 @Slf4j
@@ -62,29 +60,31 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     }
 
     @Override
-    public Optional<byte[]> getPDF(long id) throws FileNotFoundException {
+    public Optional<Resource> getPdfResource(long id) throws FileNotFoundException {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         return history.map(resultHistory -> {
             String pdfFilename = resultHistory.getPdfFilename();
-            try (InputStream inputStream = new FileInputStream(fileDir + pdfFilename)) {
-                return IOUtils.toByteArray(inputStream);
-            } catch (IOException e) {
-                log.warn(String.format("Pdf file with name %s not found", resultHistory.getPdfFilename()));
-                throw new FileNotFoundException(String.format("Pdf file with name %s not found", resultHistory.getPdfFilename()), e);
+            Resource resource = new FileSystemResource(fileDir + pdfFilename);
+            if (resource.exists()) {
+                return resource;
+            } else {
+                log.error(String.format("PDF file with name %s not found!", pdfFilename));
+                throw new FileNotFoundException(String.format("PDF file with name %s not found!", pdfFilename));
             }
         });
     }
 
     @Override
-    public Optional<byte[]> getCSV(long id) throws FileNotFoundException {
+    public Optional<Resource> getCsvResource(long id) throws FileNotFoundException {
         Optional<QuizHistory> history = quizHistoryRepository.findById(id);
         return history.map(resultHistory -> {
             String csvFilename = resultHistory.getCsvFilename();
-            try (InputStream inputStream = new FileInputStream(fileDir + csvFilename)) {
-                return IOUtils.toByteArray(inputStream);
-            } catch (IOException e) {
-                log.warn(String.format("Csv file with name %s not found", resultHistory.getCsvFilename()));
-                throw new FileNotFoundException(String.format("Csv file with name %s not found", resultHistory.getCsvFilename()), e);
+            Resource resource = new FileSystemResource(fileDir + csvFilename);
+            if (resource.exists()) {
+                return resource;
+            } else {
+                log.error(String.format("CSV file with name %s not found!", csvFilename));
+                throw new FileNotFoundException(String.format("CSV file with name %s not found!", csvFilename));
             }
         });
     }
@@ -159,13 +159,13 @@ public class QuizHistoryServiceImpl implements QuizHistoryService {
     private int calculateTotal(List<QuizAnswer> quizAnswers) {
         return quizAnswers
                 .stream()
-                .map(answer -> answerService.getById(answer.getAnswerId()).orElseThrow())
+                .map(answer -> answerService.getById(answer.getAnswerId()).orElseThrow(IllegalArgumentException::new))
                 .filter(Answer::isRight)
                 .map(answer ->
                         questionService.getById(answer.getQuestionId())
                                 .map(
                                         question -> question.getQuestion().getValue()
-                                ).orElseThrow())
+                                ).orElseThrow(IllegalArgumentException::new))
                 .mapToInt(value -> value).sum();
     }
 }

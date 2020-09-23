@@ -19,8 +19,8 @@ import static org.apache.commons.lang3.math.NumberUtils.LONG_ONE;
 public class QuizHistoryUtils {
     private final static DSLContext DSL_CONTEXT = TestUtils.createTestDefaultDSLContext();
     public final static Long TEST_HISTORY_ID = 1L;
-    public final static String TEST_PDF_FILE_NAME = "TEST_PDF_FILE.pdf";
-    public final static String TEST_CSV_FILE_NAME = "TEST_CSV_FILE.csv";
+    public final static String TEST_PDF_FILE_NAME = "test_pdf.pdf";
+    public final static String TEST_CSV_FILE_NAME = "test_csv.csv";
     public final static Random RANDOM = new Random();
 
     public static QuizHistory generateHistory(long id) {

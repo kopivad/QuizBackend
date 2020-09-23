@@ -96,7 +96,6 @@ public class QuestionUtils {
                 .set(QUESTIONS.VALUE, dto.getValue())
                 .set(QUESTIONS.TYPE, dto.getType().name())
                 .set(QUESTIONS.QUIZ_ID, QuizUtils.TEST_QUIZ_ID)
-                .onDuplicateKeyIgnore()
                 .execute();
     }
 
@@ -109,5 +108,9 @@ public class QuestionUtils {
 
     public static FullQuestionDto generateFullQuestionDto() {
         return new FullQuestionDto(generateQuestion(), AnswerUtils.generateAnswers(10));
+    }
+
+    public static void deleteDefaultQuestion() {
+        DSL_CONTEXT.deleteFrom(QUESTIONS).where(QUESTIONS.ID.eq(TEST_QUESTION_ID)).execute();
     }
 }

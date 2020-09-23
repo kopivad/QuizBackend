@@ -34,7 +34,6 @@ public class QuizUtils {
                 .set(QUIZZES.ACTIVE, RANDOM.nextBoolean())
                 .set(QUIZZES.CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()))
                 .set(QUIZZES.AUTHOR_ID, UserUtils.TEST_USER_ID)
-                .onDuplicateKeyIgnore()
                 .execute();
     }
 
@@ -147,5 +146,9 @@ public class QuizUtils {
                 .range(INTEGER_ZERO, size)
                 .mapToObj(i -> generateQuiz(i + LONG_ONE))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    public static void deleteDefaultQuiz() {
+        DSL_CONTEXT.deleteFrom(QUIZZES).where(QUIZZES.ID.eq(TEST_QUIZ_ID)).execute();
     }
 }
